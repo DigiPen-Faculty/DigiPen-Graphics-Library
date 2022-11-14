@@ -14,43 +14,43 @@ This file contains information about the types defined by the DGL.
 - [DGL_TextureSampleMode](#dgl_texturesamplemode)
 - [DGL_Vec2](#dgl_vec2)
 
-## DGL_BlendMode
+# DGL_BlendMode
 
 These values are used to specify the type of blending used when drawing overlapping meshes.
 
-### Enum Values
+## Enum Values
 
 - DGL_BM_NONE - No blending.
 - DGL_BM_BLEND - Color values will be blended using alpha values (normal transparency).
 - DGL_BM_ADD - Color values will be added together.
 - DGL_BM_MULTIPLY - Color values will be multiplied together.
 
-### Related
+## Related
 
-- [DGL_Graphics_SetBlendMode](Graphics.md/#dgl_graphics_setblendmode)
+- [DGL_Graphics_SetBlendMode](Graphics/#dgl_graphics_setblendmode)
 
-## DGL_Color
+# DGL_Color
 
 This struct is used to pass color data to functions. Color values should be between 0.0 and 1.0.
 
-### Struct Members
+## Struct Members
 
 - r (float) - The value to use for the red channel.
 - g (float) - The value to use for the green channel.
 - b (float) - The value to use for the blue channel.
 - a (float) - The value to use for the alpha channel.
 
-### Related
+## Related
 
-- [DGL_Graphics_SetBackgroundColor](Graphics.md/#dgl_graphics_setbackgroundcolor)
-- [DGL_Graphics_SetCB_TintColor](Graphics.md/#dgl_graphics_setcb_tintcolor)
-- [DGL_Graphics_AddVertex](Graphics.md/#dgl_graphics_addvertex)
+- [DGL_Graphics_SetBackgroundColor](Graphics/#dgl_graphics_setbackgroundcolor)
+- [DGL_Graphics_SetCB_TintColor](Graphics/#dgl_graphics_setcb_tintcolor)
+- [DGL_Graphics_AddVertex](Graphics/#dgl_graphics_addvertex)
 
-## DGL_DrawMode
+# DGL_DrawMode
 
 These values are used to specify the draw mode to use when interpreting a mesh's vertices.
 
-### Enum Values
+## Enum Values
 
 - DGL_DM_TRIANGLELIST - Vertex data is a list of triangles (three vertices per triangle).
 - DGL_DM_TRIANGLESTRIP - Vertex data is a triangle strip (three vertices for first triangle, one vertex for each additional triangle).
@@ -58,50 +58,50 @@ These values are used to specify the draw mode to use when interpreting a mesh's
 - DGL_DM_LINESTRIP - Vertex data is a series of contiguous lines (starting vertex plus one vertex per line segment).
 - DGL_DM_POINTLIST - Vertex data is a list of points.
 
-### Related
+## Related
 
-- [DGL_Graphics_DrawMesh](Graphics.md/#dgl_graphics_drawmesh)
+- [DGL_Graphics_DrawMesh](Graphics/#dgl_graphics_drawmesh)
 
-## DGL_Mat4
+# DGL_Mat4
 
 This struct is used to pass matrix data to functions.
 
-### Struct Members
+## Struct Members
 
 - m[4][4] (float)
 
-### Related
+## Related
 
-- [DGL_Graphics_SetCB_TransformMatrix](Graphics.md/#dgl_graphics_setcb_transformmatrix)
+- [DGL_Graphics_SetCB_TransformMatrix](Graphics/#dgl_graphics_setcb_transformmatrix)
 
-## DGL_Mesh
+# DGL_Mesh
 
 This is the type used for mesh data. You will only be working with pointers to this type.
 
-### Related
+## Related
 
-- [DGL_Graphics_EndMesh](Graphics.md/#dgl_graphics_endmesh)
-- [DGL_Graphics_FreeMesh](Graphics.md/#dgl_graphics_freemesh)
-- [DGL_Graphics_DrawMesh](Graphics.md/#dgl_graphics_drawmesh)
+- [DGL_Graphics_EndMesh](Graphics/#dgl_graphics_endmesh)
+- [DGL_Graphics_FreeMesh](Graphics/#dgl_graphics_freemesh)
+- [DGL_Graphics_DrawMesh](Graphics/#dgl_graphics_drawmesh)
 
-## DGL_ShaderMode
+# DGL_ShaderMode
 
 These values are used to specify which pixel shader to use when drawing.
 
-### Enum Values
+## Enum Values
 
 - DGL_SM_COLOR - Draw with color data from the mesh.
 - DGL_SM_TEXTURE - Draw using data from the current texture.
 
-### Related
+## Related
 
-- [DGL_Graphics_SetShaderMode](Graphics.md/#dgl_graphics_setshadermode)
+- [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode)
 
-## DGL_SysInitInfo
+# DGL_SysInitInfo
 
 This struct is used to tell DGL information it needs to create the window. It is passed as a parameter to the DGL_System_Init() function. Make sure that all variables in the struct are set correctly.
 
-### Struct Members
+## Struct Members
 
 - mAppInstance (HINSTANCE) - This should be set to the first parameter from WinMain. It is used to identify the application instance when creating and closing the window.
 - mShow (int) - This should be set to the fourth parameter from WinMain. It is used when creating the window to control whether it is shown or not.
@@ -115,57 +115,57 @@ This struct is used to tell DGL information it needs to create the window. It is
 - mWindowIcon (int) - The icon resource definition to use for the window title bar icon. Visual Studio will automatically create a file named Resource.h and a .ico file with the same name as your project. You can edit the .ico file with your own custom icon. Usually what you will set this to is `IDI_YOURPROJECTNAME`.
 - pWindowsCallback (WNDPROC) - This should be set to the name of your Windows callback function. When created automatically by Visual Studio this is usually called `WndProc`. 
 
-### Related
+## Related
 
-- [DGL_System_Init](System.md/#dgl_system_init)
+- [DGL_System_Init](System/#dgl_system_init)
 
-## DGL_Texture
+# DGL_Texture
 
 This is the type used for texture data. You will only be working with pointers to this type.
 
-### Related
+## Related
 
-- [DGL_Graphics_LoadTexture](Graphics.md/#dgl_graphics_loadtexture)
-- [DGL_Graphics_FreeTexture](Graphics.md/#dgl_graphics_freetexture)
-- [DGL_Graphics_SetTexture](Graphics.md/#dgl_graphics_settexture)
+- [DGL_Graphics_LoadTexture](Graphics/#dgl_graphics_loadtexture)
+- [DGL_Graphics_FreeTexture](Graphics/#dgl_graphics_freetexture)
+- [DGL_Graphics_SetTexture](Graphics/#dgl_graphics_settexture)
 
-## DGL_TextureAddressMode
+# DGL_TextureAddressMode
 
 These values are used to specify the behavior when a texture is sampled outside its boundaries.
 
-### Enum Values
+## Enum Values
 
 - DGL_AM_WRAP - Wrap to the opposite edge of the texture and continue sampling (repeats the texture).
 - DGL_AM_MIRROR - Sample backwards across the texture to the opposite edge.
 - DGL_AM_CLAMP - Use the pixel color at the edge of the texture.
 - DGL_AM_MIRROR_ONCE - Mirror once and then clamp.
 
-### Related
+## Related
 
-- [DGL_Graphics_SetTextureSamplerData](Graphics.md/#dgl_graphics_settexturesamplerdata)
+- [DGL_Graphics_SetTextureSamplerData](Graphics/#dgl_graphics_settexturesamplerdata)
 
-## DGL_TextureSampleMode
+# DGL_TextureSampleMode
 
 These values are used to specify the type of sampling to use when drawing textures.
 
-### Enum Values
+## Enum Values
 
 - DGL_TSM_LINEAR - Use linear interpolation between nearest pixels.
 - DGL_TSM_POINT - Use exact pixel, no interpolation.
 
-### Related
+## Related
 
-- [DGL_Graphics_SetTextureSamplerData](Graphics.md/#dgl_graphics_settexturesamplerdata)
+- [DGL_Graphics_SetTextureSamplerData](Graphics/#dgl_graphics_settexturesamplerdata)
 
-## DGL_Vec2
+# DGL_Vec2
 
 This struct is used to pass sets of floats to functions and to return data from functions.
 
-### Struct Members
+## Struct Members
 
 - x (float)
 - y (float)
 
-### Related
+## Related
 
 - None

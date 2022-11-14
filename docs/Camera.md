@@ -9,25 +9,25 @@ This file contains information about all the functions in the Camera section.
 - [DGL_Camera_SetZoom](#dgl_camera_setzoom)
 
 
-## DGL_Camera_GetPosition
+# DGL_Camera_GetPosition
 
 Returns the current X and Y position of the camera, in world coordinates.
 
-### Function
+## Function
 
 ```C
 DGL_Vec2 DGL_Camera_GetPosition(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
-- [DGL_Vec2](Types.md/#dgl_vec2) - This will contain the X and Y world coordinates of the camera.
+- [DGL_Vec2](Types/#dgl_vec2) - This will contain the X and Y world coordinates of the camera.
 
-### Example
+## Example
 
 ```C
 if (DGL_Input_KeyDown('W'))
@@ -38,30 +38,30 @@ if (DGL_Input_KeyDown('W'))
 }
 ```
 
-### Related
+## Related
 
 - [DGL_Camera_SetPosition](#dgl_camera_setposition)
-- [DGL_Vec2](Types.md/#dgl_vec2)
+- [DGL_Vec2](Types/#dgl_vec2)
 
-## DGL_Camera_GetZoom
+# DGL_Camera_GetZoom
 
 Returns the current zoom level of the camera.
 
-### Function
+## Function
 
 ```C
 float DGL_Camera_GetZoom(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - float - The current zoom level of the DGL camera.
 
-### Example
+## Example
 
 ```C
 if (DGL_Input_KeyDown(VK_UP))
@@ -72,59 +72,59 @@ if (DGL_Input_KeyDown(VK_UP))
 }
 ```
 
-### Related
+## Related
 
 - [DGL_Camera_SetZoom](#dgl_camera_setzoom)
 
-## DGL_Camera_ScreenCoordToWorld
+# DGL_Camera_ScreenCoordToWorld
 
 Takes a position in screen coordinates and returns the equivalent in world coordinates.
 
-### Function
+## Function
 
 ```C
 DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2* position)
 ```
 
-#### Parameters
+### Parameters
 
-- position (const [DGL_Vec2](Types.md/#dgl_vec2)*) - The address of a [DGL_Vec2](Types.md/#dgl_vec2) variable containing the screen coordinates that will be translated into world coordinates.
+- position (const [DGL_Vec2](Types/#dgl_vec2)*) - The address of a [DGL_Vec2](Types/#dgl_vec2) variable containing the screen coordinates that will be translated into world coordinates.
 
-#### Return
+### Return
 
-- [DGL_Vec2](Types.md/#dgl_vec2) - This will contain the equivalent world coordinates.
+- [DGL_Vec2](Types/#dgl_vec2) - This will contain the equivalent world coordinates.
 
-### Example
+## Example
 
 ```C
 DGL_Vec2 mouseScreen = DGL_Input_GetMousePosition();
 DGL_Vec2 mouseWorld = DGL_Camera_ScreenCoordToWorld(&mouseScreen);
 ```
 
-### Related
+## Related
 
-- [DGL_Input_GetMousePosition](Input.md/#dgl_input_getmouseposition)
-- [DGL_Vec2](Types.md/#dgl_vec2)
+- [DGL_Input_GetMousePosition](Input/#dgl_input_getmouseposition)
+- [DGL_Vec2](Types/#dgl_vec2)
 
-## DGL_Camera_SetPosition
+# DGL_Camera_SetPosition
 
 Sets the position of the camera, in world coordinates.
 
-### Function
+## Function
 
 ```C
 void DGL_Camera_SetPosition(const DGL_Vec2* position)
 ```
 
-#### Parameters
+### Parameters
 
-- position (const [DGL_Vec2](Types.md/#dgl_vec2)*) - The address of a [DGL_Vec2](Types.md/#dgl_vec2) variable containing the world position to move the camera to.
+- position (const [DGL_Vec2](Types/#dgl_vec2)*) - The address of a [DGL_Vec2](Types/#dgl_vec2) variable containing the world position to move the camera to.
 
-#### Return
+### Return
 
 - This function does not return anything.
 
-### Example
+## Example
 
 ```C
 if (DGL_Input_KeyDown('W'))
@@ -135,30 +135,30 @@ if (DGL_Input_KeyDown('W'))
 }
 ```
 
-### Related
+## Related
 
 - [DGL_Camera_GetPosition](#dgl_camera_getposition)
-- [DGL_Vec2](Types.md/#dgl_vec2)
+- [DGL_Vec2](Types/#dgl_vec2)
 
-## DGL_Camera_SetZoom
+# DGL_Camera_SetZoom
 
 Sets the zoom level of the camera. Default is 1.0. Smaller values will move the camera in (objects look larger) and larger values will move it out (objects look smaller).
 
-### Function
+## Function
 
 ```C
 void DGL_Camera_SetZoom(float zoom)
 ```
 
-#### Parameters
+### Parameters
 
 - zoom (float) - The value to set the camera zoom to.
 
-#### Return
+### Return
 
 - This function does not return anything.
 
-### Example
+## Example
 
 ```C
 if (DGL_Input_KeyDown(VK_UP))
@@ -169,6 +169,6 @@ if (DGL_Input_KeyDown(VK_UP))
 }
 ```
 
-### Related
+## Related
 
 - [DGL_Camera_GetZoom](#dgl_camera_getzoom)

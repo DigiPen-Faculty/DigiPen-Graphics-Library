@@ -15,84 +15,84 @@ This page contains all the functions in the System section.
 - [DGL_System_Reset](#dgl_system_reset)
 - [DGL_System_Update](#dgl_system_update)
 
-## DGL_System_DoesWindowExist
+# DGL_System_DoesWindowExist
 
 Returns FALSE if there is no window, and TRUE if there is. This is used to check if you should break out of your game loop and exit.
 
-### Function
+## Function
 
 ```C
 BOOL DGL_System_DoesWindowExist(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - BOOL - This will be FALSE if there is no window, and TRUE if there is.
 
-### Example
+## Example
 
 ```C
 if (!DGL_System_DoesWindowExist())
     gameRunning = FALSE;
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_Exit
+# DGL_System_Exit
 
 Shuts down the graphics system and de-registers the window. Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
 
-### Function
+## Function
 
 ```C
 int DGL_System_Exit(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - int - Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
 
-### Example
+## Example
 
 ```C
 DGL_System_Exit();
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_FrameControl
+# DGL_System_FrameControl
 
 Tells the framerate controller a new frame is beginning, and delays if necessary to match max framerate.
 
 This must be called at the beginning of every update loop.
 
-### Function
+## Function
 
 ```C
 void DGL_System_FrameControl(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - This function does not return anything.
 
-### Example
+## Example
 
 ```C
 int running = 1;
@@ -108,86 +108,86 @@ while (running)
 }
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_GetDeltaTime
+# DGL_System_GetDeltaTime
 
 Returns the time between the beginning of the last frame and the beginning of this frame, in seconds. To be more accurate, it is the time between when [DGL_System_FrameControl](#dgl_system_framecontrol) was called on the last frame and on this frame.
 
-### Function
+## Function
 
 ```C
 double DGL_System_GetDeltaTime(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - double - The time between the beginning of the last frame and the beginning of this frame, in seconds.
 
-### Example
+## Example
 
 ```C
 playerPosition += playerVelocity * DGL_System_GetDeltaTime();
 ```
 
-### Related
+## Related
 
 - [DGL_System_FrameControl](#dgl_system_framecontrol)
 - [DGL_System_GetTime](#dgl_system_gettime)
 
-## DGL_System_GetFrameCount
+# DGL_System_GetFrameCount
 
 Returns the total number of frames since the program began. This number will be reset to 0 after calling [DGL_System_Reset](#dgl_system_reset).
 
-### Function
+## Function
 
 ```C
 unsigned DGL_System_GetFrameCount(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - unsigned - The total number of frames since the program began or since [DGL_System_Reset](#dgl_system_reset) was called.
 
-### Example
+## Example
 
 ```C
 unsigned totalFrames = DGL_System_GetFrameCount();
 ```
 
-### Related
+## Related
 
 - [DGL_System_Reset](#dgl_system_reset)
 
-## DGL_System_GetLastError
+# DGL_System_GetLastError
 
 Returns the text of the last error in the DGL systems.
 
-### Function
+## Function
 
 ```C
 const char* DGL_System_GetLastError(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - const char* - This will contain text describing the last error that occurred in the DGL.
 
-### Example
+## Example
 
 ```C
 HWND windowHandle = DGL_System_Init(&initInfo);
@@ -198,29 +198,29 @@ if (!windowHandle)
 }
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_GetTime
+# DGL_System_GetTime
 
 Returns the current system time according to the user's computer, in seconds.
 
-### Function
+## Function
 
 ```C
 double DGL_System_GetTime(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - double - The current system time, in seconds.
 
-### Example
+## Example
 
 ```C
 double currentTime = DGL_System_GetTime();
@@ -231,61 +231,61 @@ if (currentTime - lastSavedTime > 3.0)
 }
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_GetWindowHandle
+# DGL_System_GetWindowHandle
 
 Returns the Windows window handle, which can be used to manipulate the window or to get data from Windows.
 
-### Function
+## Function
 
 ```C
 HWND DGL_System_GetWindowHandle(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - HWND - The handle of the application window.
 
-### Example
+## Example
 
 ```C
 SetWindowPos(DGL_System_GetWindowHandle(), HWND_TOP, rect.left, rect.top, windowWidth, windowHeight, SWP_NOZORDER);
 ShowWindow(DGL_System_GetWindowHandle(), SW_SHOWNORMAL);
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_HandleWindowsMessage
+# DGL_System_HandleWindowsMessage
 
 Handles some of the windows messages. Returns TRUE if the message was handled, otherwise returns FALSE. If the message was handled, use the `result` value to return from the Windows callback.
 
-### Function
+## Function
 
 ```C
 BOOL DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result)
 ```
 
-#### Parameters
+### Parameters
 
 - message (UINT) - You should pass in the message parameter from the Windows callback here.
 - wParam (WPARAM) - You should pass in the wParam parameter from the Windows callback here.
 - lParam (LPARAM) - You should pass in the lParam parameter from the Windows callback here.
 - result (int*) - The address of an `int` variable where the result will be stored. If the function returns TRUE, use this value to return from the callback.
 
-#### Return
+### Return
 
 - BOOL - This will be TRUE if the message was handled, otherwise it will be FALSE.
 
-### Example
+## Example
 
 ```C
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
@@ -305,29 +305,29 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 }
 ```
 
-### Related
+## Related
 
 - None
 
-## DGL_System_Init
+# DGL_System_Init
 
 Initializes the DGL using the specified options. This will create the window and initialize graphics and the framerate controller. Returns the window handle, which will be NULL if there was a problem with initialization.
 
-### Function
+## Function
 
 ```C
 HWND DGL_System_Init(const DGL_SysInitInfo* sysInitInfo)
 ```
 
-#### Parameters
+### Parameters
 
-- sysInitInfo (const DGL_SysInitInfo*) - The address of a [DGL_SysInitInfo](Types.md/#dgl_sysinitinfo) struct with the settings to use when initializing the DGL.
+- sysInitInfo (const DGL_SysInitInfo*) - The address of a [DGL_SysInitInfo](Types/#dgl_sysinitinfo) struct with the settings to use when initializing the DGL.
 
-#### Return
+### Return
 
 - HWND - The handle of the window that was created. If not successful, this will be NULL.
 
-### Example
+## Example
 
 ```C
 HWND windowHandle = DGL_System_Init(&initInfo);
@@ -338,58 +338,58 @@ if (windowHandle == NULL)
 }
 ```
 
-### Related
+## Related
 
-- [DGL_SysInitInfo](Types.md/#dgl_sysinitinfo)
+- [DGL_SysInitInfo](Types/#dgl_sysinitinfo)
 
-## DGL_System_Reset
+# DGL_System_Reset
 
 Resets the framerate controller back to the initial state.
 
-### Function
+## Function
 
 ```C
 void DGL_System_Reset(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - This function does not return anything.
 
-### Example
+## Example
 
 ```C
 DGL_System_Reset();
 ```
 
-### Related
+## Related
 
 - [DGL_System_FrameControl](#dgl_system_framecontrol)
 - [DGL_System_GetFrameCount](#dgl_system_getframecount)
 
-## DGL_System_Update
+# DGL_System_Update
 
 Updates input and Windows messages. Should be called near the beginning of the update loop.
 
-### Function
+## Function
 
 ```C
 void DGL_System_Update(void)
 ```
 
-#### Parameters
+### Parameters
 
 - This function has no parameters.
 
-#### Return
+### Return
 
 - This function does not return anything.
 
-### Example
+## Example
 
 ```C
 int running = 1;
@@ -405,6 +405,6 @@ while (running)
 }
 ```
 
-### Related
+## Related
 
 - None
