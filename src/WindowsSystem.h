@@ -68,8 +68,6 @@ private:
     HINSTANCE mInstance{ nullptr };
     // Keeps track of whether the window is currently being resized
     bool mResizing{ false };
-    // Saves the window size when it is being resized
-    DGL_Vec2 mSavedSize{ 0 };
 };
 
 // Global variable for accessing this system

@@ -34,11 +34,7 @@ GraphicsSystem::~GraphicsSystem()
 //*************************************************************************************************
 int GraphicsSystem::Initialize(HWND window)
 {
-    // Get the window size from the window itself (this will account for title bar, borders, etc.)
-    RECT rect;
-    GetClientRect(window, &rect);
-    // Set the window size on the camera
-    Camera.SetWindowSize({ (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) });
+    Camera.Initialize(window);
 
     // Initialize D3D and check for any errors
     if (D3D.InitializeD3D() != 0)

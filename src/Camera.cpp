@@ -25,6 +25,14 @@ DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix)
 //------------------------------------------------------------------------------------------ Camera
 
 //*************************************************************************************************
+void CameraObject::Initialize(HWND windowHandle)
+{
+    mWindowHandle = windowHandle;
+    
+    ResetWindowSize();
+}
+
+//*************************************************************************************************
 DGL_Vec2 CameraObject::GetCameraPosition() const
 {
     // Return the current camera position
@@ -57,10 +65,17 @@ void CameraObject::SetCameraZoom(float zoom)
 }
 
 //*************************************************************************************************
-void CameraObject::SetWindowSize(const DGL_Vec2& size)
+void CameraObject::ResetWindowSize()
 {
+    if (!mWindowHandle)
+        return;
+
+    // Get the window size 
+    RECT rect;
+    GetClientRect(mWindowHandle, &rect);
+
     // Save the window size
-    mWindowSize = size;
+    mWindowSize = { (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) };
     // Tell the graphics system to reset for the new window size
     gGraphics->D3D.ResetOnSizeChange();
 }

@@ -20,6 +20,8 @@ class CameraObject
 {
 public:
 
+    void Initialize(HWND windowHandle);
+
     // Returns the current camera position
     DGL_Vec2 GetCameraPosition() const;
 
@@ -32,8 +34,8 @@ public:
     // Sets the camera zoom factor
     void SetCameraZoom(float zoom);
 
-    // Sets the current window size
-    void SetWindowSize(const DGL_Vec2& size);
+    // Resets with the current window size
+    void ResetWindowSize();
 
     // Returns the world matrix based on the current camera position and window size
     DGL_Mat4 GetWorldMatrix();
@@ -54,6 +56,8 @@ private:
     DGL_Vec2 mWindowSize;
     // The current view matrix and projection matrix multiplied together
     DirectX::XMMATRIX mProjViewMatrix{ DirectX::XMMatrixIdentity() };
+
+    HWND mWindowHandle{ nullptr };
 };
 
 } // namespace DGL

@@ -230,22 +230,19 @@ BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lPa
     case WM_SIZE:
         // If the window has been maximized, set the window size 
         if (wParam == SIZE_MAXIMIZED)
-            gGraphics->Camera.SetWindowSize({ (float)LOWORD(lParam), (float)HIWORD(lParam) });
+            gGraphics->Camera.ResetWindowSize();
         // If the window has been restored and we are not resizing, set the window size
         if (wParam == SIZE_RESTORED && !mResizing)
-            gGraphics->Camera.SetWindowSize({ (float)LOWORD(lParam), (float)HIWORD(lParam) });
+            gGraphics->Camera.ResetWindowSize();
         break;
     case WM_SIZING:
         // Set that we are currently resizing
         mResizing = true;
-        // Save the current width and height
-        mSavedSize.x = (float)(((RECT*)lParam)->right - ((RECT*)lParam)->left);
-        mSavedSize.y = (float)(((RECT*)lParam)->bottom - ((RECT*)lParam)->top);
         break;
     case WM_EXITSIZEMOVE:
         // If we have been resizing, set the window size with the saved values
         if (mResizing)
-            gGraphics->Camera.SetWindowSize(mSavedSize);
+            gGraphics->Camera.ResetWindowSize();
         mResizing = false;
         break;
     case WM_KEYDOWN:
