@@ -11,6 +11,7 @@
 PShader.h
 VShader.h
 PTexShader.h
-Release/
-Debug/
-/lib
+/DigiPen_Graphics_Library/x64
+/DGL_Template_Project/x64
+/DGL_Template_Project/Win32
+/DigiPen_Graphics_Library/Win32
