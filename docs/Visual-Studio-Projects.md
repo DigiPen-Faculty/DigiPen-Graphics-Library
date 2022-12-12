@@ -2,7 +2,7 @@
 
 These instructions will cover creating a Visual Studio 2022 project using C and setting it up to use the DGL files. It uses the DGL folder with the header and library files, which can be found on the [Releases](https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/releases) page. 
 
-You can also look at the [DGL Template Project](https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/tree/main/DGL_Template_Project) to see an example of a working project.
+This is, of course, not the only way to organize a project: if you want to organize your files in a different way, simply change the relevant settings that are listing specific files and folders.
 
 ---
 
@@ -10,11 +10,11 @@ You can also look at the [DGL Template Project](https://github.com/DigiPen-Facul
 
 1. Open Visual Studio 2022, and in the launcher screen select the ***Create a new project*** option.
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture1.png" height=300 alt="Screenshot">
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture1.png" height=300 alt="Screenshot" style="padding: 10px">
 
 2. Scroll down until you find the ***Windows Desktop Application*** option, select it, and then click the "Next" button. This will create the project with some settings that are needed for a desktop application. 
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture2.png" height=300 alt="Screenshot">
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture2.png" height=300 alt="Screenshot" style="padding: 10px">
 
 3. Change the project name to whatever you want, and choose the location where you want to save the project.
     - A folder will be created for the project, with the project name, so you don't need to create a new folder for it.
@@ -25,15 +25,15 @@ You can also look at the [DGL Template Project](https://github.com/DigiPen-Facul
 
 4. When you look at the folder that was created for your project, you should see a .sln file with the name of the project, and a folder with the same name. 
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture4.png" alt="Screenshot">
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture4.png" alt="Screenshot" style="padding: 10px">
 
     Inside the sub-folder you should see a list of files like this (with your project name instead of "Awesome Game").
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture5.png" alt="Screenshot">
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture5.png" alt="Screenshot" style="padding: 10px">
 
 5. Put the DGL folder into the base folder of your project. This will make the library files accessible to your project, while keeping them contained in their own folder.
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture6.png" alt="Screenshot">
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture6.png" alt="Screenshot" style="padding: 10px">
 
 ---
 
@@ -106,6 +106,8 @@ Now that we have our project, we need to change some settings.
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture18a.png" height=300 alt="Screenshot">
 
     - This will copy the `DGL_d.dll` file from the `DGL/lib/x64` or `DGL/lib/Win32` folder in the solution directory into the output directory of the project when building in Debug mode.
+    - You will probably also want to add a line here to automatically copy your assets into the Debug or Release folder also. If you have an `Assets` folder in the same folder as your game project (where the `.vcxproj` file is), you would use this: `xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q`
+        - *Putting the assets in the same folder as the game project lets the relative path work when you run your program from inside Visual Studio. Copying the assets into the output directory is useful for when you want to run the executable directly.*
     - Click on the ***Apply*** button to save the setting.
 
 9. Change the ***Configuration*** setting back to **`Release`** and edit the ***Command Line*** field again. 
@@ -119,6 +121,10 @@ Now that we have our project, we need to change some settings.
 10. Change the ***Configuration*** setting to ***All Configurations*** and click on the ***Advanced*** section. Change the ***Character Set*** setting to ***Use Multi-Byte Character Set***.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture20.png" height=300 alt="Screenshot">
+
+1. Click on the ***C/C++*** list, and change ***Treat Warnings as Errors*** to Yes.
+
+    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture21.png" height=300 alt="Screenshot">
 
 11. Click on the ***OK*** button to save and close the property settings window.
 
@@ -154,7 +160,27 @@ Visual Studio creates some files for us by default, and we need to edit some of 
     - Remove all other code from the file.
     - You should end up with a file that looks like this:
 
-    <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture11.png" height=400 alt="Screenshot">
+            #include "Resource.h"
+            #include "DGL.h"
+
+            int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+                                _In_opt_ HINSTANCE hPrevInstance,
+                                _In_ LPWSTR    lpCmdLine,
+                                _In_ int       nCmdShow)
+            {
+
+            }
+
+            LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+            {
+                switch (message)
+                {
+
+                default:
+                    return DefWindowProc(hWnd, message, wParam, lParam);
+                }
+                return 0;
+            }
 
 ---
 
