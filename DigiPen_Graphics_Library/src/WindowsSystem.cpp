@@ -211,6 +211,8 @@ void WindowsSystem::SetWindowStyle(unsigned style) const
 //*************************************************************************************************
 BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result)
 {
+    UNREFERENCED_PARAMETER(lParam);
+
     *result = 0;
 
     switch (message)

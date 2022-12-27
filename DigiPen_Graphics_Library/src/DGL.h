@@ -263,7 +263,7 @@ DGL_API DGL_Texture* DGL_Graphics_LoadTexture(const char* fileName);
 // Loads a texture from the provided array of colors.
 // Color data should include four char values for every pixel (R G B A).
 // Returns a pointer to the new texture instance.
-DGL_API DGL_Texture* DGL_Graphics_LoadTextureFromMemory(unsigned char* data, int width, int height);
+DGL_API DGL_Texture* DGL_Graphics_LoadTextureFromMemory(const unsigned char* data, int width, int height);
 
 // Unloads the provided texture from memory.
 // The pointer passed in will be set to NULL.

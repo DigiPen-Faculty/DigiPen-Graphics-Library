@@ -31,7 +31,7 @@ public:
     static DGL_Texture* LoadTexture(const char* pFileName, ID3D11Device* device);
 
     // Creates a new texture from the provided pixel data
-    static DGL_Texture* LoadTextureFromMemory(unsigned char* data, int width, int height, 
+    static DGL_Texture* LoadTextureFromMemory(const unsigned char* data, int width, int height, 
         ID3D11Device* device);
 
     // Releases the D3D objects and deletes the texture

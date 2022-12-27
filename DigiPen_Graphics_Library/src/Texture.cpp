@@ -60,7 +60,7 @@ DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* de
 }
 
 //*************************************************************************************************
-DGL_Texture* TextureManager::LoadTextureFromMemory(unsigned char* data, int width, int height, 
+DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, int width, int height, 
     ID3D11Device* device)
 {
     // Check for invalid data

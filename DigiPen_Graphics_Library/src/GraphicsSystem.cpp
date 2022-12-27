@@ -98,7 +98,7 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 }
 
 //*************************************************************************************************
-DGL_Texture* GraphicsSystem::LoadTextureFromMemory(unsigned char* data, int width, int height)
+DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, int width, int height)
 {
     // Create the texture through the texture manager
     DGL_Texture* texture = TextureManager::LoadTextureFromMemory(data, width, height, D3D.mDevice);
@@ -281,7 +281,7 @@ DGL_Texture* DGL_Graphics_LoadTexture(const char* fileName)
 }
 
 //*************************************************************************************************
-DGL_Texture* DGL_Graphics_LoadTextureFromMemory(unsigned char* data, int width, int height)
+DGL_Texture* DGL_Graphics_LoadTextureFromMemory(const unsigned char* data, int width, int height)
 {
     return gGraphics->LoadTextureFromMemory(data, width, height);
 }
