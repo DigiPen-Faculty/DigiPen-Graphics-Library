@@ -19,6 +19,7 @@ If you have documentation requests or suggestions, or if you find any errors, fe
 
 ## Other Information
 
+- [Sprite Sheets](Sprite-Sheets)
 - [Window Settings](Window-Settings)
 - [The Camera and Screen vs. World Coordinates](Camera-and-Coordinates)
 - [Texture Sampling Methods](Texture-Sampling)

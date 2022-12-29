@@ -16,6 +16,7 @@
 
 # Other Information
 
+- [Sprite Sheets](Sprite-Sheets)
 - [Window Settings](Window-Settings)
 - [The Camera and Screen vs. World Coordinates](Camera-and-Coordinates)
 - [Texture Sampling Methods](Texture-Sampling)
