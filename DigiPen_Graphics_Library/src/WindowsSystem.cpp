@@ -255,6 +255,16 @@ BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lPa
         // Set the key state to up
         gInput->SetKeyState((char)wParam, false);
         break;
+    case WM_SYSKEYDOWN:
+        // Catch the F10 key
+        if (wParam == VK_F10)
+            gInput->SetKeyState(VK_F10, true);
+        break;
+    case WM_SYSKEYUP:
+        // Catch the F10 key
+        if (wParam == VK_F10)
+            gInput->SetKeyState(VK_F10, false);
+        break;
     case WM_MOUSEWHEEL:
         // Calculate the mouse scroll delta value
         gInput->SetMouseScrollDelta(GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
