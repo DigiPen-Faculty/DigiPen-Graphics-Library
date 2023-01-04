@@ -1,6 +1,6 @@
 # How to Use the DigiPen Graphics Library
 
-This page covers the basic things you need to do in order to display a colored mesh or texture.
+This page covers the basic things you need to do in order to display a colored mesh or a texture.
 
 ## Contents
 - [Windows Callback Function](#windows-callback-function)
@@ -138,7 +138,7 @@ float height = 1.0f;
 
 // Save the half width and height values
 float halfWidth = width / 2.0f;
-float halfHeight = width / 2.0f;
+float halfHeight = height / 2.0f;
 
 // Tell DGL that we are starting a new mesh
 DGL_Graphics_StartMesh();

@@ -1,0 +1,1 @@
+*Copyright © 2022 DigiPen, all rights reserved.*
