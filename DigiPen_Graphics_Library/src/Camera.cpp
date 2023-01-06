@@ -76,6 +76,9 @@ void CameraObject::ResetWindowSize()
 
     // Save the window size
     mWindowSize = { (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) };
+    if (mWindowSize.x <= 0.0f || mWindowSize.y <= 0.0f)
+        return;
+
     // Tell the graphics system to reset for the new window size
     gGraphics->D3D.ResetOnSizeChange();
 }
