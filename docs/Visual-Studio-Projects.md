@@ -67,13 +67,18 @@ Now that we have our project, we need to change some settings.
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture14.png" height=300 alt="Screenshot" vspace=20>
 
     - This tells the project to look for include files in the `DGL\inc` folder inside the same directory as the solution file. This is where the `DGL.h` file is stored.
+    - Make sure that the box at the bottom of the edit window labeled ***Inherit from parent or project defaults*** is checked.
     - Click on ***OK*** to save the text and return to the properties window.
+    - When you look at the ***Include Directories*** setting in the properties window it should now say **`$(SolutionDir)DGL\inc;$(IncludePath)`**. 
 
 2. Next we need to set the directory to look in for library files.
     - Edit the ***Library Directories*** option and add the following text: **`$(SolutionDir)DGL\lib\$(Platform)`**
+    - Again, make sure that the box at the bottom of the edit window labeled ***Inherit from parent or project defaults*** is checked.
     - This tells the project to look for library files in the `DGL\lib\x64` or `DGL\lib\Win32` folder in the same directory as the solution file, depending on which platform is being built.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture14a.png" height=300 alt="Screenshot" vspace=20>
+
+    - When you look at the ***Library Directories*** setting in the properties window it should now say **`$(SolutionDir)DGL\lib\$(Platform);$(LibraryPath)`**. 
 
 3. Expand the ***C/C++*** list and click on the ***Advanced*** section. Change the ***Compile As*** option to **`Compile as C Code (/TC)`**. (If you were creating a C++ project you would skip this step.)
 
@@ -91,16 +96,21 @@ Now that we have our project, we need to change some settings.
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture15a.png" height=300 alt="Screenshot" vspace=20>
 
     - Enter **`DGL_d.lib`**. This tells the project that, when building in Debug mode, it will need the `DGL_d.lib` file. It will look for this file in the directory that we set up previously.
+    - Make sure that the box at the bottom of the edit window labeled ***Inherit from parent or project defaults*** is checked.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture16.png" height=300 alt="Screenshot" vspace=20>
 
     - Click on the ***OK*** button to go back to the properties window, then click on the ***Apply*** button to save the changes.
+    - The ***Additional Dependencies*** option should now show **`DGL_d.lib;%(AdditionalDependencies)`**.
 
 7. Change the ***Configuration*** setting to **`Release`**, then edit the ***Additional Dependencies*** field again.
-    - This time enter **`DGL.lib`**. This is the Release version of the library file. 
-    - Click on the ***OK*** button to go back to the properties window, then click on the ***Apply*** button to save the changes.
+    - This time enter **`DGL.lib`**. This is the Release version of the library file.     
+    - Again, make sure that the box at the bottom of the edit window labeled ***Inherit from parent or project defaults*** is checked.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture17.png" height=300 alt="Screenshot" vspace=20>
+    
+    - Click on the ***OK*** button to go back to the properties window, then click on the ***Apply*** button to save the changes.
+    - The ***Additional Dependencies*** option should now show **`DGL.lib;%(AdditionalDependencies)`**.
 
 8. Change the ***Configuration*** setting back to **`Debug`**. Expand the ***Build Events*** list and click on the ***Post-Build Event*** section.
 
