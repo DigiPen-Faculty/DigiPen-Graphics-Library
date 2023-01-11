@@ -7,6 +7,13 @@ This is, of course, not the only way to organize a project: if you want to organ
 Contents:
 - [Creating the Visual Studio Project](#creating-the-visual-studio-project)
 - [Changing the Project Settings](#changing-the-project-settings)
+    - [Include Directory](#include-directory)
+    - [Library Directory](#library-directory)
+    - [Compile as C](#compile-as-c)
+    - [Linker Input](#linker-input)
+    - [Post-Build Events](#post-build-events)
+    - [Character Set](#character-set)
+    - [Warnings as Errors](#warnings-as-errors)
 - [Changing the Default Files](#changing-the-default-files)
 
 ---
@@ -54,6 +61,8 @@ Now that we have our project, we need to change some settings.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture12.png" height=300 alt="Screenshot" vspace=20>
 
+### Include Directory
+
 2. The first thing we will do is add the directories needed to find the DGL files. We'll start with the directory to look in for includes.
     - Click on the ***VC++ Directories*** section. 
     - For the ***Include Directories*** option, click on the drop-down arrow on the right end of the field, and open the edit window. 
@@ -71,6 +80,8 @@ Now that we have our project, we need to change some settings.
     - Click on ***OK*** to save the text and return to the properties window.
     - When you look at the ***Include Directories*** setting in the properties window it should now say **`$(SolutionDir)DGL\inc;$(IncludePath)`**. 
 
+### Library Directory
+
 2. Next we need to set the directory to look in for library files.
     - Edit the ***Library Directories*** option and add the following text: **`$(SolutionDir)DGL\lib\$(Platform)`**
     - Again, make sure that the box at the bottom of the edit window labeled ***Inherit from parent or project defaults*** is checked.
@@ -79,6 +90,8 @@ Now that we have our project, we need to change some settings.
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture14a.png" height=300 alt="Screenshot" vspace=20>
 
     - When you look at the ***Library Directories*** setting in the properties window it should now say **`$(SolutionDir)DGL\lib\$(Platform);$(LibraryPath)`**. 
+
+### Compile as C
 
 3. Expand the ***C/C++*** list and click on the ***Advanced*** section. Change the ***Compile As*** option to **`Compile as C Code (/TC)`**. (If you were creating a C++ project you would skip this step.)
 
@@ -89,6 +102,8 @@ Now that we have our project, we need to change some settings.
 5. In the ***Configuration*** drop-down, select **`Debug`**. Now we will be editing settings that only apply when building in Debug mode.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture15.png" height=300 alt="Screenshot" vspace=20>
+
+### Linker Input
 
 6. Expand the ***Linker*** list and click on the ***Input*** section. 
     - Click on the drop-down arrow in the ***Additional Dependencies*** option to open the edit window. 
@@ -112,6 +127,8 @@ Now that we have our project, we need to change some settings.
     - Click on the ***OK*** button to go back to the properties window, then click on the ***Apply*** button to save the changes.
     - The ***Additional Dependencies*** option should now show **`DGL.lib;%(AdditionalDependencies)`**.
 
+### Post-Build Events
+
 8. Change the ***Configuration*** setting back to **`Debug`**. Expand the ***Build Events*** list and click on the ***Post-Build Event*** section.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture18.png" height=300 alt="Screenshot" vspace=20>
@@ -133,9 +150,13 @@ Now that we have our project, we need to change some settings.
     - This will copy the `DGL.dll` file when building in Release mode. 
     - Click on the ***Apply*** button to save the setting.
 
+### Character Set
+
 10. Change the ***Configuration*** setting to ***All Configurations*** and click on the ***Advanced*** section. Change the ***Character Set*** setting to ***Use Multi-Byte Character Set***.
 
     <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/new-project/Picture20.png" height=300 alt="Screenshot" vspace=20>
+
+### Warnings as Errors
 
 1. Click on the ***C/C++*** list, and change ***Treat Warnings as Errors*** to Yes.
 
