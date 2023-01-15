@@ -156,6 +156,12 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
     // If there is a texture, set the shader resource
     if (texture)
         deviceContext->PSSetShaderResources(0, 1, &(texture->texResourceView));
+    else
+    {
+        ID3D11ShaderResourceView* nullSRV = { nullptr };
+        deviceContext->PSSetShaderResources(0, 1, &nullSRV);
+    }
+
 
     // Set the vertex buffer
     deviceContext->IASetVertexBuffers(
