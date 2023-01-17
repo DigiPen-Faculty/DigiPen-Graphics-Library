@@ -68,7 +68,7 @@ DGL_Vec2 InputSystem::GetMousePositionDelta() const
 }
 
 //*************************************************************************************************
-void InputSystem::SetKeyState(char key, bool state)
+void InputSystem::SetKeyState(unsigned char key, bool state)
 {
     if (key >= cInputKeyCount || key < 0)
     {
@@ -86,7 +86,7 @@ void InputSystem::SetMouseScrollDelta(int delta)
 }
 
 //*************************************************************************************************
-bool InputSystem::KeyDown(char key) const
+bool InputSystem::KeyDown(unsigned char key) const
 {
     if (key >= cInputKeyCount || key < 0)
     {
@@ -99,7 +99,7 @@ bool InputSystem::KeyDown(char key) const
 }
 
 //*************************************************************************************************
-bool InputSystem::KeyTriggered(char key) const
+bool InputSystem::KeyTriggered(unsigned char key) const
 {
     if (key >= cInputKeyCount || key < 0)
     {
@@ -112,7 +112,7 @@ bool InputSystem::KeyTriggered(char key) const
 }
 
 //*************************************************************************************************
-bool InputSystem::KeyReleased(char key) const
+bool InputSystem::KeyReleased(unsigned char key) const
 {
     if (key >= cInputKeyCount || key < 0)
     {
@@ -147,19 +147,19 @@ DGL_Vec2 DGL_Input_GetMousePositionDelta(void)
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyDown(char key)
+BOOL DGL_Input_KeyDown(unsigned char key)
 {
     return gInput->KeyDown(key);
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyTriggered(char key)
+BOOL DGL_Input_KeyTriggered(unsigned char key)
 {
     return gInput->KeyTriggered(key);
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyReleased(char key)
+BOOL DGL_Input_KeyReleased(unsigned char key)
 {
     return gInput->KeyReleased(key);
 }

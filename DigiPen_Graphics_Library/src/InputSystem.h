@@ -37,19 +37,19 @@ public:
     DGL_Vec2 GetMousePositionDelta() const;
 
     // Sets the state of the specified key
-    void SetKeyState(char key, bool state);
+    void SetKeyState(unsigned char key, bool state);
 
     // Sets the mouse scroll delta value
     void SetMouseScrollDelta(int delta);
 
     // Returns true if the specified key is currently pressed
-    bool KeyDown(char key) const;
+    bool KeyDown(unsigned char key) const;
 
     // Returns true if the specified key is down this frame and was up last frame
-    bool KeyTriggered(char key) const;
+    bool KeyTriggered(unsigned char key) const;
 
     // Returns true if the specified key is up this frame and was down last frame
-    bool KeyReleased(char key) const;
+    bool KeyReleased(unsigned char key) const;
 
 private:
     // Number of keys in the array. See the Windows virtual key list for all possible values.

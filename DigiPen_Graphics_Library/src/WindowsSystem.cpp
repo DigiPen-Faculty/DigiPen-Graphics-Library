@@ -249,11 +249,11 @@ BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lPa
         break;
     case WM_KEYDOWN:
         // Set the key state to down
-        gInput->SetKeyState((char)wParam, true);
+        gInput->SetKeyState((unsigned char)wParam, true);
         break;
     case WM_KEYUP:
         // Set the key state to up
-        gInput->SetKeyState((char)wParam, false);
+        gInput->SetKeyState((unsigned char)wParam, false);
         break;
     case WM_SYSKEYDOWN:
         // Catch the F10 key
