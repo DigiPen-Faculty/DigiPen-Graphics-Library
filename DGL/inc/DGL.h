@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.0.2
+//          v1.0.3
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2022 DigiPen, All rights reserved.
@@ -340,13 +340,13 @@ DGL_API DGL_Vec2 DGL_Input_GetMousePosition(void);
 DGL_API DGL_Vec2 DGL_Input_GetMousePositionDelta(void);
 
 // Returns TRUE if the specified key is currently down, and FALSE if it is not.
-DGL_API BOOL DGL_Input_KeyDown(char key);
+DGL_API BOOL DGL_Input_KeyDown(unsigned char key);
 
 // Returns TRUE if the specified key is currently down but was not down last frame, and FALSE if not.
-DGL_API BOOL DGL_Input_KeyTriggered(char key);
+DGL_API BOOL DGL_Input_KeyTriggered(unsigned char key);
 
 // Returns TRUE if the specified key is currently not down but was down last frame, and FALSE if not.
-DGL_API BOOL DGL_Input_KeyReleased(char key);
+DGL_API BOOL DGL_Input_KeyReleased(unsigned char key);
 
 // Pass in FALSE to hide the mouse cursor and TRUE to display it.
 DGL_API void DGL_Input_ShowCursor(BOOL show);
