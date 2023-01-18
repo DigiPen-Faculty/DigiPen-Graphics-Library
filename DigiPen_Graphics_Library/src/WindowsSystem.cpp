@@ -269,6 +269,30 @@ BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lPa
         // Calculate the mouse scroll delta value
         gInput->SetMouseScrollDelta(GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
         break;
+    case WM_LBUTTONDOWN:
+        // Check for the left mouse button being down
+        gInput->SetKeyState(VK_LBUTTON, true);
+        break;
+    case WM_LBUTTONUP:
+        // Check for the left mouse button being released
+        gInput->SetKeyState(VK_LBUTTON, false);
+        break;
+    case WM_RBUTTONDOWN:
+        // Check for the right mouse button being down
+        gInput->SetKeyState(VK_RBUTTON, true);
+        break;
+    case WM_RBUTTONUP:
+        // Check for the right mouse button being released
+        gInput->SetKeyState(VK_RBUTTON, false);
+        break;
+    case WM_MBUTTONDOWN:
+        // Check for the middle mouse button being down
+        gInput->SetKeyState(VK_MBUTTON, true);
+        break;
+    case WM_MBUTTONUP:
+        // Check for the middle mouse button being released
+        gInput->SetKeyState(VK_MBUTTON, false);
+        break;
     default:
         return FALSE;
         break;
