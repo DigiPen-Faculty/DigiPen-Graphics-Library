@@ -63,6 +63,9 @@ int GraphicsSystem::Initialize(HWND window)
 //*************************************************************************************************
 int GraphicsSystem::ShutDown()
 {
+    if (!mInitialized)
+        return 0;
+
     int returnValue = 0;
 
     // Set an error if there are meshes or textures that weren't released
