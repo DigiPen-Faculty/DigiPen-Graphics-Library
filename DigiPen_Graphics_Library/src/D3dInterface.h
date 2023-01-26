@@ -55,6 +55,9 @@ public:
     // Set the sampler state to use on the next draw
     void SetSamplerState(DGL_TextureSampleMode sampleMode, DGL_TextureAddressMode addressMode);
 
+    // Returns the current shader mode setting
+    DGL_ShaderMode GetShaderMode();
+
     // Set the shader mode to use on the next draw
     void SetShaderMode(DGL_ShaderMode mode);
 

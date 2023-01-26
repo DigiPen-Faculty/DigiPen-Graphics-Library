@@ -154,7 +154,7 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
     deviceContext->PSSetShader(shader, NULL, 0);
 
     // If there is a texture, set the shader resource
-    if (texture)
+    if (gGraphics->D3D.GetShaderMode() == DGL_SM_TEXTURE && texture)
         deviceContext->PSSetShaderResources(0, 1, &(texture->texResourceView));
     else
     {

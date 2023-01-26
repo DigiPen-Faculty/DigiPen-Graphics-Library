@@ -109,6 +109,12 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
 }
 
 //*************************************************************************************************
+DGL_ShaderMode D3DInterface::GetShaderMode()
+{
+    return mCurrentShaderMode;
+}
+
+//*************************************************************************************************
 void D3DInterface::SetShaderMode(DGL_ShaderMode mode)
 {
     // Set the shader mode to use on the next draw call
