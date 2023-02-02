@@ -17,9 +17,5 @@
 # Other Information
 
 - [Sprite Sheets](Sprite-Sheets)
-- [Window Settings](Window-Settings)
-- [The Camera and Screen vs. World Coordinates](Camera-and-Coordinates)
-- [Texture Sampling Methods](Texture-Sampling)
-- [The Constant Buffer and Transformations](Constant-Buffer)
-- [Indexed Meshes](Indexed-Meshes)
-- [Windows Messages](Windows-Messages)
+- [Camera & Screen vs World Coordinates](Camera-and-Coordinates)
+- [Tile Map Collision](Tile-Map-Collision)

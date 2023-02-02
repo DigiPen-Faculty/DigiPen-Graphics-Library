@@ -19,10 +19,6 @@ If you have documentation requests or suggestions, or if you find any errors, fe
 
 ## Other Information
 
-- [Sprite Sheets](Sprite-Sheets)
-- [Window Settings](Window-Settings)
-- [The Camera and Screen vs. World Coordinates](Camera-and-Coordinates)
-- [Texture Sampling Methods](Texture-Sampling)
-- [The Constant Buffer and Transformations](Constant-Buffer)
-- [Indexed Meshes](Indexed-Meshes)
-- [Windows Messages](Windows-Messages)
+- [Sprite Sheets](Sprite-Sheets) 
+- [Camera & Screen vs World Coordinates](Camera-and-Coordinates)
+- [Tile Map Collision](Tile-Map-Collision)
