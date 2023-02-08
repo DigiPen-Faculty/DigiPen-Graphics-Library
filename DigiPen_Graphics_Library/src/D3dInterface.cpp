@@ -30,6 +30,12 @@ void SafeRelease(RefType& pInterface)
 //*************************************************************************************************
 void D3DInterface::StartUpdate()
 {
+    if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Clear the render target view with the current background color
     mDeviceContext->ClearRenderTargetView(mRenderTargetView, mBackgroundColor);
     // Set the input layout
@@ -41,6 +47,12 @@ void D3DInterface::StartUpdate()
 //*************************************************************************************************
 void D3DInterface::EndUpdate()
 {
+    if (!mSwapChain)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Send the current buffer of data to be displayed
     mSwapChain->Present(1, 0);
 }
@@ -48,6 +60,12 @@ void D3DInterface::EndUpdate()
 //*************************************************************************************************
 void D3DInterface::SetBlendMode(DGL_BlendMode mode)
 {
+    if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Choose the appropriate blend state 
     ID3D11BlendState* blendState{ nullptr };
     switch (mode)
@@ -75,6 +93,12 @@ void D3DInterface::SetBlendMode(DGL_BlendMode mode)
 //*************************************************************************************************
 void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_TextureAddressMode addressMode)
 {
+    if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Choose the appropriate sample mode
     SampleModes sampleMode;
     if (newSampleMode == DGL_TSM_LINEAR)
@@ -134,6 +158,12 @@ ID3D11PixelShader* D3DInterface::GetCurrentShader() const
 //*************************************************************************************************
 void D3DInterface::UpdateConstantBuffer()
 {
+    if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Update the constant buffer resource
     mDeviceContext->UpdateSubresource(mPerObjectBuffer, 0, NULL, &mConstantBuffer, 0, 0);
     // Set the constant buffer
@@ -180,7 +210,10 @@ void D3DInterface::ResetOnSizeChange()
 {
     // If we have no current device context, do nothing
     if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
         return;
+    }
 
     // Reset the render target
     mDeviceContext->OMSetRenderTargets(0, 0, 0);
@@ -546,6 +579,12 @@ int D3DInterface::CreateConstantBuffer()
 //*************************************************************************************************
 void D3DInterface::SetViewport()
 {
+    if (!mDeviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Get the current client size
     RECT winRect;
     GetClientRect(gWinSys->GetWindowHandle(), &winRect);

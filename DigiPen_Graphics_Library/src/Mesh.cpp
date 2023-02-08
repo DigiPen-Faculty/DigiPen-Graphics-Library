@@ -18,6 +18,12 @@ namespace DGL
 //*************************************************************************************************
 DGL_Mesh* MeshManager::CreateMesh(ID3D11Device* device)
 {
+    if (!device)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Check to make sure there are vertices in the list
     if (mVertexList.size() == 0)
     {
@@ -62,6 +68,12 @@ DGL_Mesh* MeshManager::CreateMesh(ID3D11Device* device)
 //*************************************************************************************************
 DGL_Mesh* MeshManager::CreateMeshIndexed(unsigned* indices, unsigned indexCount, ID3D11Device* device)
 {
+    if (!device)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Make sure there are indices to use
     if (indexCount == 0)
     {
@@ -128,6 +140,12 @@ void MeshManager::ReleaseMesh(DGL_Mesh* mesh)
 void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* texture, 
     ID3D11PixelShader* shader, ID3D11DeviceContext* deviceContext)
 {
+    if (!deviceContext)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Set the primitive topology setting as specified
     switch (mode)
     {

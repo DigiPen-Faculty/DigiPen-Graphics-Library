@@ -89,6 +89,12 @@ int GraphicsSystem::ShutDown()
 //*************************************************************************************************
 DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Create the texture through the texture manager
     DGL_Texture* texture = TextureManager::LoadTexture(pFileName, D3D.mDevice); 
 
@@ -103,6 +109,12 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 //*************************************************************************************************
 DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, int width, int height)
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Create the texture through the texture manager
     DGL_Texture* texture = TextureManager::LoadTextureFromMemory(data, width, height, D3D.mDevice);
 
@@ -145,6 +157,12 @@ void GraphicsSystem::StartMesh()
 //*************************************************************************************************
 DGL_Mesh* GraphicsSystem::EndMesh()
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Create the new mesh using the mesh manager
     DGL_Mesh* newMesh = Meshes.CreateMesh(D3D.mDevice);
 
@@ -159,6 +177,12 @@ DGL_Mesh* GraphicsSystem::EndMesh()
 //*************************************************************************************************
 DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Create the new indexed mesh using the mesh manager
     DGL_Mesh* newMesh = Meshes.CreateMeshIndexed(indices, indexCount, D3D.mDevice);
 
@@ -194,6 +218,11 @@ void GraphicsSystem::ReleaseMesh(DGL_Mesh* mesh)
 //*************************************************************************************************
 void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+    }
+
     // Draw the mesh using the mesh manager
     MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentShader(), D3D.mDeviceContext);
 }

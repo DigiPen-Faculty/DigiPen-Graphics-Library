@@ -17,6 +17,12 @@ namespace DGL
 //*************************************************************************************************
 DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* device)
 {
+    if (!device)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
     // Create the new texture object
     DGL_Texture* newTexture = new DGL_Texture;
 
@@ -63,6 +69,12 @@ DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* de
 DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, int width, int height, 
     ID3D11Device* device)
 {
+    if (!device)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+
     // Check for invalid data
     if (!data || width == 0 || height == 0)
         return nullptr;
