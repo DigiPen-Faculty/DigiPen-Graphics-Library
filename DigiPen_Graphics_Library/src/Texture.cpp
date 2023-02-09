@@ -72,7 +72,7 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
     if (!device)
     {
         gError->SetError("Graphics is not initialized");
-        return;
+        return nullptr;
     }
 
     // Check for invalid data

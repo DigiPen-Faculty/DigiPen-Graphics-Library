@@ -167,7 +167,18 @@ BOOL DGL_Input_KeyReleased(unsigned char key)
 //*************************************************************************************************
 void DGL_Input_ShowCursor(BOOL show)
 {
-    ShowCursor(show);
+    if (show)
+    {
+        int count = ShowCursor(true);
+        while (count <= 0)
+            count = ShowCursor(true);
+    }
+    else
+    {
+        int count = ShowCursor(false);
+        while (count > -1)
+            count = ShowCursor(false);
+    }
 }
 
 
