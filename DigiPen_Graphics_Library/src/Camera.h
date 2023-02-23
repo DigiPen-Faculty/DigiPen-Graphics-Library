@@ -55,7 +55,7 @@ private:
     // The current size of the window
     DGL_Vec2 mWindowSize;
     // The current view matrix and projection matrix multiplied together
-    DirectX::XMMATRIX mProjViewMatrix{ DirectX::XMMatrixIdentity() };
+    DirectX::XMMATRIX mViewProjMatrix{ DirectX::XMMatrixIdentity() };
 
     HWND mWindowHandle{ nullptr };
 };

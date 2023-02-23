@@ -105,10 +105,10 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
     );
 
     // Store the result of multiplying the matrices
-    mProjViewMatrix = viewMatrix * projectionMatrix;
+    mViewProjMatrix = viewMatrix * projectionMatrix;
 
     // Return the world matrix, which is the transpose of view * projection
-    return DxToMat4(DirectX::XMMatrixTranspose(mProjViewMatrix));
+    return DxToMat4(DirectX::XMMatrixTranspose(mViewProjMatrix));
 }
 
 //*************************************************************************************************
@@ -118,7 +118,7 @@ DGL_Vec2 CameraObject::ScreenToWorld(const DGL_Vec2& screenPos) const
     // but it doesn't actually matter what that vector is
     DirectX::XMVECTOR temp;
     // Get the inverse of the view matrix * projection matrix
-    DirectX::XMMATRIX invProjView = DirectX::XMMatrixInverse(&temp, mProjViewMatrix);
+    DirectX::XMMATRIX invViewProj = DirectX::XMMatrixInverse(&temp, mViewProjMatrix);
 
     // Adjust the screen position so it's in a -1 to 1 range
     DirectX::XMVECTOR adjPosVec{
@@ -128,7 +128,7 @@ DGL_Vec2 CameraObject::ScreenToWorld(const DGL_Vec2& screenPos) const
     };
 
     // Multiply the adjusted screen position by the inverse projection view matrix
-    DirectX::XMVECTOR transformedPos = DirectX::XMVector4Transform(adjPosVec, invProjView);
+    DirectX::XMVECTOR transformedPos = DirectX::XMVector4Transform(adjPosVec, invViewProj);
 
     // Return the X and Y values of the transformed vector
     return {
