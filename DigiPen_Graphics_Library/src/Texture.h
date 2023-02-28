@@ -9,6 +9,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include "DGL.h"
 
 typedef struct DGL_Texture
 {
@@ -16,6 +17,8 @@ typedef struct DGL_Texture
     ID3D11Texture2D* texture{ nullptr };
     // The D3D shader resource view object
     ID3D11ShaderResourceView* texResourceView{ nullptr };
+    // Width and height of the texture
+    DGL_Vec2 textureSize{ 0 };
 } DGL_Texture;
 
 namespace DGL

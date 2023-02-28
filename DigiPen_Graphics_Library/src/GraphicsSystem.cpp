@@ -326,6 +326,15 @@ void DGL_Graphics_FreeTexture(DGL_Texture** texture)
 }
 
 //*************************************************************************************************
+DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture)
+{
+    if (!texture)
+        return DGL_Vec2{ 0 };
+
+    return texture->textureSize;
+}
+
+//*************************************************************************************************
 void DGL_Graphics_StartMesh(void)
 {
     gGraphics->StartMesh();

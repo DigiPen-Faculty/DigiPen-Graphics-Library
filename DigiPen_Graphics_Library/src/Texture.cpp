@@ -61,6 +61,12 @@ DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* de
     // Save the texture as a Texture2D
     newTexture->texture = (ID3D11Texture2D*)temp;
 
+    // Save the size of the texture
+    D3D11_TEXTURE2D_DESC texInfo{ 0 };
+    newTexture->texture->GetDesc(&texInfo);
+    newTexture->textureSize.x = (float)texInfo.Width;
+    newTexture->textureSize.y = (float)texInfo.Height;
+
     // Return the new texture object
     return newTexture;
 }
@@ -128,6 +134,10 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
         ReleaseTexture(newTexture);
         return nullptr;
     }
+
+    // Save the size of the texture
+    newTexture->textureSize.x = (float)width;
+    newTexture->textureSize.y = (float)height;
 
     // Return the new texture object
     return newTexture;
