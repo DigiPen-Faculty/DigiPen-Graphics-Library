@@ -32,6 +32,11 @@ void InputSystem::Update()
     // We don't need to reset the current key state array: we want it to save its previous values.
     // A key is considered down until the WM_KEYUP message is received.
 
+    // However, if the window loses focus, we do want to reset, since we don't get messages about
+    // any keys that are released while we aren't the current window
+    if (!gWinSys->GetWindowHasFocus())
+        mKeyState.fill(false);
+
     // Use the Windows point struct to get the cursor position.
     POINT mouseCoord;
     GetCursorPos(&mouseCoord);
