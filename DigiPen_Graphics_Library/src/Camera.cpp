@@ -28,8 +28,13 @@ DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix)
 void CameraObject::Initialize(HWND windowHandle)
 {
     mWindowHandle = windowHandle;
-    
-    ResetWindowSize();
+
+    // Get the window size 
+    RECT rect;
+    GetClientRect(mWindowHandle, &rect);
+
+    // Save the window size
+    mWindowSize = { (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) };
 }
 
 //*************************************************************************************************
