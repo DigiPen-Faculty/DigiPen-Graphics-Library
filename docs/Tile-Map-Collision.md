@@ -72,8 +72,7 @@ playerPos.x += playerMovement.x
 
 We need to know which tiles are surrounding the player so that we can check collision with them. If we know the rows and columns that the edges of the player are touching, we will know the set of tiles that we need to check.
 
-<img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/tilemap/edges.png" height=150 alt="Screenshot" vspace=20>
-<img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/tilemap/edges-highlight.png" height=150 alt="Screenshot" vspace=20>
+<img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/tilemap/edges.png" height=150 alt="Screenshot" vspace=20> <img src="https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/blob/main/docs/images/tilemap/edges-highlight.png" height=150 alt="Screenshot" vspace=20>
 
 We can find out the index of each row and column by taking the position of each edge of the player, adding the map offset, dividing by the size of the tiles, and casting the result to an integer.
 
