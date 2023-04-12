@@ -1,22 +1,25 @@
 //-------------------------------------------------------------------------------------------------
-// file:    D3dInterface.cpp
+// file:    D3dInterface.ixx
 // author:  Andy Ellinger
 // brief:   Wrapper for D3D functionality
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include "DGL.h"
 #include <d3d11.h>
 #include <unordered_map>
-using std::unordered_map;
+
+export module D3DInterface;
 
 namespace DGL
 {
 
-struct cbPerObject
+using std::unordered_map;
+
+export struct cbPerObject
 {
     // The world view matrix, taking into account the window size, camera position, and scale
     DGL_Mat4 mWorldMatrix{ 
@@ -39,7 +42,7 @@ struct cbPerObject
 
 //------------------------------------------------------------------------------------ D3DInterface
 
-class D3DInterface
+export class D3DInterface
 {
 public:
 

@@ -6,13 +6,19 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#include "D3dInterface.h"
-#include "Error.h"
-#include "GraphicsSystem.h"
-#include "WindowsSystem.h"
+module;
+
+#include "DGL.h"
+#include <d3d11.h>
 #include "VShader.h"
 #include "PShader.h"
 #include "PTexShader.h"
+
+module D3DInterface;
+
+import Errors;
+import GraphicsSystem;
+import WindowsSystem;
 
 namespace DGL
 {

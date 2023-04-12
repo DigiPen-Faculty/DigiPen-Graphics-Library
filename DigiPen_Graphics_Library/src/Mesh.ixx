@@ -1,18 +1,20 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Mesh.h
+// file:    Mesh.ixx
 // author:  Andy Ellinger
 // brief:   Header for mesh functionality
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include "DGL.h"
 #include <d3d11.h>
 #include <vector>
 
-typedef struct
+export module Mesh;
+
+export typedef struct
 {
     // The position of this vertex
     DGL_Vec2 mPosition;
@@ -22,7 +24,7 @@ typedef struct
     DGL_Vec2 mTexCoord;
 } VertexData;
 
-typedef struct DGL_Mesh
+export typedef struct DGL_Mesh
 {
     // The list of vertex data for this mesh
     VertexData* mVertexList{ nullptr };
@@ -38,13 +40,12 @@ typedef struct DGL_Mesh
     ID3D11Buffer* mIndexBuffer{ nullptr };
 } DGL_Mesh;
 
-
 namespace DGL
 {
 
 //------------------------------------------------------------------------------------- MeshManager
 
-class MeshManager
+export class MeshManager
 {
 public:
 

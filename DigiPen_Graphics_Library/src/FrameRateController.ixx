@@ -6,14 +6,14 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+export module FrameRateControl;
 
 namespace DGL
 {
 
 //----------------------------------------------------------------------------- FrameRateController
 
-class FrameRateController
+export class FrameRateController
 {
 public:
     // Sets the max frame rate and resets the controller

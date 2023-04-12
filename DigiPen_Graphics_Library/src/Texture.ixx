@@ -1,17 +1,19 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Texture.h
+// file:    Texture.ixx
 // author:  Andy Ellinger
 // brief:   Header for texture functionality
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include <d3d11.h>
 #include "DGL.h"
 
-typedef struct DGL_Texture
+export module Texture;
+
+export typedef struct DGL_Texture
 {
     // The D3D 2D texture object
     ID3D11Texture2D* texture{ nullptr };
@@ -26,7 +28,7 @@ namespace DGL
 
 //---------------------------------------------------------------------------------- TextureManager
 
-class TextureManager
+export class TextureManager
 {
 public:
 

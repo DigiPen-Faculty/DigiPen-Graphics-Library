@@ -1,22 +1,23 @@
 //-------------------------------------------------------------------------------------------------
-// file:    WindowsSystem.h
+// file:    WindowsSystem.ixx
 // author:  Andy Ellinger
 // brief:   Windows system
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include "DGL.h"
-#include "Math.h"
+
+export module WindowsSystem;
 
 namespace DGL
 {
 
 //----------------------------------------------------------------------------------- WindowsSystem
 
-class WindowsSystem
+export class WindowsSystem
 {
 public:
     // Sets the global variable
@@ -71,6 +72,6 @@ private:
 };
 
 // Global variable for accessing this system
-extern WindowsSystem* gWinSys;
+export extern WindowsSystem* gWinSys;
 
 } // namepspace DGL

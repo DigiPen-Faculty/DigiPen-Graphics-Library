@@ -7,12 +7,12 @@
 //-------------------------------------------------------------------------------------------------
 
 #include "DGL.h"
-#include "GraphicsSystem.h"
-#include "FrameRateController.h"
-#include "WindowsSystem.h"
-#include "InputSystem.h"
-#include "Error.h"
 
+import Errors;
+import FrameRateControl;
+import Input;
+import GraphicsSystem;
+import WindowsSystem;
 
 DGL::GraphicsSystem graphics;
 DGL::FrameRateController frameController;

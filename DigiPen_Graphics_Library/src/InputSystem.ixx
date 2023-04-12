@@ -6,17 +6,19 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include "DGL.h"
 #include <array>
+
+export module Input;
 
 namespace DGL
 {
 
 //------------------------------------------------------------------------------------- InputSystem
 
-class InputSystem
+export class InputSystem
 {
 public:
     // Sets the global pointer
@@ -67,6 +69,6 @@ private:
 };
 
 // Global pointer for accessing the input system
-extern InputSystem* gInput;
+export extern InputSystem* gInput;
 
 }

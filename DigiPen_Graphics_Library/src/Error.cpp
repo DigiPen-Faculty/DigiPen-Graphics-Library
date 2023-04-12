@@ -6,9 +6,13 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
+module;
+
 #include "DGL.h"
-#include "Error.h"
 #include <iostream>
+#include <sstream>
+
+module Errors;
 
 namespace DGL
 {

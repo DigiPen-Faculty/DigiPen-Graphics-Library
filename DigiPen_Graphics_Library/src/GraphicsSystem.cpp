@@ -6,10 +6,16 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
+module;
+
 #include "DGL.h"
-#include "GraphicsSystem.h"
-#include "Error.h"
-#include "Math.h"
+#include <objbase.h>
+
+module GraphicsSystem;
+
+import Math;
+import Errors;
+import Texture;
 
 namespace DGL
 {

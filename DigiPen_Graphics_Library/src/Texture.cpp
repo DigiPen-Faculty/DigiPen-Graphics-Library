@@ -6,9 +6,14 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#include "Texture.h"
-#include "Error.h"
+module;
+
 #include "WICTextureLoader11.h"
+#include <sstream>
+
+module Texture;
+
+import Errors;
 
 namespace DGL
 {

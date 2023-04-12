@@ -6,10 +6,13 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
+module;
+
 #include "DGL.h"
-#include "FrameRateController.h"
 #include <thread>
 #include <chrono>
+
+module FrameRateControl;
 
 namespace DGL
 {
