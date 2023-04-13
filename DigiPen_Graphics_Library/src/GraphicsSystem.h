@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include "Shader.h"
 #include <vector>
 
 namespace DGL
@@ -33,6 +34,12 @@ public:
 
     // Shuts down the graphics system
     int ShutDown();
+
+    // Loads a pixel shader from the provided file
+    const DGL_PixelShader* LoadPixelShader(const char* fileName);
+
+    // Releases the pixel shader and deletes the struct
+    void ReleasePixelShader(const DGL_PixelShader* shader);
 
     // Loads a texture from the provided file
     DGL_Texture* LoadTexture(const char* fileName);
@@ -68,6 +75,8 @@ public:
     CameraObject Camera;
 
 private:
+    // The number of custom pixel shaders that have been loaded and not released
+    int mCustomPixelShaders{ 0 };
     // The number of textures that have been loaded and not released
     int mTextures{ 0 };
     // The number of meshes that have been loaded and not released
@@ -78,6 +87,7 @@ private:
     bool mInitialized{ false };
 
     MeshManager Meshes;
+    ShaderManager mShaderManager;
 };
 
 // Global pointer for accessing the graphics system
