@@ -257,7 +257,7 @@ DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 DGL_API void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode);
 
 // Sets the custom shader to use when using the DGL_SM_CUSTOM shader mode
-DGL_API void DGL_Graphics_SetCustomShader(const DGL_PixelShader* shader);
+DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
 
 // Sets the texture to use when drawing with the texture-based pixel shader.
 DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);

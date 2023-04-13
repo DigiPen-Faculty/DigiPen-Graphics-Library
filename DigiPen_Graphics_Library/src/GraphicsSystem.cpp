@@ -336,7 +336,7 @@ void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
     gGraphics->D3D.SetShaderMode(mode);
 }
 
-void DGL_Graphics_SetCustomShader(const DGL_PixelShader* shader)
+void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
   gGraphics->D3D.SetCustomPixelShader(shader);
 }
