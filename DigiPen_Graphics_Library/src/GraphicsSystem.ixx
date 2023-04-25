@@ -9,7 +9,6 @@
 module;
 
 #include "DGL.h"
-#include "Shader.h"
 #include <vector>
 
 export module GraphicsSystem;
@@ -17,6 +16,7 @@ export module GraphicsSystem;
 import Camera;
 import D3DInterface;
 import Mesh;
+import Shader;
 
 namespace DGL
 {

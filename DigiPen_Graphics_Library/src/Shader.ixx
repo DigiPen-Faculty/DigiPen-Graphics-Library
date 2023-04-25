@@ -6,13 +6,15 @@
 // Copyright © 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-#pragma once
+module;
 
 #include <d3d11.h>
 #include <unordered_set>
 #include <string>
 
-struct DGL_PixelShader
+export module Shader;
+
+export struct DGL_PixelShader
 {
     DGL_PixelShader(std::string_view name) :
         shader(nullptr),
@@ -36,7 +38,7 @@ struct std::hash<DGL_PixelShader>
 
 namespace DGL
 {
-    class ShaderManager
+    export class ShaderManager
     {
     public:
 

@@ -217,7 +217,9 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     <ClCompile Include="src\WindowsSystem.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="src\Shader.h" />
+    <ClCompile Include="src\Shader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />

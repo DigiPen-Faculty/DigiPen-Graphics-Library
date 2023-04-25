@@ -13,13 +13,14 @@ module;
 #include "VShader.h"
 #include "PShader.h"
 #include "PTexShader.h"
-#include "Shader.h"
+#include <assert.h>
 
 module D3DInterface;
 
 import Errors;
 import GraphicsSystem;
 import WindowsSystem;
+import Shader;
 
 namespace DGL
 {

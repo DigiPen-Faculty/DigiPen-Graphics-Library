@@ -28,9 +28,6 @@
     <ClInclude Include="src\WICTextureLoader11.h">
       <Filter>Source Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\Shader.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Math.cpp">
@@ -100,6 +97,9 @@
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.ixx">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,8 +6,14 @@
 // Copyright © 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
+module;
+
+#include <d3d11.h>
+#include <unordered_set>
+#include <string>
 #include <d3dcompiler.h>
-#include "Shader.h"
+
+module Shader;
 
 namespace DGL
 {
