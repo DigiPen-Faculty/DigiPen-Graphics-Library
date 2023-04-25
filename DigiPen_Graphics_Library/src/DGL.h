@@ -101,6 +101,9 @@ typedef struct DGL_Texture DGL_Texture;
 // This is the type used for mesh data. You will only be working with pointers to this type.
 typedef struct DGL_Mesh DGL_Mesh;
 
+// This is the type used for custom pixel shaders. You will only be working with pointers to this type.
+typedef struct DGL_PixelShader DGL_PixelShader;
+
 
 //*************************************************************************************************
 // Enum definitions
@@ -148,6 +151,7 @@ typedef enum
 {
     DGL_SM_COLOR,       // Draw with color data from the mesh
     DGL_SM_TEXTURE,     // Draw using data from the current texture
+    DGL_SM_CUSTOM,      // Draw using a custom shader
 } DGL_ShaderMode;
 
 
@@ -252,8 +256,21 @@ DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 // Sets which pixel shader to use, color-only or texture.
 DGL_API void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode);
 
+// Sets the custom shader to use when using the DGL_SM_CUSTOM shader mode
+DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
+
 // Sets the texture to use when drawing with the texture-based pixel shader.
 DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
+
+// *** Shaders ***********************************************************************************
+
+// Loads a pixel shader with the provided name and path into memory.
+// Returns a pointer to the new pixel shader instance
+DGL_API const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename);
+
+// Unloads the provided pixel shader from memory.
+// The pointer passed in will be set to NULL.
+DGL_API void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader);
 
 // *** Textures ***********************************************************************************
 

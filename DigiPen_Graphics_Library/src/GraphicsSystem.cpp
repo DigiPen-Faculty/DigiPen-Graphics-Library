@@ -92,6 +92,42 @@ int GraphicsSystem::ShutDown()
     return returnValue;
 }
 
+const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* fileName)
+{
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+
+    auto shader = mShaderManager.LoadPixelShader(fileName, D3D.mDevice);
+
+    if (shader)
+    {
+        ++mCustomPixelShaders;
+    }
+
+    return shader;
+}
+
+void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
+{
+    
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+    else if (!shader)
+    {
+        return;
+    }
+  
+    mShaderManager.Release(shader);
+
+    --mCustomPixelShaders;
+}
+
 //*************************************************************************************************
 DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 {
@@ -306,10 +342,26 @@ void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
     gGraphics->D3D.SetShaderMode(mode);
 }
 
+void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
+{
+  gGraphics->D3D.SetCustomPixelShader(shader);
+}
+
 //*************************************************************************************************
 void DGL_Graphics_SetTexture(const DGL_Texture* texture)
 {
     gGraphics->SetCurrentTexture(texture);
+}
+
+const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
+{
+    return gGraphics->LoadPixelShader(filename);
+}
+
+void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader)
+{
+    gGraphics->ReleasePixelShader(*shader);
+    *shader = nullptr;
 }
 
 //*************************************************************************************************

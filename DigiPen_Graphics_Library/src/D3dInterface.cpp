@@ -13,6 +13,7 @@ module;
 #include "VShader.h"
 #include "PShader.h"
 #include "PTexShader.h"
+#include "Shader.h"
 
 module D3DInterface;
 
@@ -151,14 +152,27 @@ void D3DInterface::SetShaderMode(DGL_ShaderMode mode)
     mCurrentShaderMode = mode;
 }
 
+void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
+{
+    if (shader)
+    {
+        mPixelCustomShader = shader->shader;
+    }
+}
+
 //*************************************************************************************************
 ID3D11PixelShader* D3DInterface::GetCurrentShader() const
 {
     // Return the appropriate pixel shader for the current shader mode
-    if (mCurrentShaderMode == DGL_SM_TEXTURE)
-        return mPixelTextureShader;
-    else
-        return mPixelShader;
+    switch (mCurrentShaderMode)
+    {
+        case DGL_SM_TEXTURE:  return mPixelTextureShader;
+        case DGL_SM_COLOR:    return mPixelShader;
+        case DGL_SM_CUSTOM:   return mPixelCustomShader;
+    }
+
+    assert(false);
+    return nullptr;
 }
 
 //*************************************************************************************************

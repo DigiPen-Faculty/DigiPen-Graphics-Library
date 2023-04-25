@@ -64,6 +64,9 @@ public:
     // Set the shader mode to use on the next draw
     void SetShaderMode(DGL_ShaderMode mode);
 
+    // Set the custom shader to use with DGL_SM_CUSTOM
+    void SetCustomPixelShader(const DGL_PixelShader* shader);
+
     // Get the current pixel shader, according to the shader mode
     ID3D11PixelShader* GetCurrentShader() const;
 
@@ -138,6 +141,8 @@ private:
     ID3D11PixelShader* mPixelShader{ nullptr };
     // The D3D pixel shader object that uses textures
     ID3D11PixelShader* mPixelTextureShader{ nullptr };
+    // The custom D3D pixel shader that a user gives us
+    ID3D11PixelShader* mPixelCustomShader{ nullptr };
     // The D3D input layout object
     ID3D11InputLayout* mInputLayout{ nullptr };
     // The D3D constant buffer object
