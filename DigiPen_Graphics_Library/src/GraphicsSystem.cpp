@@ -92,6 +92,7 @@ int GraphicsSystem::ShutDown()
     return returnValue;
 }
 
+//*************************************************************************************************
 const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* fileName)
 {
     if (!mInitialized)
@@ -110,6 +111,7 @@ const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* fileName)
     return shader;
 }
 
+//*************************************************************************************************
 void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
 {
     
@@ -342,6 +344,7 @@ void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
     gGraphics->D3D.SetShaderMode(mode);
 }
 
+//*************************************************************************************************
 void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
   gGraphics->D3D.SetCustomPixelShader(shader);
@@ -353,11 +356,13 @@ void DGL_Graphics_SetTexture(const DGL_Texture* texture)
     gGraphics->SetCurrentTexture(texture);
 }
 
+//*************************************************************************************************
 const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
 {
     return gGraphics->LoadPixelShader(filename);
 }
 
+//*************************************************************************************************
 void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader)
 {
     gGraphics->ReleasePixelShader(*shader);

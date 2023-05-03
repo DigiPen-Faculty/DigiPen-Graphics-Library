@@ -38,6 +38,9 @@ struct std::hash<DGL_PixelShader>
 
 namespace DGL
 {
+
+    //------------------------------------------------------------------------------- ShaderManager
+
     export class ShaderManager
     {
     public:

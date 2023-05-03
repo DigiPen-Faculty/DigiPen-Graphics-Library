@@ -17,6 +17,10 @@ module Shader;
 
 namespace DGL
 {
+
+//----------------------------------------------------------------------------------- ShaderManager
+
+//*************************************************************************************************
 const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename, ID3D11Device* device)
 {
     std::wstring wideString(filename.size(), '\0');
@@ -74,6 +78,7 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     return &(*shaderIter.first);
 }
 
+//*************************************************************************************************
 void ShaderManager::Release(const DGL_PixelShader* shader)
 {
     if (!shader)
