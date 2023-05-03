@@ -12,6 +12,8 @@ module;
 #include <unordered_set>
 #include <string>
 #include <d3dcompiler.h>
+#include <memory>
+#include <cassert>
 
 module Shader;
 
@@ -36,12 +38,12 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     ID3DBlob* shaderBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
     HRESULT hr = D3DCompileFromFile(
-        wideString.c_str(), 
-        nullptr, 
+        wideString.c_str(),
+        nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         "main",
         profile,
-        flags, 0, 
+        flags, 0,
         &shaderBlob, &errorBlob);
 
 
@@ -74,6 +76,34 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     return &(*shaderIter.first);
 }
 
+const DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filename, ID3D11Device* device)
+{
+    assert(!filename.empty());
+    assert(device);
+
+    auto shader = std::make_unique<DGL_VertexShader>(filename, device);
+    if (!shader->IsValid())
+    {
+        return nullptr;
+    }
+
+    auto shaderIter = mVertexShaders.insert_or_assign(
+        filename.data(),
+        std::move(shader));
+
+    return shaderIter.first->second.get();
+}
+
+std::size_t ShaderManager::PixelShaderCount() const noexcept
+{
+    return mPixelShaders.size();
+}
+
+std::size_t ShaderManager::VertexShaderCount() const noexcept
+{
+    return mVertexShaders.size();
+}
+
 void ShaderManager::Release(const DGL_PixelShader* shader)
 {
     if (!shader)
@@ -88,4 +118,14 @@ void ShaderManager::Release(const DGL_PixelShader* shader)
 
     mPixelShaders.erase(*shader);
 }
+
+void ShaderManager::Release(const DGL_VertexShader* shader)
+{
+    if (!shader)
+    {
+        return;
+    }
+
+    mVertexShaders.erase(shader->filename);
 }
+}   // namespace DGL

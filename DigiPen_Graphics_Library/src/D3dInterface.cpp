@@ -161,8 +161,16 @@ void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
     }
 }
 
+void D3DInterface::SetCustomVertexShader(const DGL_VertexShader* shader)
+{
+    if (shader)
+    {
+        mVertexCustomShader = shader->shader;
+    }
+}
+
 //*************************************************************************************************
-ID3D11PixelShader* D3DInterface::GetCurrentShader() const
+ID3D11PixelShader* D3DInterface::GetCurrentPixelShader() const
 {
     // Return the appropriate pixel shader for the current shader mode
     switch (mCurrentShaderMode)
@@ -174,6 +182,15 @@ ID3D11PixelShader* D3DInterface::GetCurrentShader() const
 
     assert(false);
     return nullptr;
+}
+
+ID3D11VertexShader* D3DInterface::GetCurrentVertexShader() const
+{
+    switch (mCurrentShaderMode)
+    {
+        case DGL_ShaderMode::DGL_SM_CUSTOM: return mVertexCustomShader;
+        default:                            return mVertexShader;
+    }
 }
 
 //*************************************************************************************************

@@ -20,7 +20,7 @@ namespace DGL
 export DGL_Mat4 Matrix_RotateZ(const float& angle);
 
 // Returns the result of multiplying the two matrices together
-export DGL_Mat4 Matrix_Multiply(const DGL_Mat4& matrix1, const DGL_Mat4 matrix2);
+export DGL_Mat4 Matrix_Multiply(const DGL_Mat4& matrix1, const DGL_Mat4& matrix2);
 
 // Sets the provided matrix to the identity values
 export void Matrix_SetToIdentity(DGL_Mat4& matrix);

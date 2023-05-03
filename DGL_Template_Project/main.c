@@ -10,7 +10,6 @@
 
 #include "DGL.h"
 
-
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
     int result;
@@ -38,7 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     initInfo.mWindowTitle = "Game Window";
     initInfo.mWindowHeight = 768;
     initInfo.mWindowWidth = 1024;
-    initInfo.mCreateConsole = FALSE;
+    initInfo.mCreateConsole = TRUE;
     initInfo.pWindowsCallback = WndProc;
     initInfo.mWindowIcon = IDI_DGLTEMPLATE;
 

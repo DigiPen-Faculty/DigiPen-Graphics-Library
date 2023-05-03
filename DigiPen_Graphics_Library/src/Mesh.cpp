@@ -145,7 +145,7 @@ void MeshManager::ReleaseMesh(DGL_Mesh* mesh)
 
 //*************************************************************************************************
 void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* texture, 
-    ID3D11PixelShader* shader, ID3D11DeviceContext* deviceContext)
+    ID3D11VertexShader* vertexShader, ID3D11PixelShader* pixelShader, ID3D11DeviceContext* deviceContext)
 {
     if (!deviceContext)
     {
@@ -176,7 +176,8 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
     }
 
     // Set the shader
-    deviceContext->PSSetShader(shader, NULL, 0);
+    deviceContext->VSSetShader(vertexShader, NULL, 0);
+    deviceContext->PSSetShader(pixelShader, NULL, 0);
 
     // If there is a texture, set the shader resource
     if (gGraphics->D3D.GetShaderMode() == DGL_SM_TEXTURE && texture)

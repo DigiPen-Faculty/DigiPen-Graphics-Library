@@ -43,6 +43,10 @@ public:
     // Releases the pixel shader and deletes the struct
     void ReleasePixelShader(const DGL_PixelShader* shader);
 
+    const DGL_VertexShader* LoadVertexShader(const char* filename);
+
+    void ReleaseVertexShader(const DGL_VertexShader* shader);
+
     // Loads a texture from the provided file
     DGL_Texture* LoadTexture(const char* fileName);
 

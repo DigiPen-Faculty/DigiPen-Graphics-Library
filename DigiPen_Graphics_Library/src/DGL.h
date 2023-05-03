@@ -104,6 +104,9 @@ typedef struct DGL_Mesh DGL_Mesh;
 // This is the type used for custom pixel shaders. You will only be working with pointers to this type.
 typedef struct DGL_PixelShader DGL_PixelShader;
 
+// This is the type used for custom vertex shaders. You will only be working with pointers to this type.
+typedef struct DGL_VertexShader DGL_VertexShader;
+
 
 //*************************************************************************************************
 // Enum definitions
@@ -268,9 +271,17 @@ DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
 // Returns a pointer to the new pixel shader instance
 DGL_API const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename);
 
+// Loads a vertex shader with the provided name and path into memory.
+// Returns a pointer to the new vertex shader instance
+DGL_API const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename);
+
 // Unloads the provided pixel shader from memory.
 // The pointer passed in will be set to NULL.
-DGL_API void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader);
+DGL_API void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader);
+
+// Unloads the provided vertex shader from memory.
+// The pointer passed in will be set to NULL.
+DGL_API void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader);
 
 // *** Textures ***********************************************************************************
 
