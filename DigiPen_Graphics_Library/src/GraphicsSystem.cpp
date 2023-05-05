@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Graphics system
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright ï¿½ 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -108,6 +108,7 @@ int GraphicsSystem::ShutDown()
     return returnValue;
 }
 
+//*************************************************************************************************
 const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
 {
     assert(filename);
@@ -127,6 +128,7 @@ const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
     return shader;
 }
 
+//*************************************************************************************************
 void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
 {
     if (!mInitialized)
@@ -391,6 +393,7 @@ void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
     gGraphics->D3D.SetShaderMode(mode);
 }
 
+//*************************************************************************************************
 void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
     gGraphics->D3D.SetCustomPixelShader(shader);
@@ -402,6 +405,7 @@ void DGL_Graphics_SetTexture(const DGL_Texture* texture)
     gGraphics->SetCurrentTexture(texture);
 }
 
+//*************************************************************************************************
 const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
 {
     assert(filename);

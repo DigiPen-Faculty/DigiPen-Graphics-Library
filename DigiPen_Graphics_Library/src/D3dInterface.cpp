@@ -153,6 +153,7 @@ void D3DInterface::SetShaderMode(DGL_ShaderMode mode)
     mCurrentShaderMode = mode;
 }
 
+//*************************************************************************************************
 void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
 {
     if (shader)

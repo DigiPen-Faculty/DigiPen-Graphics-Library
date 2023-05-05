@@ -3,7 +3,7 @@
 // author:  Kenny Mecham
 // brief:   Shader functionality
 //
-// Copyright © 2023 DigiPen, All rights reserved.
+// Copyright ï¿½ 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -19,6 +19,10 @@ module Shader;
 
 namespace DGL
 {
+
+//----------------------------------------------------------------------------------- ShaderManager
+
+//*************************************************************************************************
 const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename, ID3D11Device* device)
 {
     std::wstring wideString(filename.size(), '\0');
@@ -76,6 +80,7 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     return &(*shaderIter.first);
 }
 
+//*************************************************************************************************
 const DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filename, ID3D11Device* device)
 {
     assert(!filename.empty());

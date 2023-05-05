@@ -3,7 +3,7 @@
 // author:  Kenny Mecham
 // brief:   Header for additional shader functionality
 //
-// Copyright © 2023 DigiPen, All rights reserved.
+// Copyright ï¿½ 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
