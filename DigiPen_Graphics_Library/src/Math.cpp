@@ -21,10 +21,10 @@ DGL_Mat4 Matrix_RotateZ(const float& angle)
 {
     DGL_Mat4 m{ 0 };
 
-    m.m[0][0] = cosf(angle); m.m[0][1] = -sinf(angle);   m.m[0][2] = 0.0f;   m.m[0][3] = 0.0f;
-    m.m[1][0] = sinf(angle); m.m[1][1] = cosf(angle);    m.m[1][2] = 0.0f;   m.m[1][3] = 0.0f;
-    m.m[2][0] = 0.0f;        m.m[2][1] = 0.0f;           m.m[2][2] = 1.0f;   m.m[2][3] = 0.0f;
-    m.m[3][0] = 0.0f;        m.m[3][1] = 0.0f;           m.m[3][2] = 0.0f;   m.m[3][3] = 1.0f;
+    m.m[0][0] = cosf(angle);    m.m[0][1] = -sinf(angle);   m.m[0][2] = 0.0f;   m.m[0][3] = 0.0f;
+    m.m[1][0] = sinf(angle);    m.m[1][1] = cosf(angle);    m.m[1][2] = 0.0f;   m.m[1][3] = 0.0f;
+    m.m[2][0] = 0.0f;           m.m[2][1] = 0.0f;           m.m[2][2] = 1.0f;   m.m[2][3] = 0.0f;
+    m.m[3][0] = 0.0f;           m.m[3][1] = 0.0f;           m.m[3][2] = 0.0f;   m.m[3][3] = 1.0f;
 
     return m;
 }

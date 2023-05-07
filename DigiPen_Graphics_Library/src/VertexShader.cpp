@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Shader.cpp
+// file:    VertexShader.cpp
 // author:  Kenny Mecham
-// brief:   Shader functionality
+// brief:   Vertex Shader functionality
 //
 // Copyright © 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
@@ -18,6 +18,9 @@ module;
 module VertexShader;
 import Errors;
 
+//---------------------------------------------------------------------------------- DGL_VertexShader
+
+//*************************************************************************************************
 DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* device) :
     shader(nullptr),
     filename(filename)
@@ -72,6 +75,7 @@ DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* devi
     }
 }
 
+//*************************************************************************************************
 DGL_VertexShader::~DGL_VertexShader()
 {
     if (shader)
@@ -80,6 +84,7 @@ DGL_VertexShader::~DGL_VertexShader()
     }
 }
 
+//*************************************************************************************************
 bool DGL_VertexShader::IsValid() const noexcept
 {
     return shader;

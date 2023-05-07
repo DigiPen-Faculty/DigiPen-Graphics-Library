@@ -265,7 +265,7 @@ DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 // Sets which pixel shader to use: color-only, texture, or custom.
 DGL_API void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode);
 
-// Sets the custom shader to use when using the DGL_PSM_CUSTOM shader mode.
+// Sets the custom pixel shader to use when using the DGL_PSM_CUSTOM shader mode.
 DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
 
 // Sets which vertex shader to use: default or custom.

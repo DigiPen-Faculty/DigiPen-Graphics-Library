@@ -3,7 +3,7 @@
 // author:  Kenny Mecham
 // brief:   Shader functionality
 //
-// Copyright � 2023 DigiPen, All rights reserved.
+// Copyright © 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -101,16 +101,19 @@ const DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filenam
     return shaderIter.first->second.get();
 }
 
+//*************************************************************************************************
 std::size_t ShaderManager::PixelShaderCount() const noexcept
 {
     return mPixelShaders.size();
 }
 
+//*************************************************************************************************
 std::size_t ShaderManager::VertexShaderCount() const noexcept
 {
     return mVertexShaders.size();
 }
 
+//*************************************************************************************************
 void ShaderManager::Release(const DGL_PixelShader* shader)
 {
     if (!shader)
@@ -126,13 +129,12 @@ void ShaderManager::Release(const DGL_PixelShader* shader)
     mPixelShaders.erase(*shader);
 }
 
+//*************************************************************************************************
 void ShaderManager::Release(const DGL_VertexShader* shader)
 {
-    if (!shader)
+    if (shader)
     {
-        return;
+        mVertexShaders.erase(shader->filename);
     }
-
-    mVertexShaders.erase(shader->filename);
 }
 }   // namespace DGL

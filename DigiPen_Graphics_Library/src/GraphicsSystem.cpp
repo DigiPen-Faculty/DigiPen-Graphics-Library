@@ -146,6 +146,7 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
     --mCustomPixelShaders;
 }
 
+//*************************************************************************************************
 const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
 {
     assert(filename);
@@ -164,6 +165,7 @@ const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
     return shader;
 }
 
+//*************************************************************************************************
 void GraphicsSystem::ReleaseVertexShader(const DGL_VertexShader* shader)
 {
     if (!mInitialized)
@@ -429,6 +431,7 @@ const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
     return nullptr;
 }
 
+//*************************************************************************************************
 const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
 {
     assert(filename);
@@ -440,6 +443,7 @@ const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
     return nullptr;
 }
 
+//*************************************************************************************************
 void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
 {
     assert(shader);
@@ -447,6 +451,7 @@ void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
     *shader = nullptr;
 }
 
+//*************************************************************************************************
 void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader)
 {
     assert(shader);
