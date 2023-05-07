@@ -388,15 +388,27 @@ void DGL_Graphics_SetBlendMode(DGL_BlendMode mode)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
+void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode)
 {
-    gGraphics->D3D.SetShaderMode(mode);
+    gGraphics->D3D.SetPixelShaderMode(mode);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
     gGraphics->D3D.SetCustomPixelShader(shader);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetVertexShaderMode(DGL_VertexShaderMode mode)
+{
+    gGraphics->D3D.SetVertexShaderMode(mode);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader)
+{
+    gGraphics->D3D.SetCustomVertexShader(shader);
 }
 
 //*************************************************************************************************

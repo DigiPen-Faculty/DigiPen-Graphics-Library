@@ -59,13 +59,18 @@ public:
     void SetSamplerState(DGL_TextureSampleMode sampleMode, DGL_TextureAddressMode addressMode);
 
     // Returns the current shader mode setting
-    DGL_ShaderMode GetShaderMode();
+    DGL_PixelShaderMode GetPixelShaderMode() const;
 
-    // Set the shader mode to use on the next draw
-    void SetShaderMode(DGL_ShaderMode mode);
+    DGL_VertexShaderMode GetVertexShaderMode() const;
+
+    // Set the pixel shader mode to use on the next draw
+    void SetPixelShaderMode(DGL_PixelShaderMode mode);
 
     // Set the custom pixel shader to use with DGL_SM_CUSTOM
     void SetCustomPixelShader(const DGL_PixelShader* shader);
+
+    // Set the vertex shader mode to use on the next draw
+    void SetVertexShaderMode(DGL_VertexShaderMode mode);
 
     // Set the custom vertex shader to use with DGL_SM_CUSTOM
     void SetCustomVertexShader(const DGL_VertexShader* shader);
@@ -155,8 +160,10 @@ private:
     ID3D11InputLayout* mInputLayout{ nullptr };
     // The D3D constant buffer object
     ID3D11Buffer* mPerObjectBuffer{ nullptr };
-    // The current shader mode
-    DGL_ShaderMode mCurrentShaderMode{ DGL_SM_COLOR };
+    // The current pixel shader mode
+    DGL_PixelShaderMode mCurrentPixelShaderMode{ DGL_PSM_COLOR };
+    // The current vertex shader mode
+    DGL_VertexShaderMode mCurrentVertexShaderMode{ DGL_VSM_DEFAULT };
 
     // The values for blend states
     enum class BlendStates { None, Transparent, Add, Multiply };
