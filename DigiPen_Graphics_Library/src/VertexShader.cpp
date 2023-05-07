@@ -12,9 +12,11 @@ module;
 #include <unordered_set>
 #include <string>
 #include <d3dcompiler.h>
+#include <format>
 #include <cassert>
 
 module VertexShader;
+import Errors;
 
 DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* device) :
     shader(nullptr),
@@ -50,10 +52,10 @@ DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* devi
 
     if (FAILED(hr))
     {
-        printf("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr));
         if (errorBlob)
         {
-            std::printf("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer());
+            DGL::gError->SetError(std::format("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer()));
             errorBlob->Release();
         }
 
@@ -66,7 +68,7 @@ DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* devi
 
     if (FAILED(hr))
     {
-        std::printf("Failed to create Vertex Shader [%s] with error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to create Vertex Shader [%s] with error [%08x]\n", filename.data(), hr));
     }
 }
 

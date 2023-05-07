@@ -13,9 +13,11 @@ module;
 #include <string>
 #include <d3dcompiler.h>
 #include <memory>
+#include <format>
 #include <cassert>
 
 module Shader;
+import Errors;
 
 namespace DGL
 {
@@ -53,10 +55,10 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
 
     if (FAILED(hr))
     {
-        printf("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr));
         if (errorBlob)
         {
-            std::printf("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer());
+            DGL::gError->SetError(std::format("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer()));
             errorBlob->Release();
         }
 
@@ -72,7 +74,7 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
 
     if (FAILED(hr))
     {
-        printf("Failed to create Pixel Shader from file [%s]. Error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to create Pixel Shader from file [%s]. Error [%08x]\n", filename.data(), hr));
         return nullptr;
     }
 
