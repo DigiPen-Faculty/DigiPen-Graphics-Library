@@ -3,16 +3,19 @@
 // author:  Kenny Mecham
 // brief:   Header for additional shader functionality
 //
-// Copyright © 2023 DigiPen, All rights reserved.
+// Copyright ï¿½ 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
 
 #include <d3d11.h>
 #include <unordered_set>
+#include <unordered_map>
 #include <string>
+#include <memory>
 
 export module Shader;
+export import VertexShader;
 
 export struct DGL_PixelShader
 {
@@ -39,16 +42,22 @@ struct std::hash<DGL_PixelShader>
 namespace DGL
 {
 
-    //------------------------------------------------------------------------------- ShaderManager
+//------------------------------------------------------------------------------- ShaderManager
 
-    export class ShaderManager
-    {
-    public:
+export class ShaderManager
+{
+public:
+    const DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
+    const DGL_VertexShader* LoadVertexShader(std::string_view filename, ID3D11Device* device);
 
-        const DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
-        void Release(const DGL_PixelShader* shader);
-    
-    private:
-        std::unordered_set<DGL_PixelShader> mPixelShaders;
-    };
+    std::size_t PixelShaderCount() const noexcept;
+    std::size_t VertexShaderCount() const noexcept;
+
+    void Release(const DGL_PixelShader* shader);
+    void Release(const DGL_VertexShader* shader);
+
+private:
+    std::unordered_set<DGL_PixelShader> mPixelShaders;
+    std::unordered_map<std::string, std::unique_ptr<DGL_VertexShader>> mVertexShaders;
+};
 }

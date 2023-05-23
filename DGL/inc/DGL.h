@@ -104,6 +104,9 @@ typedef struct DGL_Mesh DGL_Mesh;
 // This is the type used for custom pixel shaders. You will only be working with pointers to this type.
 typedef struct DGL_PixelShader DGL_PixelShader;
 
+// This is the type used for custom vertex shaders. You will only be working with pointers to this type.
+typedef struct DGL_VertexShader DGL_VertexShader;
+
 
 //*************************************************************************************************
 // Enum definitions
@@ -149,11 +152,17 @@ typedef enum
 // These values are used to specify which pixel shader to use when drawing.
 typedef enum
 {
-    DGL_SM_COLOR,       // Draw with color data from the mesh
-    DGL_SM_TEXTURE,     // Draw using data from the current texture
-    DGL_SM_CUSTOM,      // Draw using a custom shader
-} DGL_ShaderMode;
+    DGL_PSM_COLOR,       // Draw with color data from the mesh
+    DGL_PSM_TEXTURE,     // Draw using data from the current texture
+    DGL_PSM_CUSTOM,      // Draw using a custom shader
+} DGL_PixelShaderMode;
 
+// These values are used to specify which vertex shader to use when drawing.
+typedef enum
+{
+    DGL_VSM_DEFAULT,    // Draw with the default vertex shader given by DGL
+    DGL_VSM_CUSTOM,     // Draw with the last set custom vertex shader
+} DGL_VertexShaderMode;
 
 #ifdef __cplusplus
 extern "C"
@@ -253,11 +262,17 @@ DGL_API void DGL_Graphics_SetTextureSamplerData(DGL_TextureSampleMode sampleMode
 // Sets the blend mode to use for everything drawn after this call.
 DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 
-// Sets which pixel shader to use, color-only or texture.
-DGL_API void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode);
+// Sets which pixel shader to use: color-only, texture, or custom.
+DGL_API void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode);
 
-// Sets the custom shader to use when using the DGL_SM_CUSTOM shader mode
+// Sets the custom pixel shader to use when using the DGL_PSM_CUSTOM shader mode.
 DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
+
+// Sets which vertex shader to use: default or custom.
+DGL_API void DGL_Graphics_SetVertexShaderMode(DGL_VertexShaderMode mode);
+
+// Sets the custom vertex shader to use when using DGL_VSM_CUSTOM shader mode.
+DGL_API void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader);
 
 // Sets the texture to use when drawing with the texture-based pixel shader.
 DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
@@ -268,9 +283,17 @@ DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
 // Returns a pointer to the new pixel shader instance
 DGL_API const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename);
 
+// Loads a vertex shader with the provided name and path into memory.
+// Returns a pointer to the new vertex shader instance
+DGL_API const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename);
+
 // Unloads the provided pixel shader from memory.
 // The pointer passed in will be set to NULL.
-DGL_API void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader);
+DGL_API void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader);
+
+// Unloads the provided vertex shader from memory.
+// The pointer passed in will be set to NULL.
+DGL_API void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader);
 
 // *** Textures ***********************************************************************************
 

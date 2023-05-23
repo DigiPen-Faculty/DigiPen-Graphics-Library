@@ -3,7 +3,7 @@
 // author:  Kenny Mecham
 // brief:   Shader functionality
 //
-// Copyright © 2023 DigiPen, All rights reserved.
+// Copyright Â© 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -12,8 +12,12 @@ module;
 #include <unordered_set>
 #include <string>
 #include <d3dcompiler.h>
+#include <memory>
+#include <format>
+#include <cassert>
 
 module Shader;
+import Errors;
 
 namespace DGL
 {
@@ -40,21 +44,21 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     ID3DBlob* shaderBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
     HRESULT hr = D3DCompileFromFile(
-        wideString.c_str(), 
-        nullptr, 
+        wideString.c_str(),
+        nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         "main",
         profile,
-        flags, 0, 
+        flags, 0,
         &shaderBlob, &errorBlob);
 
 
     if (FAILED(hr))
     {
-        printf("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr));
         if (errorBlob)
         {
-            std::printf("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer());
+            DGL::gError->SetError(std::format("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer()));
             errorBlob->Release();
         }
 
@@ -70,12 +74,43 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
 
     if (FAILED(hr))
     {
-        printf("Failed to create Pixel Shader from file [%s]. Error [%08x]\n", filename.data(), hr);
+        DGL::gError->SetError(std::format("Failed to create Pixel Shader from file [%s]. Error [%08x]\n", filename.data(), hr));
         return nullptr;
     }
 
     auto shaderIter = mPixelShaders.insert(shader);
     return &(*shaderIter.first);
+}
+
+//*************************************************************************************************
+const DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filename, ID3D11Device* device)
+{
+    assert(!filename.empty());
+    assert(device);
+
+    auto shader = std::make_unique<DGL_VertexShader>(filename, device);
+    if (!shader->IsValid())
+    {
+        return nullptr;
+    }
+
+    auto shaderIter = mVertexShaders.insert_or_assign(
+        filename.data(),
+        std::move(shader));
+
+    return shaderIter.first->second.get();
+}
+
+//*************************************************************************************************
+std::size_t ShaderManager::PixelShaderCount() const noexcept
+{
+    return mPixelShaders.size();
+}
+
+//*************************************************************************************************
+std::size_t ShaderManager::VertexShaderCount() const noexcept
+{
+    return mVertexShaders.size();
 }
 
 //*************************************************************************************************
@@ -93,4 +128,13 @@ void ShaderManager::Release(const DGL_PixelShader* shader)
 
     mPixelShaders.erase(*shader);
 }
+
+//*************************************************************************************************
+void ShaderManager::Release(const DGL_VertexShader* shader)
+{
+    if (shader)
+    {
+        mVertexShaders.erase(shader->filename);
+    }
 }
+}   // namespace DGL

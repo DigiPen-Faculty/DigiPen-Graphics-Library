@@ -19,7 +19,7 @@ namespace DGL
 //*************************************************************************************************
 DGL_Mat4 Matrix_RotateZ(const float& angle)
 {
-    DGL_Mat4 m;
+    DGL_Mat4 m{ 0 };
 
     m.m[0][0] = cosf(angle);    m.m[0][1] = -sinf(angle);   m.m[0][2] = 0.0f;   m.m[0][3] = 0.0f;
     m.m[1][0] = sinf(angle);    m.m[1][1] = cosf(angle);    m.m[1][2] = 0.0f;   m.m[1][3] = 0.0f;
@@ -30,7 +30,7 @@ DGL_Mat4 Matrix_RotateZ(const float& angle)
 }
 
 //*************************************************************************************************
-DGL_Mat4 Matrix_Multiply(const DGL_Mat4& m1, const DGL_Mat4 m2)
+DGL_Mat4 Matrix_Multiply(const DGL_Mat4& m1, const DGL_Mat4& m2)
 {
     return { 
         m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] + m1.m[0][3] * m2.m[3][0],

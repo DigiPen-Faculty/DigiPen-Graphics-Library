@@ -218,6 +218,8 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="src\WICTextureLoader11.h" />
+    <ClCompile Include="src\VertexShader.cpp" />
+    <ClCompile Include="src\VertexShader.ixx" />
     <ClCompile Include="src\WindowsSystem.ixx">
       <FileType>Document</FileType>
     </ClCompile>

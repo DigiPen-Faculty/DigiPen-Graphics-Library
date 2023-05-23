@@ -141,16 +141,22 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
 }
 
 //*************************************************************************************************
-DGL_ShaderMode D3DInterface::GetShaderMode()
+DGL_PixelShaderMode D3DInterface::GetPixelShaderMode() const
 {
-    return mCurrentShaderMode;
+    return mCurrentPixelShaderMode;
 }
 
 //*************************************************************************************************
-void D3DInterface::SetShaderMode(DGL_ShaderMode mode)
+DGL_VertexShaderMode D3DInterface::GetVertexShaderMode() const
+{
+    return mCurrentVertexShaderMode;
+}
+
+//*************************************************************************************************
+void D3DInterface::SetPixelShaderMode(DGL_PixelShaderMode mode)
 {
     // Set the shader mode to use on the next draw call
-    mCurrentShaderMode = mode;
+    mCurrentPixelShaderMode = mode;
 }
 
 //*************************************************************************************************
@@ -160,17 +166,54 @@ void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
     {
         mPixelCustomShader = shader->shader;
     }
+    else
+    {
+        mPixelCustomShader = nullptr;
+    }
 }
 
 //*************************************************************************************************
-ID3D11PixelShader* D3DInterface::GetCurrentShader() const
+void D3DInterface::SetVertexShaderMode(DGL_VertexShaderMode mode)
+{
+    // Set the shader mode to use on the next draw call
+    mCurrentVertexShaderMode = mode;
+}
+
+//*************************************************************************************************
+void D3DInterface::SetCustomVertexShader(const DGL_VertexShader* shader)
+{
+    if (shader)
+    {
+        mVertexCustomShader = shader->shader;
+    }
+    else
+    {
+        mVertexCustomShader = nullptr;
+    }
+}
+
+//*************************************************************************************************
+ID3D11PixelShader* D3DInterface::GetCurrentPixelShader() const
 {
     // Return the appropriate pixel shader for the current shader mode
-    switch (mCurrentShaderMode)
+    switch (GetPixelShaderMode())
     {
-        case DGL_SM_TEXTURE:  return mPixelTextureShader;
-        case DGL_SM_COLOR:    return mPixelShader;
-        case DGL_SM_CUSTOM:   return mPixelCustomShader;
+        case DGL_PSM_TEXTURE: return mPixelTextureShader;
+        case DGL_PSM_COLOR:   return mPixelShader;
+        case DGL_PSM_CUSTOM:  return mPixelCustomShader;
+    }
+
+    assert(false);
+    return nullptr;
+}
+
+//*************************************************************************************************
+ID3D11VertexShader* D3DInterface::GetCurrentVertexShader() const
+{
+    switch (GetVertexShaderMode())
+    {
+        case DGL_VSM_DEFAULT: return mVertexShader;
+        case DGL_VSM_CUSTOM:  return mVertexCustomShader;
     }
 
     assert(false);

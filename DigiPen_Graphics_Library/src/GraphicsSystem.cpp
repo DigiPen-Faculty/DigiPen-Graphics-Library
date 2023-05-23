@@ -3,13 +3,14 @@
 // author:  Andy Ellinger
 // brief:   Graphics system
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright ï¿½ 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
 
 #include "DGL.h"
 #include <objbase.h>
+#include <cassert>
 
 module GraphicsSystem;
 
@@ -24,7 +25,7 @@ GraphicsSystem* gGraphics = nullptr;
 //---------------------------------------------------------------------------------- GraphicsSystem
 
 //*************************************************************************************************
-GraphicsSystem::GraphicsSystem() 
+GraphicsSystem::GraphicsSystem()
 {
     gGraphics = this;
 }
@@ -59,7 +60,7 @@ int GraphicsSystem::Initialize(HWND window)
     }
 
     // Initializes the COM library for use by this thread
-    (void)CoInitialize(NULL);
+    CoInitialize(NULL);
 
     mInitialized = true;
 
@@ -75,10 +76,25 @@ int GraphicsSystem::ShutDown()
     int returnValue = 0;
 
     // Set an error if there are meshes or textures that weren't released
-    if (mMeshes || mTextures)
+    if (mMeshes)
     {
         returnValue = 1;
-        gError->SetError("Not all meshes and textures were released");
+        gError->SetError("Not all meshes were released");
+    }
+    if (mTextures)
+    {
+        returnValue = 1;
+        gError->SetError("Not all textures were released");
+    }
+    if (mShaderManager.PixelShaderCount())
+    {
+        returnValue = 1;
+        gError->SetError("Not all pixel shaders were released");
+    }
+    if (mShaderManager.VertexShaderCount())
+    {
+        returnValue = 1;
+        gError->SetError("Not all vertex shaders were released");
     }
 
     // Release all D3D objects
@@ -93,15 +109,16 @@ int GraphicsSystem::ShutDown()
 }
 
 //*************************************************************************************************
-const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* fileName)
+const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
 {
+    assert(filename);
     if (!mInitialized)
     {
         gError->SetError("Graphics is not initialized");
         return nullptr;
     }
 
-    auto shader = mShaderManager.LoadPixelShader(fileName, D3D.mDevice);
+    auto shader = mShaderManager.LoadPixelShader(filename, D3D.mDevice);
 
     if (shader)
     {
@@ -114,7 +131,6 @@ const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* fileName)
 //*************************************************************************************************
 void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
 {
-    
     if (!mInitialized)
     {
         gError->SetError("Graphics is not initialized");
@@ -124,10 +140,45 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
     {
         return;
     }
-  
+
     mShaderManager.Release(shader);
 
     --mCustomPixelShaders;
+}
+
+//*************************************************************************************************
+const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
+{
+    assert(filename);
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return nullptr;
+    }
+    else if (filename == nullptr)
+    {
+        return nullptr;
+    }
+
+    auto shader = mShaderManager.LoadVertexShader(filename, D3D.mDevice);
+
+    return shader;
+}
+
+//*************************************************************************************************
+void GraphicsSystem::ReleaseVertexShader(const DGL_VertexShader* shader)
+{
+    if (!mInitialized)
+    {
+        gError->SetError("Graphics is not initialized");
+        return;
+    }
+    else if (!shader)
+    {
+        return;
+    }
+
+    mShaderManager.Release(shader);
 }
 
 //*************************************************************************************************
@@ -140,7 +191,7 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
     }
 
     // Create the texture through the texture manager
-    DGL_Texture* texture = TextureManager::LoadTexture(pFileName, D3D.mDevice); 
+    DGL_Texture* texture = TextureManager::LoadTexture(pFileName, D3D.mDevice);
 
     // If it loaded successfuly, increase the texture counter
     if (texture)
@@ -242,7 +293,7 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
 void GraphicsSystem::AddVertex(const DGL_Vec2& position, const DGL_Color& color, const DGL_Vec2& texCoord)
 {
     // Add the vertex to the list on the mesh manager
-    Meshes.mVertexList.push_back({position, color, texCoord});
+    Meshes.mVertexList.push_back({ position, color, texCoord });
 }
 
 //*************************************************************************************************
@@ -268,7 +319,7 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
     }
 
     // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentShader(), D3D.mDeviceContext);
+    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(), D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
 }
 
 } // namepspace DGL
@@ -339,15 +390,27 @@ void DGL_Graphics_SetBlendMode(DGL_BlendMode mode)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetShaderMode(DGL_ShaderMode mode)
+void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode)
 {
-    gGraphics->D3D.SetShaderMode(mode);
+    gGraphics->D3D.SetPixelShaderMode(mode);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
-  gGraphics->D3D.SetCustomPixelShader(shader);
+    gGraphics->D3D.SetCustomPixelShader(shader);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetVertexShaderMode(DGL_VertexShaderMode mode)
+{
+    gGraphics->D3D.SetVertexShaderMode(mode);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader)
+{
+    gGraphics->D3D.SetCustomVertexShader(shader);
 }
 
 //*************************************************************************************************
@@ -359,13 +422,40 @@ void DGL_Graphics_SetTexture(const DGL_Texture* texture)
 //*************************************************************************************************
 const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
 {
-    return gGraphics->LoadPixelShader(filename);
+    assert(filename);
+    if (filename)
+    {
+        return gGraphics->LoadPixelShader(filename);
+    }
+
+    return nullptr;
 }
 
 //*************************************************************************************************
-void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader)
+const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
 {
+    assert(filename);
+    if (filename)
+    {
+        return gGraphics->LoadVertexShader(filename);
+    }
+
+    return nullptr;
+}
+
+//*************************************************************************************************
+void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
+{
+    assert(shader);
     gGraphics->ReleasePixelShader(*shader);
+    *shader = nullptr;
+}
+
+//*************************************************************************************************
+void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader)
+{
+    assert(shader);
+    gGraphics->ReleaseVertexShader(*shader);
     *shader = nullptr;
 }
 

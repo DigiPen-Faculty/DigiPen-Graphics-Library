@@ -61,7 +61,7 @@ public:
 
     // Draws the mesh with the provided mode, texture, and shader
     static void Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* texture,
-        ID3D11PixelShader* shader, ID3D11DeviceContext* deviceContext);
+        ID3D11VertexShader* vertexShader, ID3D11PixelShader* pixelShader, ID3D11DeviceContext* deviceContext);
 
     // List of vertex data to use when creating a new mesh
     std::vector<VertexData> mVertexList;
