@@ -22,6 +22,7 @@ export class CameraObject
 {
 public:
 
+    // Set the window handle and initialize the camera
     void Initialize(HWND windowHandle);
 
     // Returns the current camera position

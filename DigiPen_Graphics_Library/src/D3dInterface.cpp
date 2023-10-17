@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------
 // file:    D3dInterface.cpp
-// author:  Andy Ellinger
+// author:  Andy Ellinger, Kenny Mecham
 // brief:   Wrapper for D3D functionality
 //
 // Copyright © 2022 DigiPen, All rights reserved.
@@ -147,16 +147,23 @@ DGL_PixelShaderMode D3DInterface::GetPixelShaderMode() const
 }
 
 //*************************************************************************************************
+void D3DInterface::SetPixelShaderMode(DGL_PixelShaderMode mode)
+{
+    // Set the shader mode to use on the next draw call
+    mCurrentPixelShaderMode = mode;
+}
+
+//*************************************************************************************************
 DGL_VertexShaderMode D3DInterface::GetVertexShaderMode() const
 {
     return mCurrentVertexShaderMode;
 }
 
 //*************************************************************************************************
-void D3DInterface::SetPixelShaderMode(DGL_PixelShaderMode mode)
+void D3DInterface::SetVertexShaderMode(DGL_VertexShaderMode mode)
 {
     // Set the shader mode to use on the next draw call
-    mCurrentPixelShaderMode = mode;
+    mCurrentVertexShaderMode = mode;
 }
 
 //*************************************************************************************************
@@ -170,13 +177,6 @@ void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
     {
         mPixelCustomShader = nullptr;
     }
-}
-
-//*************************************************************************************************
-void D3DInterface::SetVertexShaderMode(DGL_VertexShaderMode mode)
-{
-    // Set the shader mode to use on the next draw call
-    mCurrentVertexShaderMode = mode;
 }
 
 //*************************************************************************************************

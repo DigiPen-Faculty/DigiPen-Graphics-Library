@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------
 // file:    GraphicsSystem.cpp
-// author:  Andy Ellinger
+// author:  Andy Ellinger, Kenny Mecham
 // brief:   Graphics system
 //
 // Copyright � 2022 DigiPen, All rights reserved.
@@ -120,11 +120,6 @@ const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
 
     auto shader = mShaderManager.LoadPixelShader(filename, D3D.mDevice);
 
-    if (shader)
-    {
-        ++mCustomPixelShaders;
-    }
-
     return shader;
 }
 
@@ -142,14 +137,11 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
     }
 
     mShaderManager.Release(shader);
-
-    --mCustomPixelShaders;
 }
 
 //*************************************************************************************************
 const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
 {
-    assert(filename);
     if (!mInitialized)
     {
         gError->SetError("Graphics is not initialized");

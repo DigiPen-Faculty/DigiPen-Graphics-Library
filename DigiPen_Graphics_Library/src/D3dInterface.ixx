@@ -58,19 +58,20 @@ public:
     // Set the sampler state to use on the next draw
     void SetSamplerState(DGL_TextureSampleMode sampleMode, DGL_TextureAddressMode addressMode);
 
-    // Returns the current shader mode setting
+    // Returns the current pixel shader mode setting
     DGL_PixelShaderMode GetPixelShaderMode() const;
-
-    DGL_VertexShaderMode GetVertexShaderMode() const;
 
     // Set the pixel shader mode to use on the next draw
     void SetPixelShaderMode(DGL_PixelShaderMode mode);
 
-    // Set the custom pixel shader to use with DGL_SM_CUSTOM
-    void SetCustomPixelShader(const DGL_PixelShader* shader);
+    // Returns the current vertex shader mode setting
+    DGL_VertexShaderMode GetVertexShaderMode() const;
 
     // Set the vertex shader mode to use on the next draw
     void SetVertexShaderMode(DGL_VertexShaderMode mode);
+
+    // Set the custom pixel shader to use with DGL_SM_CUSTOM
+    void SetCustomPixelShader(const DGL_PixelShader* shader);
 
     // Set the custom vertex shader to use with DGL_SM_CUSTOM
     void SetCustomVertexShader(const DGL_VertexShader* shader);

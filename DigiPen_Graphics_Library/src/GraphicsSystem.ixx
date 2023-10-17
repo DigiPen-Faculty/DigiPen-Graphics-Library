@@ -43,8 +43,10 @@ public:
     // Releases the pixel shader and deletes the struct
     void ReleasePixelShader(const DGL_PixelShader* shader);
 
+    // Loads a vertex shader from the provided file
     const DGL_VertexShader* LoadVertexShader(const char* filename);
 
+    // Releases the vertex shader and deletes the struct
     void ReleaseVertexShader(const DGL_VertexShader* shader);
 
     // Loads a texture from the provided file
@@ -81,8 +83,6 @@ public:
     CameraObject Camera;
 
 private:
-    // The number of custom pixel shaders that have been loaded and not released
-    int mCustomPixelShaders{ 0 };
     // The number of textures that have been loaded and not released
     int mTextures{ 0 };
     // The number of meshes that have been loaded and not released
