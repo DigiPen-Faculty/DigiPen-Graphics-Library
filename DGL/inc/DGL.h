@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.0.6
+//          v1.2.0
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2022 DigiPen, All rights reserved.
@@ -58,7 +58,8 @@ typedef struct DGL_SysInitInfo
 
     // These two variables specify the width and height of the window to be created.
     // This will be the total window size including title bar and borders (if using).
-    // Use the DGL_System_GetWindowSize() function to get the client size of a bordered window.
+    // Use the DGL_System_GetWindowSize() function afterwards to get the client size of 
+    // a bordered window (the window size without title bar and borders).
     unsigned int mWindowWidth;
     unsigned int mWindowHeight;
 
@@ -241,15 +242,8 @@ DGL_API void DGL_Camera_SetZoom(float zoom);
 //*************************************************************************************************
 // Graphics functions
 //*************************************************************************************************
-    
-// Starts a new set of graphics rendering data. 
-// This must be called each frame before any drawing is done.
-DGL_API void DGL_Graphics_StartDrawing(void);
 
-// Ends the current graphics session and sends the data to be displayed. 
-// This must be called each frame when drawing is finished.
-DGL_API void DGL_Graphics_FinishDrawing(void);
-
+//-------------------------------------------------------------------------------------------------
 // *** Settings ***********************************************************************************
 
 // Sets the background color of the window. The alpha value of the color parameter will be ignored.
@@ -265,11 +259,11 @@ DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 // Sets which pixel shader to use: color-only, texture, or custom.
 DGL_API void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode);
 
-// Sets the custom pixel shader to use when using the DGL_PSM_CUSTOM shader mode.
-DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
-
 // Sets which vertex shader to use: default or custom.
 DGL_API void DGL_Graphics_SetVertexShaderMode(DGL_VertexShaderMode mode);
+
+// Sets the custom pixel shader to use when using the DGL_PSM_CUSTOM shader mode.
+DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
 
 // Sets the custom vertex shader to use when using DGL_VSM_CUSTOM shader mode.
 DGL_API void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader);
@@ -277,6 +271,7 @@ DGL_API void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader);
 // Sets the texture to use when drawing with the texture-based pixel shader.
 DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
 
+//-------------------------------------------------------------------------------------------------
 // *** Shaders ***********************************************************************************
 
 // Loads a pixel shader with the provided name and path into memory.
@@ -295,6 +290,7 @@ DGL_API void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader);
 // The pointer passed in will be set to NULL.
 DGL_API void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader);
 
+//-------------------------------------------------------------------------------------------------
 // *** Textures ***********************************************************************************
 
 // Loads a texture with the provided name and path into memory.
@@ -313,6 +309,7 @@ DGL_API void DGL_Graphics_FreeTexture(DGL_Texture** texture);
 // Returns the width and height of the texture.
 DGL_API DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture);
 
+//-------------------------------------------------------------------------------------------------
 // *** Meshes *************************************************************************************
 
 // Tells the graphics system to start building a new mesh.
@@ -344,11 +341,21 @@ DGL_API void DGL_Graphics_AddTriangle(
 // The pointer passed in will be set to NULL.
 DGL_API void DGL_Graphics_FreeMesh(DGL_Mesh** mesh);
 
+//-------------------------------------------------------------------------------------------------
 // *** Drawing ************************************************************************************
+    
+// Starts a new set of graphics rendering data. 
+// This must be called each frame before any drawing is done.
+DGL_API void DGL_Graphics_StartDrawing(void);
+
+// Ends the current graphics session and sends the data to be displayed. 
+// This must be called each frame when drawing is finished.
+DGL_API void DGL_Graphics_FinishDrawing(void);
 
 // Draws the provided mesh with the provided mode.
 DGL_API void DGL_Graphics_DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode);
 
+//-------------------------------------------------------------------------------------------------
 // *** Constant buffer ****************************************************************************
 
 // Sets the position, scale, and rotation (in radians) which will be used for drawing meshes.
