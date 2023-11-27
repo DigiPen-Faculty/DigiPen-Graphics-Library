@@ -350,6 +350,18 @@ void DGL_Camera_SetZoom(float zoom)
 }
 
 //*************************************************************************************************
+float DGL_Camera_GetRotation(void)
+{
+    return gGraphics->Camera.GetCameraRotation();
+}
+
+//*************************************************************************************************
+void DGL_Camera_SetRotation(float radians)
+{
+    gGraphics->Camera.SetCameraRotation(radians);
+}
+
+//*************************************************************************************************
 void DGL_Graphics_StartDrawing(void)
 {
     gGraphics->D3D.StartUpdate();

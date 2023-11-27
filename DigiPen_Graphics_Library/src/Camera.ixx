@@ -37,6 +37,12 @@ public:
     // Sets the camera zoom factor
     void SetCameraZoom(float zoom);
 
+    // Returns the current camera rotation, in radians
+    float GetCameraRotation() const;
+
+    // Sets the camera rotation, in radians
+    void SetCameraRotation(float radians);
+
     // Resets with the current window size
     void ResetWindowSize();
 
@@ -53,6 +59,8 @@ private:
     DGL_Vec2 mCameraPosition{ 0.0f, 0.0f };
     // The Z value used when creating the world matrix
     float mCameraZ{ -10.0f };
+    // The rotation value (in radians) applied to the camera
+    float mRotation{ 0.0f };
     // The scale used to modify the window size for the world matrix
     float mScale{ 1.0f };
     // The current size of the window

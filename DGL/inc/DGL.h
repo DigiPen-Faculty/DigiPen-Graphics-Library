@@ -238,6 +238,12 @@ DGL_API float DGL_Camera_GetZoom(void);
 // (objects look larger) and larger values will move it out (objects look smaller).
 DGL_API void DGL_Camera_SetZoom(float zoom);
 
+// Returns the current rotation of the camera, in radians.
+DGL_API float DGL_Camera_GetRotation(void);
+
+// Sets the rotation of the camera, in radians.
+DGL_API void DGL_Camera_SetRotation(float radians);
+
 
 //*************************************************************************************************
 // Graphics functions

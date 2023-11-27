@@ -76,6 +76,21 @@ void CameraObject::SetCameraZoom(float zoom)
 }
 
 //*************************************************************************************************
+float CameraObject::GetCameraRotation() const
+{
+    return mRotation;
+}
+
+//*************************************************************************************************
+void CameraObject::SetCameraRotation(float radians)
+{
+    mRotation = radians;
+
+    // Update the world matrix on the constant buffer
+    gGraphics->D3D.SetWorldMatrix(GetWorldMatrix());
+}
+
+//*************************************************************************************************
 void CameraObject::ResetWindowSize()
 {
     if (!mWindowHandle)
@@ -107,6 +122,11 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
         DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
     );
 
+    DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(
+        DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
+        mRotation
+    );
+
     // Create an orthographic projection matrix using the current window size and scale
     DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixOrthographicLH(
         mWindowSize.x * mScale,
@@ -116,7 +136,7 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
     );
 
     // Store the result of multiplying the matrices
-    mViewProjMatrix = viewMatrix * projectionMatrix;
+    mViewProjMatrix = viewMatrix * rotationMatrix * projectionMatrix;
 
     // Return the world matrix, which is the transpose of view * projection
     return DxToMat4(DirectX::XMMatrixTranspose(mViewProjMatrix));
