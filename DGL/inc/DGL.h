@@ -5,7 +5,7 @@
 //          v1.2.0
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2023 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #pragma once
