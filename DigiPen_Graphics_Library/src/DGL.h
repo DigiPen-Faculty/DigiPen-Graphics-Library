@@ -5,7 +5,7 @@
 //          v1.2.0
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
-// Copyright © 2023 DigiPen, All rights reserved.
+// Copyright © 2024 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #pragma once
@@ -155,14 +155,14 @@ typedef enum
 {
     DGL_PSM_COLOR,       // Draw with color data from the mesh
     DGL_PSM_TEXTURE,     // Draw using data from the current texture
-    DGL_PSM_CUSTOM,      // Draw using a custom shader
+    DGL_PSM_CUSTOM,      // Draw using the last set custom pixel shader
 } DGL_PixelShaderMode;
 
 // These values are used to specify which vertex shader to use when drawing.
 typedef enum
 {
-    DGL_VSM_DEFAULT,    // Draw with the default vertex shader given by DGL
-    DGL_VSM_CUSTOM,     // Draw with the last set custom vertex shader
+    DGL_VSM_DEFAULT,    // Draw using the default vertex shader 
+    DGL_VSM_CUSTOM,     // Draw using the last set custom vertex shader
 } DGL_VertexShaderMode;
 
 #ifdef __cplusplus
@@ -262,11 +262,8 @@ DGL_API void DGL_Graphics_SetTextureSamplerData(DGL_TextureSampleMode sampleMode
 // Sets the blend mode to use for everything drawn after this call.
 DGL_API void DGL_Graphics_SetBlendMode(DGL_BlendMode mode);
 
-// Sets which pixel shader to use: color-only, texture, or custom.
-DGL_API void DGL_Graphics_SetPixelShaderMode(DGL_PixelShaderMode mode);
-
-// Sets which vertex shader to use: default or custom.
-DGL_API void DGL_Graphics_SetVertexShaderMode(DGL_VertexShaderMode mode);
+// Sets which pixel and vertex shaders to use. See the enum declarations for available options.
+DGL_API void DGL_Graphics_SetShaderMode(DGL_PixelShaderMode pixelMode, DGL_VertexShaderMode vertexMode);
 
 // Sets the custom pixel shader to use when using the DGL_PSM_CUSTOM shader mode.
 DGL_API void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader);
@@ -278,7 +275,7 @@ DGL_API void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader);
 DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
 
 //-------------------------------------------------------------------------------------------------
-// *** Shaders ***********************************************************************************
+// *** Shaders ************************************************************************************
 
 // Loads a pixel shader with the provided name and path into memory.
 // Returns a pointer to the new pixel shader instance
