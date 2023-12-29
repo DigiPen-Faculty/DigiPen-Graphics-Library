@@ -1,3 +1,0 @@
-# Indexed Meshes
-
-Coming soon

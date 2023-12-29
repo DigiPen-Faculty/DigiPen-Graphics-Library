@@ -15,6 +15,8 @@ This page contains all the functions in the System section.
 - [DGL_System_Reset](#dgl_system_reset)
 - [DGL_System_Update](#dgl_system_update)
 
+--------------------------
+
 # DGL_System_DoesWindowExist
 
 Returns FALSE if there is no window, and TRUE if there is. This is used to check if you should break out of your game loop and exit.
@@ -44,6 +46,8 @@ if (!DGL_System_DoesWindowExist())
 
 - None
 
+--------------------------
+
 # DGL_System_Exit
 
 Shuts down the graphics system and de-registers the window. Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
@@ -71,6 +75,8 @@ DGL_System_Exit();
 ## Related
 
 - None
+
+--------------------------
 
 # DGL_System_FrameControl
 
@@ -112,6 +118,8 @@ while (running)
 
 - None
 
+--------------------------
+
 # DGL_System_GetDeltaTime
 
 Returns the time between the beginning of the last frame and the beginning of this frame, in seconds. To be more accurate, it is the time between when [DGL_System_FrameControl](#dgl_system_framecontrol) was called on the last frame and on this frame.
@@ -141,6 +149,8 @@ playerPosition += playerVelocity * DGL_System_GetDeltaTime();
 - [DGL_System_FrameControl](#dgl_system_framecontrol)
 - [DGL_System_GetTime](#dgl_system_gettime)
 
+--------------------------
+
 # DGL_System_GetFrameCount
 
 Returns the total number of frames since the program began. This number will be reset to 0 after calling [DGL_System_Reset](#dgl_system_reset).
@@ -168,6 +178,8 @@ unsigned totalFrames = DGL_System_GetFrameCount();
 ## Related
 
 - [DGL_System_Reset](#dgl_system_reset)
+
+--------------------------
 
 # DGL_System_GetLastError
 
@@ -202,6 +214,8 @@ if (!windowHandle)
 
 - None
 
+--------------------------
+
 # DGL_System_GetTime
 
 Returns the current system time according to the user's computer, in seconds.
@@ -235,6 +249,8 @@ if (currentTime - lastSavedTime > 3.0)
 
 - None
 
+--------------------------
+
 # DGL_System_GetWindowHandle
 
 Returns the Windows window handle, which can be used to manipulate the window or to get data from Windows.
@@ -263,6 +279,8 @@ ShowWindow(DGL_System_GetWindowHandle(), SW_SHOWNORMAL);
 ## Related
 
 - None
+
+--------------------------
 
 # DGL_System_HandleWindowsMessage
 
@@ -309,6 +327,8 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
 
 - None
 
+--------------------------
+
 # DGL_System_Init
 
 Initializes the DGL using the specified options. This will create the window and initialize graphics and the framerate controller. Returns the window handle, which will be NULL if there was a problem with initialization.
@@ -342,6 +362,8 @@ if (windowHandle == NULL)
 
 - [DGL_SysInitInfo](Types/#dgl_sysinitinfo)
 
+--------------------------
+
 # DGL_System_Reset
 
 Resets the framerate controller back to the initial state.
@@ -370,6 +392,8 @@ DGL_System_Reset();
 
 - [DGL_System_FrameControl](#dgl_system_framecontrol)
 - [DGL_System_GetFrameCount](#dgl_system_getframecount)
+
+--------------------------
 
 # DGL_System_Update
 

@@ -1,1 +1,1 @@
-*Copyright © 2022 DigiPen, all rights reserved.*
+*Copyright © 2024 DigiPen, all rights reserved.*

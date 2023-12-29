@@ -7,12 +7,17 @@ This file contains information about the types defined by the DGL.
 - [DGL_DrawMode](#dgl_drawmode)
 - [DGL_Mat4](#dgl_mat4)
 - [DGL_Mesh](#dgl_mesh)
-- [DGL_ShaderMode](#dgl_shadermode)
+- [DGL_PixelShader](#dgl_pixelshader)
+- [DGL_PixelShaderMode](#dgl_pixelshadermode)
 - [DGL_SysInitInfo](#dgl_sysinitinfo)
 - [DGL_Texture](#dgl_texture)
 - [DGL_TextureAddressMode](#dgl_textureaddressmode)
 - [DGL_TextureSampleMode](#dgl_texturesamplemode)
 - [DGL_Vec2](#dgl_vec2)
+- [DGL_VertexShader](#dgl_vertexshader)
+- [DGL_VertexShaderMode](#dgl_vertexshadermode)
+
+--------------------------
 
 # DGL_BlendMode
 
@@ -28,6 +33,8 @@ These values are used to specify the type of blending used when drawing overlapp
 ## Related
 
 - [DGL_Graphics_SetBlendMode](Graphics/#dgl_graphics_setblendmode)
+
+--------------------------
 
 # DGL_Color
 
@@ -46,6 +53,8 @@ This struct is used to pass color data to functions. Color values should be betw
 - [DGL_Graphics_SetCB_TintColor](Graphics/#dgl_graphics_setcb_tintcolor)
 - [DGL_Graphics_AddVertex](Graphics/#dgl_graphics_addvertex)
 
+--------------------------
+
 # DGL_DrawMode
 
 These values are used to specify the draw mode to use when interpreting a mesh's vertices.
@@ -62,6 +71,8 @@ These values are used to specify the draw mode to use when interpreting a mesh's
 
 - [DGL_Graphics_DrawMesh](Graphics/#dgl_graphics_drawmesh)
 
+--------------------------
+
 # DGL_Mat4
 
 This struct is used to pass matrix data to functions.
@@ -74,6 +85,8 @@ This struct is used to pass matrix data to functions.
 
 - [DGL_Graphics_SetCB_TransformMatrix](Graphics/#dgl_graphics_setcb_transformmatrix)
 
+--------------------------
+
 # DGL_Mesh
 
 This is the type used for mesh data. You will only be working with pointers to this type.
@@ -84,7 +97,21 @@ This is the type used for mesh data. You will only be working with pointers to t
 - [DGL_Graphics_FreeMesh](Graphics/#dgl_graphics_freemesh)
 - [DGL_Graphics_DrawMesh](Graphics/#dgl_graphics_drawmesh)
 
-# DGL_ShaderMode
+--------------------------
+
+# DGL_PixelShader
+
+This is the type used for custom pixel shaders. You will only be working with pointers to this type.
+
+## Related
+
+- [DGL_Graphics_LoadPixelShader](Graphics/#dgl_graphics_loadpixelshader)
+- [DGL_Graphics_FreePixelShader](Graphics/#dgl_graphics_freepixelshader)
+- [DGL_Graphics_SetCustomPixelShader](Graphics/#dgl_graphics_setcustompixelshader)
+
+--------------------------
+
+# DGL_PixelShaderMode
 
 These values are used to specify which pixel shader to use when drawing.
 
@@ -92,10 +119,13 @@ These values are used to specify which pixel shader to use when drawing.
 
 - DGL_SM_COLOR - Draw with color data from the mesh.
 - DGL_SM_TEXTURE - Draw using data from the current texture.
+- DGL_SM_CUSTOM - Draw using a custom pixel shader.
 
 ## Related
 
 - [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode)
+
+--------------------------
 
 # DGL_SysInitInfo
 
@@ -119,6 +149,8 @@ This struct is used to tell DGL information it needs to create the window. It is
 
 - [DGL_System_Init](System/#dgl_system_init)
 
+--------------------------
+
 # DGL_Texture
 
 This is the type used for texture data. You will only be working with pointers to this type.
@@ -128,6 +160,8 @@ This is the type used for texture data. You will only be working with pointers t
 - [DGL_Graphics_LoadTexture](Graphics/#dgl_graphics_loadtexture)
 - [DGL_Graphics_FreeTexture](Graphics/#dgl_graphics_freetexture)
 - [DGL_Graphics_SetTexture](Graphics/#dgl_graphics_settexture)
+
+--------------------------
 
 # DGL_TextureAddressMode
 
@@ -144,6 +178,8 @@ These values are used to specify the behavior when a texture is sampled outside 
 
 - [DGL_Graphics_SetTextureSamplerData](Graphics/#dgl_graphics_settexturesamplerdata)
 
+--------------------------
+
 # DGL_TextureSampleMode
 
 These values are used to specify the type of sampling to use when drawing textures.
@@ -157,6 +193,8 @@ These values are used to specify the type of sampling to use when drawing textur
 
 - [DGL_Graphics_SetTextureSamplerData](Graphics/#dgl_graphics_settexturesamplerdata)
 
+--------------------------
+
 # DGL_Vec2
 
 This struct is used to pass sets of floats to functions and to return data from functions.
@@ -169,3 +207,31 @@ This struct is used to pass sets of floats to functions and to return data from 
 ## Related
 
 - None
+
+--------------------------
+
+# DGL_VertexShader
+
+This is the type used for custom vertex shaders. You will only be working with pointers to this type.
+
+## Related
+
+- [DGL_Graphics_LoadVertexShader](Graphics/#dgl_graphics_loadvertexshader)
+- [DGL_Graphics_FreeVertexShader](Graphics/#dgl_graphics_freevertexshader)
+- [DGL_Graphics_SetCustomVertexShader](Graphics/#dgl_graphics_setcustomvertexshader)
+
+--------------------------
+
+# DGL_VertexShaderMode
+
+These values are used to specify which vertex shader to use when drawing.
+
+## Enum Values
+
+- DGL_SM_COLOR - Draw with color data from the mesh.
+- DGL_SM_TEXTURE - Draw using data from the current texture.
+- DGL_SM_CUSTOM - Draw using a custom vertex shader.
+
+## Related
+
+- [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode)

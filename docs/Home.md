@@ -16,9 +16,3 @@ If you have documentation requests or suggestions, or if you find any errors, fe
 
 - [Introduction to Using the DGL](DGL-Basics)
 - [Creating a New Visual Studio Project](Visual-Studio-Projects)
-
-## Other Information
-
-- [Sprite Sheets](Sprite-Sheets) 
-- [Camera & Screen vs World Coordinates](Camera-and-Coordinates)
-- [Tile Map Collision](Tile-Map-Collision)

@@ -126,7 +126,7 @@ DGL_Graphics_SetBackgroundColor(&(DGL_Color){ 0.05f, 0.1f, 0.08f, 1.0f });
 
 To draw a texture, we first need to create a mesh. Remember that a single mesh can be used for multiple textures. Usually you will want to create one mesh that is a single pixel high and wide, then scale the mesh to the size of the object when it is drawn.
 
-To create a mesh, you first call [DGL_Graphics_StartMesh](Graphics/#dgl_graphics_startmesh) to tell DGL you are creating a new mesh, then call [DGL_Graphics_AddVertex](Graphics/#dgl_graphics_addvertex) for every vertex you want to add to the mesh. Alternatively, you could call [DGL_Graphics_AddTriangle](Graphics/#dgl_graphics_addtriangle) to add three vertices at once. When you are done, call [DGL_Graphics_EndMesh](Graphics/#dgl_graphics_endmesh), which returns a pointer to the new mesh object. (See the [Indexed Meshes](Indexed-Meshes) page for an explanation of using indexed meshes to avoid duplicating vertices.)
+To create a mesh, you first call [DGL_Graphics_StartMesh](Graphics/#dgl_graphics_startmesh) to tell DGL you are creating a new mesh, then call [DGL_Graphics_AddVertex](Graphics/#dgl_graphics_addvertex) for every vertex you want to add to the mesh. Alternatively, you could call [DGL_Graphics_AddTriangle](Graphics/#dgl_graphics_addtriangle) to add three vertices at once. When you are done, call [DGL_Graphics_EndMesh](Graphics/#dgl_graphics_endmesh), which returns a pointer to the new mesh object.
 
 > For every mesh that you create, make sure that you call [DGL_Graphics_FreeMesh](Graphics/#dgl_graphics_freemesh) at some point before your program closes.
 
@@ -189,10 +189,10 @@ DGL_Mesh* mesh = DGL_Graphics_EndMesh();
 
 ## Drawing a Mesh Without a Texture
 
-The DGL has two shader modes, one for displaying a mesh with no texture data, and one for displaying a mesh with a texture. To draw a mesh without a texture you need to call [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode) and pass in the `DGL_SM_COLOR` [shader mode](Types/#dgl_shadermode).
+The DGL has two shader modes, one for displaying a mesh with no texture data, and one for displaying a mesh with a texture. To draw a mesh without a texture you need to call [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode) and pass in the `DGL_PSM_COLOR` [pixel shader mode](Types/#dgl_pixelshadermode) as the first parameter. The second parameter should be `DGL_VSM_DEFAULT` for the default [vertex shader mode](Types/#dgl_vertexshadermode).
 
 ```c
-DGL_Graphics_SetShaderMode(DGL_SM_COLOR);
+DGL_Graphics_SetShaderMode(DGL_PSM_COLOR, DGL_VSM_DEFAULT);
 ```
 
 Before drawing the mesh you must set the transform data (the object's position, scale, and rotation). You can do this by calling [DGL_Graphics_SetCB_TransformData](Graphics/#dgl_graphics_setcb_transformdata) and passing in variables containing the data, or, if you want to create the transformation matrix yourself, you can call [DGL_Graphics_SetCB_TransformMatrix](Graphics/#dgl_graphics_setcb_transformmatrix).
@@ -229,10 +229,10 @@ DGL_Texture* ballTexture = DGL_Graphics_LoadTexture("./Assets/ball.png");
 
 ## Drawing a Texture
 
-To draw a mesh with a texture you need to call [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode) with the `DGL_SM_TEXTURE` [shader mode](Types/#dgl_shadermode). 
+To draw a mesh with a texture you need to call [DGL_Graphics_SetShaderMode](Graphics/#dgl_graphics_setshadermode) with the `DGL_PSM_TEXTURE` [pixel shader mode](Types/#dgl_pixelshadermode). 
 
 ```c
-DGL_Graphics_SetShaderMode(DGL_SM_TEXTURE);
+DGL_Graphics_SetShaderMode(DGL_PSM_TEXTURE, DGL_VSM_DEFAULT);
 ```
 
 The transform data is set in the same way whether or not there is a texture.

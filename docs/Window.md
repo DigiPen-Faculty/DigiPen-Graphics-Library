@@ -9,6 +9,8 @@ This file includes all the functions in the Window section.
 - [DGL_Window_SetSizeAndPosition](#dgl_window_setsizeandposition)
 - [DGL_Window_SetStyle](#dgl_window_setstyle)
 
+--------------------------
+
 # DGL_Window_GetMonitorSize
 
 Returns the width and height of the user's current monitor.
@@ -38,6 +40,8 @@ DGL_Window_SetSizeAndPosition(monitorSize.x, monitorSize.y, 0, 0);
 
 - [DGL_Window_GetSize](#dgl_window_getsize)
 
+--------------------------
+
 # DGL_Window_GetSize
 
 Returns the size of the client area of the window (not including title bar or borders).
@@ -66,6 +70,8 @@ float center = windowSize.x / 2.0f;
 ## Related
 
 - [DGL_Window_GetMonitorSize](#dgl_window_getmonitorsize)
+
+--------------------------
 
 # DGL_Window_HasFocus
 
@@ -98,6 +104,8 @@ if (DGL_Window_HasFocus() == FALSE)
 
 - None
 
+--------------------------
+
 # DGL_Window_SetSize
 
 Changes the width and height of the application window, leaving it in the same position.
@@ -126,6 +134,8 @@ DGL_Window_SetSize(1024, 768);
 ## Related
 
 - [DGL_Window_SetSizeAndPosition](#dgl_window_setsizeandposition)
+
+--------------------------
 
 # DGL_Window_SetSizeAndPosition
 
@@ -158,6 +168,8 @@ DGL_Window_SetSizeAndPosition(monitorSize.x, monitorSize.y, 0, 0);
 ## Related
 
 - [DGL_Window_SetSize](#dgl_window_setsize)
+
+--------------------------
 
 # DGL_Window_SetStyle
 

@@ -1,3 +1,0 @@
-# Window Settings
-
-Coming soon

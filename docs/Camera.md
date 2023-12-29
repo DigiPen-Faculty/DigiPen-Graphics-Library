@@ -3,11 +3,15 @@ This file contains information about all the functions in the Camera section.
 # Table Of Contents
 
 - [DGL_Camera_GetPosition](#dgl_camera_getposition)
+- [DGL_Camera_GetRotation](#dgl_camera_getrotation)
 - [DGL_Camera_GetZoom](#dgl_camera_getzoom)
 - [DGL_Camera_ScreenCoordToWorld](#dgl_camera_screencoordtoworld)
 - [DGL_Camera_SetPosition](#dgl_camera_setposition)
+- [DGL_Camera_SetRotation](#dgl_camera_setrotation)
 - [DGL_Camera_SetZoom](#dgl_camera_setzoom)
 
+
+--------------------------
 
 # DGL_Camera_GetPosition
 
@@ -43,6 +47,43 @@ if (DGL_Input_KeyDown('W'))
 - [DGL_Camera_SetPosition](#dgl_camera_setposition)
 - [DGL_Vec2](Types/#dgl_vec2)
 
+--------------------------
+
+# DGL_Camera_GetRotation
+
+Returns the current rotation of the camera, in radians.
+
+## Function
+
+```C
+float DGL_Camera_GetRotation(void)
+```
+
+### Parameters
+
+- This function has no parameters.
+
+### Return
+
+- float - The current rotation of the camera, in radians.
+
+## Example
+
+```C
+if (DGL_Input_KeyDown(VK_RIGHT))
+{
+    float rotation = DGL_Camera_GetRotation();
+    rotation += 0.2f;
+    DGL_Camera_SetRotation(rotation);
+}
+```
+
+## Related
+
+- [DGL_Camera_SetRotation](#dgl_camera_setrotation)
+
+--------------------------
+
 # DGL_Camera_GetZoom
 
 Returns the current zoom level of the camera.
@@ -76,6 +117,8 @@ if (DGL_Input_KeyDown(VK_UP))
 
 - [DGL_Camera_SetZoom](#dgl_camera_setzoom)
 
+--------------------------
+
 # DGL_Camera_ScreenCoordToWorld
 
 Takes a position in screen coordinates and returns the equivalent in world coordinates.
@@ -105,6 +148,8 @@ DGL_Vec2 mouseWorld = DGL_Camera_ScreenCoordToWorld(&mouseScreen);
 
 - [DGL_Input_GetMousePosition](Input/#dgl_input_getmouseposition)
 - [DGL_Vec2](Types/#dgl_vec2)
+
+--------------------------
 
 # DGL_Camera_SetPosition
 
@@ -139,6 +184,43 @@ if (DGL_Input_KeyDown('W'))
 
 - [DGL_Camera_GetPosition](#dgl_camera_getposition)
 - [DGL_Vec2](Types/#dgl_vec2)
+
+--------------------------
+
+# DGL_Camera_SetRotation
+
+Sets the rotation of the camera, using radians.
+
+## Function
+
+```C
+void DGL_Camera_SetRotation(float radians)
+```
+
+### Parameters
+
+- radians (float) - The value to set the camera rotation to.
+
+### Return
+
+- This function does not return anything.
+
+## Example
+
+```C
+if (DGL_Input_KeyDown(VK_RIGHT))
+{
+    float rotation = DGL_Camera_GetRotation();
+    rotation += 0.2f;
+    DGL_Camera_SetRotation(rotation);
+}
+```
+
+## Related
+
+- [DGL_Camera_GetRotation](#dgl_camera_getrotation)
+
+--------------------------
 
 # DGL_Camera_SetZoom
 

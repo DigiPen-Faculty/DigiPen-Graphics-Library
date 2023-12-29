@@ -10,9 +10,11 @@ This file includes all the functions in the Input section.
 - [DGL_Input_KeyTriggered](#dgl_input_keytriggered)
 - [DGL_Input_ShowCursor](#dgl_input_showcursor)
 
+--------------------------
+
 # DGL_Input_GetMousePosition
 
-Returns the current X and Y position of the mouse, in screen coordinates. The value (0, 0) will be returned when the mouse is in the top left corner of the winodw, and (window_width, window_height) will be returned when the mouse is in the bottom right corner. Values are not capped at the edge of the window. 
+Returns the current X and Y position of the mouse, in screen coordinates. The value (0, 0) will be returned when the mouse is in the top left corner of the window, and (window_width, window_height) will be returned when the mouse is in the bottom right corner. Values are not capped at the edge of the window. 
 
 The function [DGL_Camera_ScreenCoordToWorld](Camera/#dgl_camera_screencoordtoworld) can be used to translate this screen position into world coordinates.
 
@@ -40,6 +42,8 @@ DGL_Vec2 mouseWorld = DGL_Camera_ScreenCoordToWorld(&mouseScreen);
 ## Related
 
 - [DGL_Camera_ScreenCoordToWorld](Camera/#dgl_camera_screencoordtoworld)
+
+--------------------------
 
 # DGL_Input_GetMousePositionDelta
 
@@ -69,6 +73,8 @@ DGL_Vec2 delta = DGL_Input_GetMousePositionDelta();
 
 - None
 
+--------------------------
+
 # DGL_Input_GetMouseScrollDelta
 
 Returns the change in the mouse scroll wheel from last frame to this frame. Positive values indicate scrolling up, negative values indicate scrolling down. A single "tick" on the mouse wheel will be 1 or -1.
@@ -96,6 +102,8 @@ int delta = DGL_Input_GetMouseScrollDelta();
 ## Related
 
 - None
+
+--------------------------
 
 # DGL_Input_KeyDown
 
@@ -130,6 +138,8 @@ if (DGL_Input_KeyDown(VK_LBUTTON))
 - [DGL_Input_KeyTriggered](#dgl_input_keytriggered)
 - [DGL_Input_KeyReleased](#dgl_input_keyreleased)
 
+--------------------------
+
 # DGL_Input_KeyReleased
 
 Returns TRUE if the specified key is currently not down but was down last frame, and FALSE if not.
@@ -160,6 +170,8 @@ if (DGL_Input_KeyReleased(VK_LBUTTON))
 - [DGL_Input_KeyTriggered](#dgl_input_keytriggered)
 - [DGL_Input_KeyDown](#dgl_input_keydown)
 
+--------------------------
+
 # DGL_Input_KeyTriggered
 
 Returns TRUE if the specified key is currently down but was not down last frame, and FALSE if not.
@@ -189,6 +201,8 @@ if (DGL_Input_KeyTriggered(VK_SPACE))
 
 - [DGL_Input_KeyReleased](#dgl_input_keyreleased)
 - [DGL_Input_KeyDown](#dgl_input_keydown)
+
+--------------------------
 
 # DGL_Input_ShowCursor
 
