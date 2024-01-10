@@ -464,6 +464,29 @@ int D3DInterface::CreateDevice()
     );
     if (FAILED(hr) || !mSwapChain || !mDevice || !mDeviceContext)
     {
+        // If in debug mode, try again without the debug device flag
+#if defined(DEBUG) || defined(_DEBUG)
+        flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
+        hr = D3D11CreateDeviceAndSwapChain(
+            NULL,
+            D3D_DRIVER_TYPE_HARDWARE,
+            NULL,
+            flags,
+            NULL,
+            0,
+            D3D11_SDK_VERSION,
+            &swapChainDesc,
+            &mSwapChain,
+            &mDevice,
+            &d3dFeatureLevel,
+            &mDeviceContext
+        );
+
+        // If it worked this time, return succesfully
+        if (!FAILED(hr) && mSwapChain && mDevice && mDeviceContext)
+            return 0;
+#endif
+
         gError->SetError("Problem creating D3D device. ", hr);
         return 1;
     }
