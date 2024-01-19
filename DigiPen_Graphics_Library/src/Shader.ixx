@@ -15,19 +15,32 @@ module;
 #include <memory>
 
 export module Shader;
-export import VertexShader;
 
 export struct DGL_PixelShader
 {
     DGL_PixelShader(std::string_view name) :
-        shader(nullptr),
         name(name)
     {}
 
+    ~DGL_PixelShader() { if (shader) shader->Release(); }
+
     bool operator==(const DGL_PixelShader&) const noexcept = default;
 
-    ID3D11PixelShader* shader;
+    ID3D11PixelShader* shader{ nullptr };
     std::string name;
+};
+
+export struct DGL_VertexShader
+{
+    DGL_VertexShader(std::string_view name) :
+        filename(name)
+    {}
+    DGL_VertexShader(const DGL_VertexShader& other) = delete;
+
+    ~DGL_VertexShader() { if (shader) shader->Release(); }
+
+    ID3D11VertexShader* shader{ nullptr };
+    std::string filename;
 };
 
 template <>
