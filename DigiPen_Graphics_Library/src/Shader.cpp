@@ -26,6 +26,16 @@ namespace DGL
 //----------------------------------------------------------------------------------- ShaderManager
 
 //*************************************************************************************************
+ShaderManager::~ShaderManager()
+{
+    for (const DGL_PixelShader& shader : mPixelShaders)
+    {
+        if (shader.shader)
+            shader.shader->Release();
+    }
+}
+
+//*************************************************************************************************
 const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename, ID3D11Device* device)
 {
     assert(!filename.empty());
@@ -177,6 +187,9 @@ void ShaderManager::Release(const DGL_PixelShader* shader)
 {
     if (shader)
     {
+        if (shader->shader)
+            shader->shader->Release();
+
         mPixelShaders.erase(*shader);
     }
 }

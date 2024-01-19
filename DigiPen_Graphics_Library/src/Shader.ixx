@@ -22,8 +22,6 @@ export struct DGL_PixelShader
         name(name)
     {}
 
-    ~DGL_PixelShader() { if (shader) shader->Release(); }
-
     bool operator==(const DGL_PixelShader&) const noexcept = default;
 
     ID3D11PixelShader* shader{ nullptr };
@@ -60,6 +58,8 @@ namespace DGL
 export class ShaderManager
 {
 public:
+    ~ShaderManager();
+
     const DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
     const DGL_VertexShader* LoadVertexShader(std::string_view filename, ID3D11Device* device);
 
