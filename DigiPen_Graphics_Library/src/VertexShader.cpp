@@ -11,6 +11,7 @@ module;
 #include <d3d11.h>
 #include <unordered_set>
 #include <string>
+#include <sstream>>
 #include <d3dcompiler.h>
 #include <format>
 #include <cassert>
@@ -18,6 +19,8 @@ module;
 module VertexShader;
 import Errors;
 
+namespace DGL
+{
 //---------------------------------------------------------------------------------- DGL_VertexShader
 
 //*************************************************************************************************
@@ -52,15 +55,19 @@ DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* devi
         flags, 0,
         &shaderBlob, &errorBlob);
 
-
     if (FAILED(hr))
     {
-        DGL::gError->SetError(std::format("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr));
+        std::stringstream errorMsg;
+        errorMsg << "Failed to compile vertex shader file \"" << filename << "\". ";
+
         if (errorBlob)
         {
-            DGL::gError->SetError(std::format("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer()));
+            errorMsg << (char*)errorBlob->GetBufferPointer();
+            gError->SetError(errorMsg.str());
             errorBlob->Release();
         }
+        else
+            gError->SetError(errorMsg.str(), hr);
 
         if (shaderBlob)
             shaderBlob->Release();
@@ -71,7 +78,9 @@ DGL_VertexShader::DGL_VertexShader(std::string_view filename, ID3D11Device* devi
 
     if (FAILED(hr))
     {
-        DGL::gError->SetError(std::format("Failed to create Vertex Shader [%s] with error [%08x]\n", filename.data(), hr));
+        std::stringstream errorMsg;
+        errorMsg << "Failed to create vertex shader from file \"" << filename << "\". ";
+        gError->SetError(errorMsg.str(), hr);
     }
 }
 
@@ -88,4 +97,6 @@ DGL_VertexShader::~DGL_VertexShader()
 bool DGL_VertexShader::IsValid() const noexcept
 {
     return shader;
+}
+
 }

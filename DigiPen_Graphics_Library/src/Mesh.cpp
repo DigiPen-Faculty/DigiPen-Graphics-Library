@@ -27,14 +27,14 @@ DGL_Mesh* MeshManager::CreateMesh(ID3D11Device* device)
 {
     if (!device)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Trying to create mesh when Graphics is not initialized.");
         return nullptr;
     }
 
     // Check to make sure there are vertices in the list
     if (mVertexList.size() == 0)
     {
-        gError->SetError("Couldn't create mesh, no vertices added");
+        gError->SetError("Couldn't create mesh, no vertices added.");
         return nullptr;
     }
 
@@ -64,7 +64,7 @@ DGL_Mesh* MeshManager::CreateMesh(ID3D11Device* device)
     if (FAILED(hr))
     {
         // If there was a problem, set the error message and delete the mesh
-        gError->SetError("Problem creating vertex buffer: error ", hr);
+        gError->SetError("Problem creating vertex buffer for mesh. ", hr);
         ReleaseMesh(newMesh);
         return nullptr;
     }
@@ -77,14 +77,14 @@ DGL_Mesh* MeshManager::CreateMeshIndexed(unsigned* indices, unsigned indexCount,
 {
     if (!device)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Trying to create mesh when Graphics is not initialized.");
         return nullptr;
     }
 
     // Make sure there are indices to use
     if (indexCount == 0)
     {
-        gError->SetError("Couldn't create indexed mesh, no indexes");
+        gError->SetError("Couldn't create indexed mesh, no indexes.");
         return nullptr;
     }
 
@@ -113,7 +113,7 @@ DGL_Mesh* MeshManager::CreateMeshIndexed(unsigned* indices, unsigned indexCount,
     if (FAILED(hr))
     {
         // If there was a problem, set the error message and delete the mesh
-        gError->SetError("Problem creating index buffer: error ", hr);
+        gError->SetError("Problem creating index buffer for mesh. ", hr);
         ReleaseMesh(newMesh);
         return nullptr;
     }
@@ -149,7 +149,7 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
 {
     if (!deviceContext)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Trying to draw mesh when Graphics is not initialized.");
         return;
     }
 

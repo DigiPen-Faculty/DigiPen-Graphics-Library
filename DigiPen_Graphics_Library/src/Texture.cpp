@@ -24,7 +24,7 @@ DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* de
 {
     if (!device)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Trying to load texture when Graphics is not initialized.");
         return nullptr;
     }
 
@@ -57,8 +57,8 @@ DGL_Texture* TextureManager::LoadTexture(const char* pFileName, ID3D11Device* de
     {
         // If it didn't work, set the error message and delete the texture
         std::stringstream stream;
-        stream << "Problem loading texture " << pFileName << " from file: error " << hr;
-        gError->SetError(stream.str());
+        stream << "Failed to load texture from file \"" << pFileName << "\". ";
+        gError->SetError(stream.str(), hr);
         ReleaseTexture(newTexture);
         return nullptr;
     }
@@ -82,7 +82,7 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
 {
     if (!device)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Trying to load texture when Graphics is not initialized.");
         return nullptr;
     }
 
@@ -116,7 +116,7 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
     if (FAILED(hr))
     {
         // If it didn't work, set the error message and delete the texture
-        gError->SetError("Problem creating texture from memory: error ", hr);
+        gError->SetError("Failed to load texture from memory. ", hr);
         ReleaseTexture(newTexture);
         return nullptr;
     }
@@ -135,7 +135,7 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
     if (FAILED(hr))
     {
         // If it didn't work, set the error message and delete the texture
-        gError->SetError("Problem creating shader resource for texture from memory: error ", hr);
+        gError->SetError("Problem creating shader resource for texture from memory. ", hr);
         ReleaseTexture(newTexture);
         return nullptr;
     }

@@ -368,7 +368,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating vertex shader. ", hr);
+        gError->SetError("Problem creating default vertex shader. ", hr);
         return 1;
     }
 
@@ -381,7 +381,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating pixel shader. ", hr);
+        gError->SetError("Problem creating default pixel color shader. ", hr);
         return 1;
     }
 
@@ -394,7 +394,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating pixel shader. ", hr);
+        gError->SetError("Problem creating default pixel texture shader. ", hr);
         return 1;
     }
 
@@ -414,7 +414,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating input layout. ", hr);
+        gError->SetError("Problem creating shader input layout. ", hr);
         return 1;
     }
 

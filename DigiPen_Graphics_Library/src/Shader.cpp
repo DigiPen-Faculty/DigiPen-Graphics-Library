@@ -11,6 +11,7 @@ module;
 #include <d3d11.h>
 #include <unordered_set>
 #include <string>
+#include <sstream>
 #include <d3dcompiler.h>
 #include <memory>
 #include <format>
@@ -52,15 +53,19 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
         flags, 0,
         &shaderBlob, &errorBlob);
 
-
     if (FAILED(hr))
     {
-        DGL::gError->SetError(std::format("Failed to compile shader file [%s] with error [%08x]\n", filename.data(), hr));
+        std::stringstream errorMsg;
+        errorMsg << "Failed to compile pixel shader file \"" << filename << "\". ";
+
         if (errorBlob)
         {
-            DGL::gError->SetError(std::format("%.*s\n", (int)errorBlob->GetBufferSize(), (char*)errorBlob->GetBufferPointer()));
+            errorMsg << (char*)errorBlob->GetBufferPointer();
+            gError->SetError(errorMsg.str());
             errorBlob->Release();
         }
+        else
+            DGL::gError->SetError(errorMsg.str(), hr);
 
         if (shaderBlob)
             shaderBlob->Release();
@@ -74,7 +79,9 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
 
     if (FAILED(hr))
     {
-        DGL::gError->SetError(std::format("Failed to create Pixel Shader from file [%s]. Error [%08x]\n", filename.data(), hr));
+        std::stringstream errorMsg;
+        errorMsg << "Failed to create pixel shader from file \"" << filename << "\". ";
+        DGL::gError->SetError(errorMsg.str(), hr);
         return nullptr;
     }
 

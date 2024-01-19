@@ -14,15 +14,18 @@ module;
 
 export module VertexShader;
 
-export struct DGL_VertexShader
+namespace DGL
 {
-    DGL_VertexShader(std::string_view name, ID3D11Device* device);
-    DGL_VertexShader(const DGL_VertexShader& other) = delete;
+    export struct DGL_VertexShader
+    {
+        DGL_VertexShader(std::string_view name, ID3D11Device* device);
+        DGL_VertexShader(const DGL_VertexShader& other) = delete;
 
-    ~DGL_VertexShader();
+        ~DGL_VertexShader();
 
-    bool IsValid() const noexcept;
+        bool IsValid() const noexcept;
 
-    ID3D11VertexShader* shader;
-    std::string filename;
-};
+        ID3D11VertexShader* shader;
+        std::string filename;
+    };
+}
