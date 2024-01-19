@@ -65,7 +65,7 @@ HWND WindowsSystem::Initialize(const DGL_SysInitInfo* pSysInitInfo)
     // Register the window class and check the result
     if (!RegisterClassEx(&wcex))
     {
-        gError->SetError("Problem creating window: error ", GetLastError());
+        gError->SetError("Problem creating window. ", GetLastError());
         return NULL;
     }
 
@@ -86,7 +86,7 @@ HWND WindowsSystem::Initialize(const DGL_SysInitInfo* pSysInitInfo)
     // Check if the window was created successfully
     if (!mWindowHandle)
     {
-        gError->SetError("Problem creating window: error ", GetLastError());
+        gError->SetError("Problem creating window. ", GetLastError());
         return NULL;
     }
 

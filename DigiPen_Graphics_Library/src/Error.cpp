@@ -18,6 +18,33 @@ namespace DGL
 {
 ErrorHandler* gError = nullptr;
 
+//*************************************************************************************************
+string GetMessageFromHresult(long hr)
+{
+    if (HRESULT_FACILITY(hr) == FACILITY_WINDOWS)
+        hr = HRESULT_CODE(hr);
+    TCHAR* errorMessage;
+    char fullMessage[100];
+
+    if (FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        nullptr,
+        hr,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&errorMessage,
+        0,
+        nullptr) != 0)
+    {
+        snprintf(fullMessage, 100, "Error 0x%08x: %s", hr, errorMessage);
+
+        LocalFree(errorMessage);
+    }
+    else
+        snprintf(fullMessage, 100, "Error 0x%08x", hr);
+
+    return string(fullMessage);
+}
+
 //------------------------------------------------------------------------------------ ErrorHandler
 
 //*************************************************************************************************
@@ -35,9 +62,9 @@ const char* ErrorHandler::GetLastError() const
 //*************************************************************************************************
 void ErrorHandler::SetError(string_view text, long hr)
 {
-    std::stringstream stream;
-    stream << text << hr;
-    SetError(stream.str());
+    string newText(text);
+    newText += GetMessageFromHresult(hr);
+    SetError(newText);
 }
 
 //*************************************************************************************************

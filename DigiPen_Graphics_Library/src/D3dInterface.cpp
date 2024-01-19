@@ -40,7 +40,7 @@ void D3DInterface::StartUpdate()
 {
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Started Graphics update when not initialized.");
         return;
     }
 
@@ -57,7 +57,7 @@ void D3DInterface::EndUpdate()
 {
     if (!mSwapChain)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Ended Graphics update when not initialized.");
         return;
     }
 
@@ -70,7 +70,7 @@ void D3DInterface::SetBlendMode(DGL_BlendMode mode)
 {
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Tried to set blend mode when Graphics not initialized.");
         return;
     }
 
@@ -103,7 +103,7 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
 {
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Tried to set sampler state when Graphics not initialized.");
         return;
     }
 
@@ -225,7 +225,7 @@ void D3DInterface::UpdateConstantBuffer()
 {
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Tried to set constant buffer when Graphics is not initialized.");
         return;
     }
 
@@ -276,7 +276,6 @@ void D3DInterface::ResetOnSizeChange()
     // If we have no current device context, do nothing
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
         return;
     }
 
@@ -291,7 +290,7 @@ void D3DInterface::ResetOnSizeChange()
     if (FAILED(hr))
     {
         // If this failed, set the error and return
-        gError->SetError("Problem resizing swap chain buffer: error ", hr);
+        gError->SetError("Problem resizing swap chain buffer. ", hr);
         return;
     }
 
@@ -369,7 +368,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating vertex shader: error ", hr);
+        gError->SetError("Problem creating vertex shader. ", hr);
         return 1;
     }
 
@@ -382,7 +381,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating pixel shader: error ", hr);
+        gError->SetError("Problem creating pixel shader. ", hr);
         return 1;
     }
 
@@ -395,7 +394,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating pixel shader: error ", hr);
+        gError->SetError("Problem creating pixel shader. ", hr);
         return 1;
     }
 
@@ -415,7 +414,7 @@ int D3DInterface::InitializeShaders()
     );
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating input layout: error ", hr);
+        gError->SetError("Problem creating input layout. ", hr);
         return 1;
     }
 
@@ -465,7 +464,30 @@ int D3DInterface::CreateDevice()
     );
     if (FAILED(hr) || !mSwapChain || !mDevice || !mDeviceContext)
     {
-        gError->SetError("Problem creating D3D device: error ", hr);
+        // If in debug mode, try again without the debug device flag
+#if defined(DEBUG) || defined(_DEBUG)
+        flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
+        hr = D3D11CreateDeviceAndSwapChain(
+            NULL,
+            D3D_DRIVER_TYPE_HARDWARE,
+            NULL,
+            flags,
+            NULL,
+            0,
+            D3D11_SDK_VERSION,
+            &swapChainDesc,
+            &mSwapChain,
+            &mDevice,
+            &d3dFeatureLevel,
+            &mDeviceContext
+        );
+
+        // If it worked this time, return succesfully
+        if (!FAILED(hr) && mSwapChain && mDevice && mDeviceContext)
+            return 0;
+#endif
+
+        gError->SetError("Problem creating D3D device. ", hr);
         return 1;
     }
 
@@ -480,7 +502,7 @@ int D3DInterface::CreateRenderTarget()
     HRESULT hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&frameBuffer);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating frame buffer: error ", hr);
+        gError->SetError("Problem creating frame buffer. ", hr);
         return 1;
     }
 
@@ -492,7 +514,7 @@ int D3DInterface::CreateRenderTarget()
     hr = mDevice->CreateRenderTargetView(frameBuffer, &rtDesc, &mRenderTargetView);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating render target: error ", hr);
+        gError->SetError("Problem creating render target. ", hr);
         return 1;
     }
 
@@ -518,7 +540,7 @@ int D3DInterface::CreateRasterizerState()
     HRESULT hr = mDevice->CreateRasterizerState(&rasterizerDesc, &rasterizer);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating rasterizer state: error ", hr);
+        gError->SetError("Problem creating rasterizer state. ", hr);
         return 1;
     }
 
@@ -546,7 +568,7 @@ int D3DInterface::CreateBlendStates()
     HRESULT hr = mDevice->CreateBlendState(&blendDesc, &mBlendStates[BlendStates::None]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating blend state: error ", hr);
+        gError->SetError("Problem creating blend state. ", hr);
         return 1;
     }
 
@@ -568,7 +590,7 @@ int D3DInterface::CreateBlendStates()
     hr = mDevice->CreateBlendState(&blendDesc, &mBlendStates[BlendStates::Transparent]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating blend state: error ", hr);
+        gError->SetError("Problem creating blend state. ", hr);
         return 1;
     }
 
@@ -590,7 +612,7 @@ int D3DInterface::CreateBlendStates()
     hr = mDevice->CreateBlendState(&blendDesc, &mBlendStates[BlendStates::Add]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating blend state: error ", hr);
+        gError->SetError("Problem creating blend state. ", hr);
         return 1;
     }
 
@@ -612,7 +634,7 @@ int D3DInterface::CreateBlendStates()
     hr = mDevice->CreateBlendState(&blendDesc, &mBlendStates[BlendStates::Multiply]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating blend state: error ", hr);
+        gError->SetError("Problem creating blend state. ", hr);
         return 1;
     }
 
@@ -634,7 +656,7 @@ int D3DInterface::CreateConstantBuffer()
     HRESULT hr = mDevice->CreateBuffer(&cbBufferDesc, NULL, &mPerObjectBuffer);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating constant buffer: error ", hr);
+        gError->SetError("Problem creating constant buffer. ", hr);
         return 1;
     }
 
@@ -646,7 +668,6 @@ void D3DInterface::SetViewport()
 {
     if (!mDeviceContext)
     {
-        gError->SetError("Graphics is not initialized");
         return;
     }
 
@@ -686,7 +707,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Point][TextureAddressModes::Wrap]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -698,7 +719,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Point][TextureAddressModes::Clamp]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -710,7 +731,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Point][TextureAddressModes::Mirror]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -722,7 +743,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Point][TextureAddressModes::Mirror_Once]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -737,7 +758,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Linear][TextureAddressModes::Wrap]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -749,7 +770,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Linear][TextureAddressModes::Clamp]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -761,7 +782,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Linear][TextureAddressModes::Mirror]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
@@ -773,7 +794,7 @@ int D3DInterface::CreateSamplers()
         &mSamplerStates[SampleModes::Linear][TextureAddressModes::Mirror_Once]);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating sampler: error ", hr);
+        gError->SetError("Problem creating sampler. ", hr);
         return 1;
     }
 
