@@ -91,6 +91,8 @@ private:
     const DGL_Texture* mCurrentTexture{ nullptr };
     // Tracks whether or not the graphics system has been initialized
     bool mInitialized{ false };
+    // Tracks mesh creation status
+    bool mCreatingMesh{ false };
 
     MeshManager Meshes;
     ShaderManager mShaderManager;

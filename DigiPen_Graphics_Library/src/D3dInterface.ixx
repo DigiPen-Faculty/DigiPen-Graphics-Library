@@ -165,6 +165,8 @@ private:
     DGL_PixelShaderMode mCurrentPixelShaderMode{ DGL_PSM_COLOR };
     // The current vertex shader mode
     DGL_VertexShaderMode mCurrentVertexShaderMode{ DGL_VSM_DEFAULT };
+    // Used to make sure StartUpdate is called before EndUpdate
+    bool mUpdateStarted{ false };
 
     // The values for blend states
     enum class BlendStates { None, Transparent, Add, Multiply };

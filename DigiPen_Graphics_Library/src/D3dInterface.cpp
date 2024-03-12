@@ -13,7 +13,6 @@ module;
 #include "VShader.h"
 #include "PShader.h"
 #include "PTexShader.h"
-#include <assert.h>
 
 module D3DInterface;
 
@@ -50,6 +49,9 @@ void D3DInterface::StartUpdate()
     mDeviceContext->IASetInputLayout(mInputLayout);
     // Set the render target
     mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, NULL);
+
+    // Set the tracking flag
+    mUpdateStarted = true;
 }
 
 //*************************************************************************************************
@@ -60,9 +62,17 @@ void D3DInterface::EndUpdate()
         gError->SetError("Ended Graphics update when not initialized.");
         return;
     }
+    else if (!mUpdateStarted)
+    {
+        gError->SetError("Called DGL_Graphics_FinishDrawing without calling DGL_Graphics_StartDrawing.");
+        return;
+    }
 
     // Send the current buffer of data to be displayed
     mSwapChain->Present(1, 0);
+
+    // Reset the tracking flag
+    mUpdateStarted = false;
 }
 
 //*************************************************************************************************
@@ -91,6 +101,7 @@ void D3DInterface::SetBlendMode(DGL_BlendMode mode)
         blendState = mBlendStates[BlendStates::Multiply];
         break;
     default:
+        gError->SetError("Passed in an invalid DGL_BlendMode value to DGL_Graphics_SetBlendMode.");
         break;
     }
 
@@ -114,7 +125,10 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
     else if (newSampleMode == DGL_TSM_POINT)
         sampleMode = SampleModes::Point;
     else
+    {
+        gError->SetError("Passed in an invalid DGL_TextureSampleMode value to DGL_Graphics_SetTextureSamplerData.");
         return;
+    }
 
     // Use the sample mode and address mode to index into the arrays to get the sampler state
     ID3D11SamplerState** samplerState{ nullptr };
@@ -133,6 +147,7 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
         samplerState = &(mSamplerStates[sampleMode][TextureAddressModes::Wrap]);
         break;
     default:
+        gError->SetError("Passed in an invalid DGL_TextureAddressMode value to DGL_Graphics_SetTextureSamplerData.");
         break;
     }
 
@@ -149,6 +164,12 @@ DGL_PixelShaderMode D3DInterface::GetPixelShaderMode() const
 //*************************************************************************************************
 void D3DInterface::SetPixelShaderMode(DGL_PixelShaderMode mode)
 {
+    if (mode < 0 || mode > DGL_PSM_CUSTOM)
+    {
+        gError->SetError("Passed in an invalid DGL_PixelShaderMode value to DGL_Graphics_SetShaderMode.");
+        return;
+    }
+
     // Set the shader mode to use on the next draw call
     mCurrentPixelShaderMode = mode;
 }
@@ -162,6 +183,12 @@ DGL_VertexShaderMode D3DInterface::GetVertexShaderMode() const
 //*************************************************************************************************
 void D3DInterface::SetVertexShaderMode(DGL_VertexShaderMode mode)
 {
+    if (mode < 0 || mode > DGL_VSM_CUSTOM)
+    {
+        gError->SetError("Passed in an invalid DGL_VertexShaderMode value to DGL_Graphics_SetShaderMode.");
+        return;
+    }
+
     // Set the shader mode to use on the next draw call
     mCurrentVertexShaderMode = mode;
 }
@@ -203,7 +230,6 @@ ID3D11PixelShader* D3DInterface::GetCurrentPixelShader() const
         case DGL_PSM_CUSTOM:  return mPixelCustomShader;
     }
 
-    assert(false);
     return nullptr;
 }
 
@@ -216,7 +242,6 @@ ID3D11VertexShader* D3DInterface::GetCurrentVertexShader() const
         case DGL_VSM_CUSTOM:  return mVertexCustomShader;
     }
 
-    assert(false);
     return nullptr;
 }
 
@@ -238,6 +263,9 @@ void D3DInterface::UpdateConstantBuffer()
 //*************************************************************************************************
 void D3DInterface::SetTransform(const DGL_Mat4* matrix)
 {
+    if (!matrix)
+        return;
+
     // Set the transform matrix on the constant buffer
     mConstantBuffer.mTransformMatrix = *matrix;
 }
@@ -259,6 +287,9 @@ void D3DInterface::SetAlpha(float alpha)
 //*************************************************************************************************
 void D3DInterface::SetTintColor(const DGL_Color* color)
 {
+    if (!color)
+        return;
+
     // Set the tint color on the constant buffer
     mConstantBuffer.mTintColor = *color;
 }

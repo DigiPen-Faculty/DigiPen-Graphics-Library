@@ -166,6 +166,9 @@ DGL_Vec2 WindowsSystem::GetMonitorSize() const
 //*************************************************************************************************
 DGL_Vec2 WindowsSystem::GetWindowSize() const
 {
+    if (!mWindowHandle)
+        return DGL_Vec2{ 0 };
+
     // Get the window size from the window itself (this will account for title bar, borders, etc.)
     RECT rect;
     GetClientRect(mWindowHandle, &rect);
@@ -178,6 +181,15 @@ DGL_Vec2 WindowsSystem::GetWindowSize() const
 void WindowsSystem::SetWindowSizeAndPosition(int windowWidth, int windowHeight, int windowLeftPos, 
     int windowTopPos) const
 {
+    if (!mWindowHandle)
+        return;
+
+    if (windowWidth <= 0 || windowHeight <= 0 || windowLeftPos < 0 || windowTopPos < 0)
+    {
+        gError->SetError("Passed invalid parameter for window size or position.");
+        return;
+    }
+
     // Set the size and position of the application window.
     // See the Microsoft documentation for SetWindowPos for information about the flag options.
     SetWindowPos(
@@ -196,6 +208,9 @@ void WindowsSystem::SetWindowSizeAndPosition(int windowWidth, int windowHeight, 
 //*************************************************************************************************
 void WindowsSystem::SetWindowSize(int windowWidth, int windowHeight) const
 {
+    if (!mWindowHandle)
+        return;
+
     // Save the current positions of all four sides of the application window.
     RECT rect;
     GetWindowRect(mWindowHandle, &rect);

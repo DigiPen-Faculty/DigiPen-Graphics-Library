@@ -172,6 +172,7 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
         deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
         break;
     default:
+        gError->SetError("Passed in an invalid DGL_DrawMode value to DGL_Graphics_DrawMesh.");
         break;
     }
 

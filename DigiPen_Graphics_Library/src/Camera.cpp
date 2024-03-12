@@ -69,6 +69,10 @@ float CameraObject::GetCameraZoom() const
 //*************************************************************************************************
 void CameraObject::SetCameraZoom(float zoom)
 {
+    // Keep the scale above a minimum value
+    if (zoom <= 0.01f)
+        zoom = 0.01f;
+
     // Set the new zoom factor
     mScale = zoom;
     // Update the world matrix on the constant buffer

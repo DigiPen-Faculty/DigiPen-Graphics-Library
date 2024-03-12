@@ -14,6 +14,8 @@ module;
 
 module Errors;
 
+import WindowsSystem;
+
 namespace DGL
 {
 ErrorHandler* gError = nullptr;
@@ -72,7 +74,14 @@ void ErrorHandler::SetError(string_view text)
 {
     mLastError = text;
 #ifdef _DEBUG
-    std::cerr << "DGL Error: " << mLastError << std::endl;
+    string msg = "DGL Error: ";
+    msg += text;
+
+    std::cerr << msg << std::endl;
+
+    MessageBox(gWinSys->GetWindowHandle(), msg.c_str(), "DGL Error", MB_ICONWARNING | MB_APPLMODAL);
+
+    DebugBreak();
 #endif
 }
 

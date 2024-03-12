@@ -10,7 +10,7 @@ module;
 
 #include "DGL.h"
 #include <objbase.h>
-#include <cassert>
+#include <sstream>
 
 module GraphicsSystem;
 
@@ -76,26 +76,42 @@ int GraphicsSystem::ShutDown()
     int returnValue = 0;
 
     // Set an error if there are meshes or textures that weren't released
+    std::stringstream msg;
+    msg << "The following resources were not released: ";
     if (mMeshes)
     {
         returnValue = 1;
-        gError->SetError("Not all meshes were released");
+        msg << mMeshes << " meshes";
     }
     if (mTextures)
     {
-        returnValue = 1;
-        gError->SetError("Not all textures were released");
+        if (returnValue)
+            msg << ", ";
+        else
+            returnValue = 1;
+
+        msg << mTextures << " textures";
     }
     if (mShaderManager.PixelShaderCount())
     {
-        returnValue = 1;
-        gError->SetError("Not all pixel shaders were released");
+        if (returnValue)
+            msg << ", ";
+        else
+            returnValue = 1;
+
+        msg << mShaderManager.PixelShaderCount() << " pixel shaders";
     }
     if (mShaderManager.VertexShaderCount())
     {
-        returnValue = 1;
-        gError->SetError("Not all vertex shaders were released");
+        if (returnValue)
+            msg << ", ";
+        else
+            returnValue = 1;
+
+        msg << mShaderManager.VertexShaderCount() << " vertex shaders";
     }
+    if (returnValue)
+        gError->SetError(msg.str());
 
     // Release all D3D objects
     D3D.Release();
@@ -111,10 +127,15 @@ int GraphicsSystem::ShutDown()
 //*************************************************************************************************
 const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
 {
-    assert(filename);
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_LoadPixelShader when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (!filename)
+    {
+        gError->SetError("Passed a null filename to DGL_Graphics_LoadPixelShader.");
         return nullptr;
     }
 
@@ -128,10 +149,11 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_FreePixelShader when Graphics is not initialized.");
         return;
     }
-    else if (!shader)
+    
+    if (!shader)
     {
         return;
     }
@@ -147,8 +169,10 @@ const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
         gError->SetError("Graphics is not initialized");
         return nullptr;
     }
-    else if (filename == nullptr)
+
+    if (!filename)
     {
+        gError->SetError("Passed a null filename to DGL_Graphics_LoadVertexShader.");
         return nullptr;
     }
 
@@ -162,10 +186,11 @@ void GraphicsSystem::ReleaseVertexShader(const DGL_VertexShader* shader)
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_FreeVertexShader when Graphics is not initialized.");
         return;
     }
-    else if (!shader)
+    
+    if (!shader)
     {
         return;
     }
@@ -178,7 +203,13 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_LoadTexture when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (!pFileName)
+    {
+        gError->SetError("Passed a null filename to DGL_Graphics_LoadTexture.");
         return nullptr;
     }
 
@@ -198,7 +229,19 @@ DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, in
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_LoadTextureFromMemory when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (!data)
+    {
+        gError->SetError("Passed null data to DGL_Graphics_LoadTextureFromMemory.");
+        return nullptr;
+    }
+
+    if (width <= 0 || height <= 0)
+    {
+        gError->SetError("Passed invalid size to DGL_Graphics_LoadTextureFromMemory.");
         return nullptr;
     }
 
@@ -237,8 +280,23 @@ void GraphicsSystem::SetCurrentTexture(const DGL_Texture* texture)
 //*************************************************************************************************
 void GraphicsSystem::StartMesh()
 {
+    if (!mInitialized)
+    {
+        gError->SetError("Called DGL_Graphics_StartMesh when Graphics is not initialized.");
+        return;
+    }
+
+    if (mCreatingMesh)
+    {
+        gError->SetError("Called DGL_Graphics_StartMesh again without calling DGL_Graphics_EndMesh.");
+        return;
+    }
+     
     // Clear any existing vertices in the list
     Meshes.mVertexList.clear();
+
+    // Set the flag
+    mCreatingMesh = true;
 }
 
 //*************************************************************************************************
@@ -246,7 +304,13 @@ DGL_Mesh* GraphicsSystem::EndMesh()
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_EndMesh when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (!mCreatingMesh)
+    {
+        gError->SetError("Called DGL_Graphics_EndMesh without calling DGL_Graphics_StartMesh.");
         return nullptr;
     }
 
@@ -257,6 +321,9 @@ DGL_Mesh* GraphicsSystem::EndMesh()
     if (newMesh)
         ++mMeshes;
 
+    // Reset the flag
+    mCreatingMesh = false;
+
     // Return the new mesh
     return newMesh;
 }
@@ -266,7 +333,13 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_EndMeshIndexed when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (!mCreatingMesh)
+    {
+        gError->SetError("Called DGL_Graphics_EndMeshIndexed without calling DGL_Graphics_StartMesh.");
         return nullptr;
     }
 
@@ -284,6 +357,12 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
 //*************************************************************************************************
 void GraphicsSystem::AddVertex(const DGL_Vec2& position, const DGL_Color& color, const DGL_Vec2& texCoord)
 {
+    if (!mCreatingMesh)
+    {
+        gError->SetError("Called DGL_Graphics_AddVertex or DGL_Graphics_AddTriangle without calling DGL_Graphics_StartMesh.");
+        return;
+    }
+
     // Add the vertex to the list on the mesh manager
     Meshes.mVertexList.push_back({ position, color, texCoord });
 }
@@ -307,7 +386,8 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
 {
     if (!mInitialized)
     {
-        gError->SetError("Graphics is not initialized");
+        gError->SetError("Called DGL_Graphics_DrawMesh when Graphics is not initialized.");
+        return;
     }
 
     // Draw the mesh using the mesh manager
@@ -322,7 +402,10 @@ using namespace DGL;
 //*************************************************************************************************
 DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2* position)
 {
-    return gGraphics->Camera.ScreenToWorld(*position);
+    if (position)
+        return gGraphics->Camera.ScreenToWorld(*position);
+    else
+        return DGL_Vec2{ 0,0 };
 }
 
 //*************************************************************************************************
@@ -334,7 +417,8 @@ DGL_Vec2 DGL_Camera_GetPosition(void)
 //*************************************************************************************************
 void DGL_Camera_SetPosition(const DGL_Vec2* position)
 {
-    gGraphics->Camera.SetCameraPosition(*position);
+    if (position)
+        gGraphics->Camera.SetCameraPosition(*position);
 }
 
 //*************************************************************************************************
@@ -376,9 +460,12 @@ void DGL_Graphics_FinishDrawing(void)
 //*************************************************************************************************
 void DGL_Graphics_SetBackgroundColor(const DGL_Color* color)
 {
-    gGraphics->D3D.mBackgroundColor[0] = color->r;
-    gGraphics->D3D.mBackgroundColor[1] = color->g;
-    gGraphics->D3D.mBackgroundColor[2] = color->b;
+    if (color)
+    {
+        gGraphics->D3D.mBackgroundColor[0] = color->r;
+        gGraphics->D3D.mBackgroundColor[1] = color->g;
+        gGraphics->D3D.mBackgroundColor[2] = color->b;
+    }
 }
 
 //*************************************************************************************************
@@ -421,31 +508,21 @@ void DGL_Graphics_SetTexture(const DGL_Texture* texture)
 //*************************************************************************************************
 const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
 {
-    assert(filename);
-    if (filename)
-    {
-        return gGraphics->LoadPixelShader(filename);
-    }
-
-    return nullptr;
+    return gGraphics->LoadPixelShader(filename);
 }
 
 //*************************************************************************************************
 const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
 {
-    assert(filename);
-    if (filename)
-    {
-        return gGraphics->LoadVertexShader(filename);
-    }
-
-    return nullptr;
+    return gGraphics->LoadVertexShader(filename);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
 {
-    assert(shader);
+    if (!shader)
+        return;
+
     gGraphics->ReleasePixelShader(*shader);
     *shader = nullptr;
 }
@@ -453,7 +530,9 @@ void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
 //*************************************************************************************************
 void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader)
 {
-    assert(shader);
+    if (!shader)
+        return;
+
     gGraphics->ReleaseVertexShader(*shader);
     *shader = nullptr;
 }
@@ -473,6 +552,9 @@ DGL_Texture* DGL_Graphics_LoadTextureFromMemory(const unsigned char* data, int w
 //*************************************************************************************************
 void DGL_Graphics_FreeTexture(DGL_Texture** texture)
 {
+    if (!texture)
+        return;
+
     gGraphics->ReleaseTexture(*texture);
     *texture = nullptr;
 }
@@ -525,6 +607,9 @@ void DGL_Graphics_AddTriangle(
 //*************************************************************************************************
 void DGL_Graphics_FreeMesh(DGL_Mesh** mesh)
 {
+    if (!mesh)
+        return;
+
     gGraphics->ReleaseMesh(*mesh);
     *mesh = nullptr;
 }
@@ -539,6 +624,12 @@ void DGL_Graphics_DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
 void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* scale,
     float rotationRadians)
 {
+    if (!position || !scale)
+    {
+        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TransformData.");
+        return;
+    }
+
     // Create the scale matrix
     DGL_Mat4 scaleMatrix;
     Matrix_SetToIdentity(scaleMatrix);
@@ -564,12 +655,21 @@ void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix)
 {
+    if (!transformationMatrix)
+        return;
+
     gGraphics->D3D.SetTransform(transformationMatrix);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2* textureOffset)
 {
+    if (!textureOffset)
+    {
+        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TextureOffset.");
+        return;
+    }
+
     gGraphics->D3D.SetTextureOffset(*textureOffset);
 }
 
@@ -582,5 +682,11 @@ void DGL_Graphics_SetCB_Alpha(float alpha)
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TintColor(const DGL_Color* color)
 {
+    if (!color)
+    {
+        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TextureOffset.");
+        return;
+    }
+
     gGraphics->D3D.SetTintColor(color);
 }
