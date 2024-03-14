@@ -350,6 +350,9 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
     if (newMesh)
         ++mMeshes;
 
+    // Reset the flag
+    mCreatingMesh = false;
+
     // Return the new mesh
     return newMesh;
 }
