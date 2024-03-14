@@ -82,6 +82,9 @@ public:
     D3DInterface D3D;
     CameraObject Camera;
 
+    // The Z value to use when setting the transform
+    float mZValue{ 0.0f };
+
 private:
     // The number of textures that have been loaded and not released
     int mTextures{ 0 };

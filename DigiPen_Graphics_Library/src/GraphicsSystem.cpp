@@ -647,12 +647,19 @@ void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* 
     Matrix_SetToIdentity(txMatrix);
     txMatrix.m[0][3] = position->x;
     txMatrix.m[1][3] = position->y;
+    txMatrix.m[2][3] = gGraphics->mZValue;
 
     // Multiply all matrices together
     DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
 
     // Set the transform matrix on the constant buffer
     gGraphics->D3D.SetTransform(&result);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetCB_ZLayer(float zValue)
+{
+    gGraphics->mZValue = zValue;
 }
 
 //*************************************************************************************************

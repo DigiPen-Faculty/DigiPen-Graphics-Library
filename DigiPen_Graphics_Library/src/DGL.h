@@ -365,6 +365,10 @@ DGL_API void DGL_Graphics_DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode);
 DGL_API void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* scale, 
     float rotationRadians);
 
+// Sets the Z layer value which will be used when drawing meshes.
+// Smaller values will make objects appear in front of other objects with larger values.
+DGL_API void DGL_Graphics_SetCB_ZLayer(float zValue);
+
 // Sets the transformation matrix with position, scale, and rotation to use when drawing meshes.
 DGL_API void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix);
 
