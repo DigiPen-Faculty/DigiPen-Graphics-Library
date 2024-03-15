@@ -45,9 +45,13 @@ void D3DInterface::StartUpdate()
 
     // Clear the render target view with the current background color
     mDeviceContext->ClearRenderTargetView(mRenderTargetView, mBackgroundColor);
+    // Clear the depth stencil view
+    if (mDepthStencilView)
+    mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     // Set the input layout
     mDeviceContext->IASetInputLayout(mInputLayout);
-    // Set the render target
+
+    // Set the render target and depth stencil view
     mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, NULL);
 
     // Set the tracking flag
@@ -336,6 +340,11 @@ void D3DInterface::ResetOnSizeChange()
 //*************************************************************************************************
 void D3DInterface::Release()
 {
+#ifdef DEBUG_REPORT_DEVICES
+    ID3D11Debug* DebugDevice = nullptr;
+    HRESULT hr = mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&DebugDevice));
+#endif
+
     // Release all the blend states
     for (auto [key, value] : mBlendStates)
         SafeRelease(value);
@@ -353,10 +362,20 @@ void D3DInterface::Release()
     SafeRelease(mPixelShader);
     SafeRelease(mPixelTextureShader);
     SafeRelease(mVertexShader);
+    SafeRelease(mDepthStencilView);
+    SafeRelease(mDepthStencil);
     SafeRelease(mRenderTargetView);
     SafeRelease(mSwapChain);
     SafeRelease(mDeviceContext);
     SafeRelease(mDevice);
+
+#ifdef DEBUG_REPORT_DEVICES
+    if (DebugDevice)
+    {
+        hr = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+        DebugDevice->Release();
+    }
+#endif
 }
 
 //*************************************************************************************************
@@ -378,6 +397,9 @@ int D3DInterface::InitializeD3D()
         return 1;
 
     if (CreateSamplers() == 1)
+        return 1;
+
+    if (CreateDepthStencil() == 1)
         return 1;
 
     SetViewport();
@@ -551,6 +573,89 @@ int D3DInterface::CreateRenderTarget()
 
     // Release frame buffer
     frameBuffer->Release();
+
+    return 0;
+}
+
+//*************************************************************************************************
+int D3DInterface::CreateDepthStencil()
+{
+    // Get the current client size
+    RECT winRect;
+    GetClientRect(gWinSys->GetWindowHandle(), &winRect);
+
+    // Create the depth-stencil buffer
+    D3D11_TEXTURE2D_DESC descDepth = { 0 };
+    descDepth.Width = winRect.right - winRect.left;
+    descDepth.Height = winRect.bottom - winRect.top;
+    descDepth.MipLevels = 1;
+    descDepth.ArraySize = 1;
+    descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    descDepth.SampleDesc.Count = 1;
+    descDepth.SampleDesc.Quality = 0;
+    descDepth.Usage = D3D11_USAGE_DEFAULT;
+    descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    HRESULT hr = mDevice->CreateTexture2D(&descDepth, NULL, &mDepthStencil);
+    if (FAILED(hr))
+    {
+        gError->SetError("Problem creating depth-stencil buffer. ", hr);
+        return 1;
+    }
+
+    // Create the depth-stencil state
+    D3D11_DEPTH_STENCIL_DESC dsDesc = { 0 };
+
+    // Depth test parameters
+    dsDesc.DepthEnable = true;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+    // Stencil test parameters
+    dsDesc.StencilEnable = true;
+    dsDesc.StencilReadMask = 0xFF;
+    dsDesc.StencilWriteMask = 0xFF;
+
+    // Stencil operations if pixel is front-facing
+    dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+    dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+    // Stencil operations if pixel is back-facing
+    dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+    dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+    // Create depth stencil state
+    ID3D11DepthStencilState* dsState;
+    hr = mDevice->CreateDepthStencilState(&dsDesc, &dsState);
+    if (FAILED(hr))
+    {
+        gError->SetError("Problem creating depth-stencil state. ", hr);
+        return 1;
+    }
+
+    // Bind depth stencil state
+    mDeviceContext->OMSetDepthStencilState(dsState, 1);
+
+    // Release the depth stencil state
+    dsState->Release();
+
+    // Create the depth stencil view description
+    D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+    ZeroMemory(&descDSV, sizeof(descDSV));
+    descDSV.Format = descDepth.Format;
+    descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    descDSV.Texture2D.MipSlice = 0;
+
+    // Create the depth stencil view
+    hr = mDevice->CreateDepthStencilView(mDepthStencil, &descDSV, &mDepthStencilView);
+    if (FAILED(hr))
+    {
+        gError->SetError("Problem creating depth-stencil view. ", hr);
+        return 1;
+    }
 
     return 0;
 }

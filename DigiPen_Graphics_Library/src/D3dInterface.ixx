@@ -122,6 +122,9 @@ private:
     // Creates the render target view from the swap chain buffer
     int CreateRenderTarget();
 
+    // Creates the depth-stencil resources
+    int CreateDepthStencil();
+
     // Creates the rasterizer state
     int CreateRasterizerState();
 
@@ -147,6 +150,10 @@ private:
     IDXGISwapChain* mSwapChain{ nullptr };
     // The D3D render target view object
     ID3D11RenderTargetView* mRenderTargetView{ nullptr };
+    // The D3D depth stencil texture
+    ID3D11Texture2D* mDepthStencil{ nullptr };
+    // The D3D depth stencil view object
+    ID3D11DepthStencilView* mDepthStencilView{ nullptr };
     // The D3D vertex shader object
     ID3D11VertexShader* mVertexShader{ nullptr };
     // The D3D pixel shader object for color only
