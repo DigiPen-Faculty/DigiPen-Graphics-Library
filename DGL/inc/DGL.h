@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.2.2
+//          v1.3.0
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2024 DigiPen, All rights reserved.
@@ -380,6 +380,9 @@ DGL_API void DGL_Graphics_SetCB_Alpha(float alpha);
 
 // Sets the tint color to be applied when drawing meshes. 
 DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color* color);
+
+// Sets the float data which is available for custom shaders.
+DGL_API void DGL_Graphics_SetCB_ShaderData(float data);
 
 
 //*************************************************************************************************
