@@ -56,7 +56,7 @@ void CameraObject::SetCameraPosition(const DGL_Vec2& position)
     // Set the new camera position
     mCameraPosition = position;
     // Update the world matrix on the constant buffer
-    gGraphics->D3D.SetWorldMatrix(GetWorldMatrix());
+    gGraphics->D3D.mConstantBuffer.mWorldMatrix = GetWorldMatrix();
 }
 
 //*************************************************************************************************
@@ -76,7 +76,7 @@ void CameraObject::SetCameraZoom(float zoom)
     // Set the new zoom factor
     mScale = zoom;
     // Update the world matrix on the constant buffer
-    gGraphics->D3D.SetWorldMatrix(GetWorldMatrix());
+    gGraphics->D3D.mConstantBuffer.mWorldMatrix = GetWorldMatrix();
 }
 
 //*************************************************************************************************
@@ -91,7 +91,7 @@ void CameraObject::SetCameraRotation(float radians)
     mRotation = radians;
 
     // Update the world matrix on the constant buffer
-    gGraphics->D3D.SetWorldMatrix(GetWorldMatrix());
+    gGraphics->D3D.mConstantBuffer.mWorldMatrix = GetWorldMatrix();
 }
 
 //*************************************************************************************************

@@ -653,7 +653,7 @@ void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* 
     DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
 
     // Set the transform matrix on the constant buffer
-    gGraphics->D3D.SetTransform(&result);
+    gGraphics->D3D.mConstantBuffer.mTransformMatrix = result;
 }
 
 //*************************************************************************************************
@@ -668,7 +668,7 @@ void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix)
     if (!transformationMatrix)
         return;
 
-    gGraphics->D3D.SetTransform(transformationMatrix);
+    gGraphics->D3D.mConstantBuffer.mTransformMatrix = *transformationMatrix;
 }
 
 //*************************************************************************************************
@@ -680,13 +680,13 @@ void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2* textureOffset)
         return;
     }
 
-    gGraphics->D3D.SetTextureOffset(*textureOffset);
+    gGraphics->D3D.mConstantBuffer.mTexOffset = *textureOffset;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_Alpha(float alpha)
 {
-    gGraphics->D3D.SetAlpha(alpha);
+    gGraphics->D3D.mConstantBuffer.mAlpha = alpha;
 }
 
 //*************************************************************************************************
@@ -698,5 +698,11 @@ void DGL_Graphics_SetCB_TintColor(const DGL_Color* color)
         return;
     }
 
-    gGraphics->D3D.SetTintColor(color);
+    gGraphics->D3D.mConstantBuffer.mTintColor = *color;
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetCB_ShaderData(float data)
+{
+    gGraphics->D3D.mConstantBuffer.mShaderData = data;
 }

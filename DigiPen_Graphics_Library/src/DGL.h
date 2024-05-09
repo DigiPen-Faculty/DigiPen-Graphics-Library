@@ -381,6 +381,9 @@ DGL_API void DGL_Graphics_SetCB_Alpha(float alpha);
 // Sets the tint color to be applied when drawing meshes. 
 DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color* color);
 
+// Sets the float data which is available for custom shaders.
+DGL_API void DGL_Graphics_SetCB_ShaderData(float data);
+
 
 //*************************************************************************************************
 // Input functions

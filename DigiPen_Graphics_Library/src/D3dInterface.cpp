@@ -265,47 +265,6 @@ void D3DInterface::UpdateConstantBuffer()
 }
 
 //*************************************************************************************************
-void D3DInterface::SetTransform(const DGL_Mat4* matrix)
-{
-    if (!matrix)
-        return;
-
-    // Set the transform matrix on the constant buffer
-    mConstantBuffer.mTransformMatrix = *matrix;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetTextureOffset(const DGL_Vec2& offset)
-{
-    // Set the texture offset on the constant buffer
-    mConstantBuffer.mTexOffset = offset;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetAlpha(float alpha)
-{
-    // Set the alpha value on the constant buffer
-    mConstantBuffer.mAlpha = alpha;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetTintColor(const DGL_Color* color)
-{
-    if (!color)
-        return;
-
-    // Set the tint color on the constant buffer
-    mConstantBuffer.mTintColor = *color;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetWorldMatrix(const DGL_Mat4& matrix)
-{
-    // Set the world matrix on the constant buffer
-    mConstantBuffer.mWorldMatrix = matrix;
-}
-
-//*************************************************************************************************
 void D3DInterface::ResetOnSizeChange()
 {
     // If we have no current device context, do nothing

@@ -18,7 +18,7 @@ cbuffer cbPerObject
     float4 tintColor;
     float2 texOffset;
     float alpha;
-    float padding;
+    float shaderData;
 };
 
 vs_out vs_main(vs_in input) {

@@ -36,8 +36,11 @@ export struct cbPerObject
     DGL_Vec2 mTexOffset{ 0 };
     // The alpha value to multiply with the color
     float mAlpha{ 1.0f };
-    // This is not used - it is required to make the constant buffer a valid size
-    float padding{ 0 };
+    // Extra data which can be used by custom shaders
+    float mShaderData{ 0 };
+
+    // Note: if adding any additional variables, you must account
+    // for the valid constant buffer sizes
 };
 
 //------------------------------------------------------------------------------------ D3DInterface
@@ -85,23 +88,11 @@ public:
     // Update the D3D constant buffer with the current stored data
     void UpdateConstantBuffer();
 
-    // Set the transformation matrix for the constant buffer
-    void SetTransform(const DGL_Mat4* matrix);
-
-    // Set the texture offset for the constant buffer
-    void SetTextureOffset(const DGL_Vec2& offset);
-
-    // Set the alpha value for the constant buffer
-    void SetAlpha(float alpha);
-
-    // Set the tint color for the constant buffer
-    void SetTintColor(const DGL_Color* color);
-
-    // Set the world matrix for the constant buffer
-    void SetWorldMatrix(const DGL_Mat4& matrix);
-
     // Adjust to a change in window size
     void ResetOnSizeChange();
+
+    // Stores the constant buffer data that will be applied 
+    cbPerObject mConstantBuffer;
 
     // The color that will be used to clear the render target view
     float mBackgroundColor[4]{ 0.0f, 0.0f, 0.0f, 1.0f };
@@ -140,8 +131,6 @@ private:
     // Creates the sampler states for all combinations of sample modes and texture address modes
     int CreateSamplers();
 
-    // Stores the constant buffer data that will be applied
-    cbPerObject mConstantBuffer;
     // The D3D device object
     ID3D11Device* mDevice{ nullptr };
     // The D3D device context object
