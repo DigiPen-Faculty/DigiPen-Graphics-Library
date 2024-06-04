@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.3.0
+//          v1.3.1
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2024 DigiPen, All rights reserved.
@@ -407,6 +407,10 @@ DGL_API BOOL DGL_Input_KeyTriggered(unsigned char key);
 
 // Returns TRUE if the specified key is currently not down but was down last frame, and FALSE if not.
 DGL_API BOOL DGL_Input_KeyReleased(unsigned char key);
+
+// Returns the last key that was triggered (down this frame and not down last frame).
+// If no key no key was triggered, will return 0.
+DGL_API unsigned char DGL_Input_LastKeyTriggered(void);
 
 // Pass in FALSE to hide the mouse cursor and TRUE to display it.
 DGL_API void DGL_Input_ShowCursor(BOOL show);
