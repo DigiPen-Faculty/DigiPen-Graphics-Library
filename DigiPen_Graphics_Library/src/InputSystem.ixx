@@ -53,6 +53,10 @@ public:
     // Returns true if the specified key is up this frame and was down last frame
     bool KeyReleased(unsigned char key) const;
 
+    // Returns the last key that was triggered. 
+    // Returns 0 if no key was triggered during the last frame.
+    unsigned char LastKeyTriggered() const;
+
 private:
     // Number of keys in the array. See the Windows virtual key list for all possible values.
     static constexpr int cInputKeyCount{ 256 };
@@ -66,6 +70,9 @@ private:
     DGL_Vec2 mMouseDelta{ 0, 0 };
     // Stores the change in the mouse wheel position. 
     int mMouseWheelDelta{ 0 };
+    // Stores the key associated with the last key down message, if it was previously up. 
+    // Cleared every update.
+    unsigned char mLastKeyTriggered{ 0 };
 };
 
 // Global pointer for accessing the input system

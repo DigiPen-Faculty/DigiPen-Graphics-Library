@@ -57,6 +57,9 @@ void InputSystem::Update()
 
     // Reset the mouse wheel delta variable. 
     mMouseWheelDelta = 0;
+
+    // Reset the last key triggered variable.
+    mLastKeyTriggered = 0;
 }
 
 //*************************************************************************************************
@@ -87,6 +90,10 @@ void InputSystem::SetKeyState(unsigned char key, bool state)
     }
 
     mKeyState[key] = state;
+
+    // If setting this key to down and it was previously up, store as last key triggered
+    if (state && !mPrevKeyState[key])
+        mLastKeyTriggered = key;
 }
 
 //*************************************************************************************************
@@ -134,6 +141,12 @@ bool InputSystem::KeyReleased(unsigned char key) const
     return mKeyState[key] == false && mPrevKeyState[key] == true;
 }
 
+//*************************************************************************************************
+unsigned char InputSystem::LastKeyTriggered() const
+{
+    return mLastKeyTriggered;
+}
+
 } // namespace DGL
 
 using namespace DGL;
@@ -172,6 +185,12 @@ BOOL DGL_Input_KeyTriggered(unsigned char key)
 BOOL DGL_Input_KeyReleased(unsigned char key)
 {
     return gInput->KeyReleased(key);
+}
+
+//*************************************************************************************************
+unsigned char DGL_Input_LastKeyTriggered(void)
+{
+    return gInput->LastKeyTriggered();
 }
 
 //*************************************************************************************************
