@@ -393,8 +393,57 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
         return;
     }
 
+    CreateTransformMatrix();
+
     // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(), D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(), 
+        D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+}
+
+//*************************************************************************************************
+void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& scale, float rotation)
+{
+    mDrawPosition = position;
+    mDrawScale = scale;
+    mDrawRotation = rotation;
+
+    mCreateMatrix = true;
+}
+
+//*************************************************************************************************
+void GraphicsSystem::SetZValue(float zValue)
+{
+    mDrawZValue = zValue;
+
+    mCreateMatrix = true;
+}
+
+//*************************************************************************************************
+void GraphicsSystem::CreateTransformMatrix()
+{
+    // Create the scale matrix
+    DGL_Mat4 scaleMatrix;
+    Matrix_SetToIdentity(scaleMatrix);
+    scaleMatrix.m[0][0] = mDrawScale.x;
+    scaleMatrix.m[1][1] = mDrawScale.y;
+
+    // Create the rotation matrix
+    DGL_Mat4 rotationMatrix = Matrix_RotateZ(mDrawRotation);
+
+    // Create the translation matrix
+    DGL_Mat4 txMatrix;
+    Matrix_SetToIdentity(txMatrix);
+    txMatrix.m[0][3] = mDrawPosition.x;
+    txMatrix.m[1][3] = mDrawPosition.y;
+    txMatrix.m[2][3] = mDrawZValue;
+
+    // Multiply all matrices together
+    DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
+
+    // Set the transform matrix on the constant buffer
+    D3D.mConstantBuffer.mTransformMatrix = result;
+
+    mCreateMatrix = false;
 }
 
 } // namepspace DGL
@@ -633,33 +682,13 @@ void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* 
         return;
     }
 
-    // Create the scale matrix
-    DGL_Mat4 scaleMatrix;
-    Matrix_SetToIdentity(scaleMatrix);
-    scaleMatrix.m[0][0] = scale->x;
-    scaleMatrix.m[1][1] = scale->y;
-
-    // Create the rotation matrix
-    DGL_Mat4 rotationMatrix = Matrix_RotateZ(rotationRadians);
-
-    // Create the translation matrix
-    DGL_Mat4 txMatrix;
-    Matrix_SetToIdentity(txMatrix);
-    txMatrix.m[0][3] = position->x;
-    txMatrix.m[1][3] = position->y;
-    txMatrix.m[2][3] = gGraphics->mZValue;
-
-    // Multiply all matrices together
-    DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
-
-    // Set the transform matrix on the constant buffer
-    gGraphics->D3D.mConstantBuffer.mTransformMatrix = result;
+    gGraphics->SetTransformData(*position, *scale, rotationRadians);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_ZLayer(float zValue)
 {
-    gGraphics->mZValue = zValue;
+    gGraphics->SetZValue(zValue);
 }
 
 //*************************************************************************************************

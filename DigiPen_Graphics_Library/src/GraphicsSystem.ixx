@@ -79,13 +79,18 @@ public:
     // Draws the mesh with the specified mode
     void DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode);
 
+    // Sets the transform data to be used when drawing the next mesh
+    void SetTransformData(const DGL_Vec2& position, const DGL_Vec2& scale, float rotation);
+
+    // Sets the Z layer value to be used when drawing the next mesh
+    void SetZValue(float zValue);
+
     D3DInterface D3D;
     CameraObject Camera;
 
-    // The Z value to use when setting the transform
-    float mZValue{ 0.0f };
-
 private:
+    void CreateTransformMatrix();
+
     // The number of textures that have been loaded and not released
     int mTextures{ 0 };
     // The number of meshes that have been loaded and not released
@@ -96,6 +101,13 @@ private:
     bool mInitialized{ false };
     // Tracks mesh creation status
     bool mCreatingMesh{ false };
+    // Tracks whether we need to recreate the transform matrix
+    bool mCreateMatrix{ true };
+
+    DGL_Vec2 mDrawPosition{ 0, 0 };
+    DGL_Vec2 mDrawScale{ 0,0 };
+    float mDrawRotation{ 0 };
+    float mDrawZValue{ 0 };
 
     MeshManager Meshes;
     ShaderManager mShaderManager;

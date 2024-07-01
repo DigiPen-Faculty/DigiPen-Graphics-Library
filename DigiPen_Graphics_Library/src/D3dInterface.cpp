@@ -47,12 +47,12 @@ void D3DInterface::StartUpdate()
     mDeviceContext->ClearRenderTargetView(mRenderTargetView, mBackgroundColor);
     // Clear the depth stencil view
     if (mDepthStencilView)
-    mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     // Set the input layout
     mDeviceContext->IASetInputLayout(mInputLayout);
 
     // Set the render target and depth stencil view
-    mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, NULL);
+    mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 
     // Set the tracking flag
     mUpdateStarted = true;
