@@ -411,14 +411,6 @@ void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& 
 }
 
 //*************************************************************************************************
-void GraphicsSystem::SetZValue(float zValue)
-{
-    mDrawZValue = zValue;
-
-    mCreateMatrix = true;
-}
-
-//*************************************************************************************************
 void GraphicsSystem::CreateTransformMatrix()
 {
     // Create the scale matrix
@@ -435,7 +427,6 @@ void GraphicsSystem::CreateTransformMatrix()
     Matrix_SetToIdentity(txMatrix);
     txMatrix.m[0][3] = mDrawPosition.x;
     txMatrix.m[1][3] = mDrawPosition.y;
-    txMatrix.m[2][3] = mDrawZValue;
 
     // Multiply all matrices together
     DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
@@ -683,12 +674,6 @@ void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* 
     }
 
     gGraphics->SetTransformData(*position, *scale, rotationRadians);
-}
-
-//*************************************************************************************************
-void DGL_Graphics_SetCB_ZLayer(float zValue)
-{
-    gGraphics->SetZValue(zValue);
 }
 
 //*************************************************************************************************

@@ -82,9 +82,6 @@ public:
     // Sets the transform data to be used when drawing the next mesh
     void SetTransformData(const DGL_Vec2& position, const DGL_Vec2& scale, float rotation);
 
-    // Sets the Z layer value to be used when drawing the next mesh
-    void SetZValue(float zValue);
-
     D3DInterface D3D;
     CameraObject Camera;
 
@@ -107,7 +104,6 @@ private:
     DGL_Vec2 mDrawPosition{ 0, 0 };
     DGL_Vec2 mDrawScale{ 0,0 };
     float mDrawRotation{ 0 };
-    float mDrawZValue{ 0 };
 
     MeshManager Meshes;
     ShaderManager mShaderManager;
