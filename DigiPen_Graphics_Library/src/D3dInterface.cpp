@@ -20,6 +20,7 @@ import Errors;
 import GraphicsSystem;
 import WindowsSystem;
 import Shader;
+import Texture;
 
 namespace DGL
 {
@@ -291,6 +292,12 @@ void D3DInterface::ResetOnSizeChange()
 
     // Get the updated world matrix for the constant buffer
     mConstantBuffer.mWorldMatrix = gGraphics->Camera.GetWorldMatrix();
+}
+
+//*************************************************************************************************
+DGL_Texture* D3DInterface::CreateTextureFromScreen()
+{
+    return TextureManager::CreateTextureFromScreen(mSwapChain, mDevice, mDeviceContext);
 }
 
 //*************************************************************************************************

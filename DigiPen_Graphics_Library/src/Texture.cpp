@@ -149,6 +149,60 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
 }
 
 //*************************************************************************************************
+DGL_Texture* TextureManager::CreateTextureFromScreen(IDXGISwapChain* swapChain, ID3D11Device* device,
+    ID3D11DeviceContext* context)
+{
+    ID3D11Texture2D* buffer;
+
+    HRESULT hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
+    if (!buffer || FAILED(hr))
+        return nullptr;
+
+    // Create the new texture object
+    DGL_Texture* newTexture = new DGL_Texture;
+
+    // Set up the texture description struct
+    D3D11_TEXTURE2D_DESC texDesc;
+    buffer->GetDesc(&texDesc);
+
+    hr = device->CreateTexture2D(&texDesc, nullptr, &(newTexture->texture));
+    if (FAILED(hr))
+    {
+        // If it didn't work, set the error message and delete the texture
+        gError->SetError("Problem creating texture from screen. ", hr);
+        ReleaseTexture(newTexture);
+        return nullptr;
+    }
+
+    context->CopyResource(newTexture->texture, buffer);
+
+    // Set up the shader resource view description
+    D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;
+    ZeroMemory(&srDesc, sizeof(srDesc));
+    srDesc.Format = texDesc.Format;
+    srDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srDesc.Texture2D.MipLevels = texDesc.MipLevels;
+    srDesc.Texture2D.MostDetailedMip = 0;
+
+    // Create the shader resource view using the texture and shader resource struct
+    hr = device->CreateShaderResourceView(newTexture->texture, nullptr,
+        &newTexture->texResourceView);
+    if (FAILED(hr))
+    {
+        // If it didn't work, set the error message and delete the texture
+        gError->SetError("Problem creating shader resource for texture from screen. ", hr);
+        ReleaseTexture(newTexture);
+        return nullptr;
+    }
+
+    // Save the size of the texture
+    newTexture->textureSize.x = (float)texDesc.Width;
+    newTexture->textureSize.y = (float)texDesc.Height;
+
+    return newTexture;
+}
+
+//*************************************************************************************************
 void TextureManager::ReleaseTexture(DGL_Texture* texture)
 {
     if (!texture)

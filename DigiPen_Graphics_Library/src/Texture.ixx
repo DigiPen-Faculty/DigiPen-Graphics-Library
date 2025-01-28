@@ -39,6 +39,9 @@ public:
     static DGL_Texture* LoadTextureFromMemory(const unsigned char* data, int width, int height, 
         ID3D11Device* device);
 
+    static DGL_Texture* CreateTextureFromScreen(IDXGISwapChain* swapChain, ID3D11Device* device,
+        ID3D11DeviceContext* context);
+
     // Releases the D3D objects and deletes the texture
     static void ReleaseTexture(DGL_Texture* texture);
 

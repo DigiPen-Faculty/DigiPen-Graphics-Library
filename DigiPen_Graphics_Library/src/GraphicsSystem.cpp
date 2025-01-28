@@ -612,6 +612,12 @@ DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture)
 }
 
 //*************************************************************************************************
+DGL_Texture* DGL_Graphics_TextureFromScreen()
+{
+    return gGraphics->D3D.CreateTextureFromScreen();
+}
+
+//*************************************************************************************************
 void DGL_Graphics_StartMesh(void)
 {
     gGraphics->StartMesh();
