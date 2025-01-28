@@ -159,22 +159,47 @@ DGL_Texture* TextureManager::CreateTextureFromScreen(IDXGISwapChain* swapChain, 
         return nullptr;
 
     // Create the new texture object
-    DGL_Texture* newTexture = new DGL_Texture;
+    DGL_Texture* newTexture = nullptr;
 
     // Set up the texture description struct
     D3D11_TEXTURE2D_DESC texDesc;
     buffer->GetDesc(&texDesc);
 
-    hr = device->CreateTexture2D(&texDesc, nullptr, &(newTexture->texture));
+    texDesc.BindFlags = 0;
+    texDesc.MiscFlags &= D3D11_RESOURCE_MISC_TEXTURECUBE;
+    texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    texDesc.Usage = D3D11_USAGE_STAGING;
+
+    ID3D11Texture2D* stagingTexture;
+
+    hr = device->CreateTexture2D(&texDesc, nullptr, &stagingTexture);
     if (FAILED(hr))
     {
-        // If it didn't work, set the error message and delete the texture
         gError->SetError("Problem creating texture from screen. ", hr);
         ReleaseTexture(newTexture);
         return nullptr;
     }
 
-    context->CopyResource(newTexture->texture, buffer);
+    context->CopyResource(stagingTexture, buffer);
+
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    hr = context->Map(stagingTexture, 0, D3D11_MAP_READ, 0, &mapped);
+    if (FAILED(hr))
+    {
+        gError->SetError("Problem creating texture from screen. ", hr);
+        ReleaseTexture(newTexture);
+        return nullptr;
+    }
+
+    newTexture = LoadTextureFromMemory((const unsigned char*)mapped.pData, texDesc.Width, texDesc.Height, device);
+
+    context->Unmap(stagingTexture, 0);
+
+    stagingTexture->Release();
+    buffer->Release();
+
+    if (!newTexture)
+        return nullptr;
 
     // Set up the shader resource view description
     D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;

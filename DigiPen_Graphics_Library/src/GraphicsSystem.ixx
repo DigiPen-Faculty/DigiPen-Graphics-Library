@@ -55,6 +55,8 @@ public:
     // Loads a texture from the provided pixel data
     DGL_Texture* LoadTextureFromMemory(const unsigned char* data, int width, int height);
 
+    DGL_Texture* CreateTextureFromScreen();
+
     // Releases the texture and deletes the struct
     void ReleaseTexture(DGL_Texture* texture);
 
