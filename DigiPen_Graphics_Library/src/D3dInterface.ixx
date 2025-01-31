@@ -91,8 +91,6 @@ public:
     // Adjust to a change in window size
     void ResetOnSizeChange();
 
-    DGL_Texture* CreateTextureFromScreen();
-
     // Stores the constant buffer data that will be applied 
     cbPerObject mConstantBuffer;
 

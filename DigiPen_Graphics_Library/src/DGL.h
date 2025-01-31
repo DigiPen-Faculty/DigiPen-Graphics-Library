@@ -312,8 +312,6 @@ DGL_API void DGL_Graphics_FreeTexture(DGL_Texture** texture);
 // Returns the width and height of the texture.
 DGL_API DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture);
 
-DGL_API DGL_Texture* DGL_Graphics_TextureFromScreen();
-
 //-------------------------------------------------------------------------------------------------
 // *** Meshes *************************************************************************************
 

@@ -295,12 +295,6 @@ void D3DInterface::ResetOnSizeChange()
 }
 
 //*************************************************************************************************
-DGL_Texture* D3DInterface::CreateTextureFromScreen()
-{
-    return TextureManager::CreateTextureFromScreen(mSwapChain, mDevice, mDeviceContext);
-}
-
-//*************************************************************************************************
 void D3DInterface::Release()
 {
 #ifdef DEBUG_REPORT_DEVICES

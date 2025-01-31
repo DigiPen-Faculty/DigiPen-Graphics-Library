@@ -257,16 +257,6 @@ DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, in
 }
 
 //*************************************************************************************************
-DGL_Texture* GraphicsSystem::CreateTextureFromScreen()
-{
-    DGL_Texture* newTexture = D3D.CreateTextureFromScreen();
-    if (newTexture)
-        ++mTextures;
-
-    return newTexture;
-}
-
-//*************************************************************************************************
 void GraphicsSystem::ReleaseTexture(DGL_Texture* texture)
 {
     // Make sure the pointer is not null
@@ -619,12 +609,6 @@ DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture)
         return DGL_Vec2{ 0 };
 
     return texture->textureSize;
-}
-
-//*************************************************************************************************
-DGL_Texture* DGL_Graphics_TextureFromScreen()
-{
-    return gGraphics->CreateTextureFromScreen();
 }
 
 //*************************************************************************************************
