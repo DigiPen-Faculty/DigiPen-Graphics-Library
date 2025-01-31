@@ -152,73 +152,56 @@ DGL_Texture* TextureManager::LoadTextureFromMemory(const unsigned char* data, in
 DGL_Texture* TextureManager::CreateTextureFromScreen(IDXGISwapChain* swapChain, ID3D11Device* device,
     ID3D11DeviceContext* context)
 {
-    ID3D11Texture2D* buffer;
+    context->Flush();
 
+    // Get the buffer from the swap chain
+    ID3D11Texture2D* buffer;
     HRESULT hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
     if (!buffer || FAILED(hr))
         return nullptr;
 
-    // Create the new texture object
-    DGL_Texture* newTexture = nullptr;
-
     // Set up the texture description struct
     D3D11_TEXTURE2D_DESC texDesc;
-    buffer->GetDesc(&texDesc);
-
+    buffer->GetDesc(&texDesc);  // Get most of the desc info from the buffer
     texDesc.BindFlags = 0;
     texDesc.MiscFlags &= D3D11_RESOURCE_MISC_TEXTURECUBE;
     texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
     texDesc.Usage = D3D11_USAGE_STAGING;
 
+    // Create the staging texture
     ID3D11Texture2D* stagingTexture;
-
     hr = device->CreateTexture2D(&texDesc, nullptr, &stagingTexture);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating texture from screen. ", hr);
-        ReleaseTexture(newTexture);
+        buffer->Release();
         return nullptr;
     }
 
+    // Copy the data to the staging texture
     context->CopyResource(stagingTexture, buffer);
 
+    // Map the texture data
     D3D11_MAPPED_SUBRESOURCE mapped;
     hr = context->Map(stagingTexture, 0, D3D11_MAP_READ, 0, &mapped);
     if (FAILED(hr))
     {
-        gError->SetError("Problem creating texture from screen. ", hr);
-        ReleaseTexture(newTexture);
+        stagingTexture->Release();
+        buffer->Release();
         return nullptr;
     }
 
-    newTexture = LoadTextureFromMemory((const unsigned char*)mapped.pData, texDesc.Width, texDesc.Height, device);
+    // Create the texture from the mapped data
+    DGL_Texture* newTexture = LoadTextureFromMemory((const unsigned char*)mapped.pData, texDesc.Width, texDesc.Height, device);
 
+    // Unmap the data
     context->Unmap(stagingTexture, 0);
-
+    // Release the objects
     stagingTexture->Release();
     buffer->Release();
 
+    // Check for invalid texture
     if (!newTexture)
         return nullptr;
-
-    // Set up the shader resource view description
-    D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;
-    ZeroMemory(&srDesc, sizeof(srDesc));
-    srDesc.Format = texDesc.Format;
-    srDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    srDesc.Texture2D.MipLevels = texDesc.MipLevels;
-    srDesc.Texture2D.MostDetailedMip = 0;
-
-    // Create the shader resource view using the texture and shader resource struct
-    hr = device->CreateShaderResourceView(newTexture->texture, nullptr,
-        &newTexture->texResourceView);
-    if (FAILED(hr))
-    {
-        // If it didn't work, set the error message and delete the texture
-        gError->SetError("Problem creating shader resource for texture from screen. ", hr);
-        ReleaseTexture(newTexture);
-        return nullptr;
-    }
 
     // Save the size of the texture
     newTexture->textureSize.x = (float)texDesc.Width;
