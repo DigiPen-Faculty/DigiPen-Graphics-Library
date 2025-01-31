@@ -305,6 +305,14 @@ DGL_API DGL_Texture* DGL_Graphics_LoadTexture(const char* fileName);
 // Returns a pointer to the new texture instance.
 DGL_API DGL_Texture* DGL_Graphics_LoadTextureFromMemory(const unsigned char* data, int width, int height);
 
+// Creates a texture that will be used for drawing to.
+// It can also be drawn to the screen like a normal texture, once it has data.
+DGL_API DGL_Texture* DGL_Graphics_CreateRenderTexture(int width, int height);
+
+// Clears the specified render texture and fills it with the specified color.
+// Note: if the alpha of this color is not zero, drawing transparent textures onto it may not work well.
+DGL_API void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color* color);
+
 // Unloads the provided texture from memory.
 // The pointer passed in will be set to NULL.
 DGL_API void DGL_Graphics_FreeTexture(DGL_Texture** texture);
@@ -357,6 +365,10 @@ DGL_API void DGL_Graphics_FinishDrawing(void);
 
 // Draws the provided mesh with the provided mode.
 DGL_API void DGL_Graphics_DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode);
+
+// Draws the provided mesh to the provided render texture, with the provided mode.
+DGL_API void DGL_Graphics_DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
+    const DGL_Texture* renderTexture);
 
 //-------------------------------------------------------------------------------------------------
 // *** Constant buffer ****************************************************************************

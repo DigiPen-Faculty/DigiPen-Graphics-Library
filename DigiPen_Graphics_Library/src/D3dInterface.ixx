@@ -128,6 +128,12 @@ private:
     // Creates the sampler states for all combinations of sample modes and texture address modes
     int CreateSamplers();
 
+    // Sets the current render target to a texture
+    void SetRenderTargetToTexture(const DGL_Texture* renderTexture);
+
+    // Resets the current render target back to the default
+    void ResetRenderTarget();
+
     // The D3D device object
     ID3D11Device* mDevice{ nullptr };
     // The D3D device context object

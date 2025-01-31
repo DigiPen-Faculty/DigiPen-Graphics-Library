@@ -49,7 +49,7 @@ void D3DInterface::StartUpdate()
     // Set the input layout
     mDeviceContext->IASetInputLayout(mInputLayout);
 
-    // Set the render target and depth stencil view
+    // Set the render target
     mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
 
     // Set the tracking flag
@@ -804,6 +804,23 @@ int D3DInterface::CreateSamplers()
     }
 
     return 0;
+}
+
+//*************************************************************************************************
+void D3DInterface::SetRenderTargetToTexture(const DGL_Texture* renderTexture)
+{
+    if (!renderTexture || !renderTexture->renderInfo || !renderTexture->renderInfo->renderTargetView)
+        return;
+
+    mDeviceContext->OMSetRenderTargets(1, &renderTexture->renderInfo->renderTargetView, nullptr);
+    mDeviceContext->RSSetViewports(1, &renderTexture->renderInfo->viewport);
+}
+
+//*************************************************************************************************
+void D3DInterface::ResetRenderTarget()
+{
+    mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
+    SetViewport();
 }
 
 } // namespace DGL

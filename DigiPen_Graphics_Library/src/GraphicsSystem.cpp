@@ -257,6 +257,32 @@ DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, in
 }
 
 //*************************************************************************************************
+DGL_Texture* GraphicsSystem::CreateRenderTexture(int width, int height)
+{
+    if (!mInitialized)
+    {
+        gError->SetError("Called DGL_Graphics_LoadTextureFromMemory when Graphics is not initialized.");
+        return nullptr;
+    }
+
+    if (width <= 0 || height <= 0)
+    {
+        gError->SetError("Passed invalid size to DGL_Graphics_LoadTextureFromMemory.");
+        return nullptr;
+    }
+
+    // Create the texture through the texture manager
+    DGL_Texture* texture = TextureManager::CreateRenderTexture(width, height, D3D.mDevice);
+
+    // If it loaded successfuly, increase the texture counter
+    if (texture)
+        ++mTextures;
+
+    // Return the new texture
+    return texture;
+}
+
+//*************************************************************************************************
 void GraphicsSystem::ReleaseTexture(DGL_Texture* texture)
 {
     // Make sure the pointer is not null
@@ -275,6 +301,31 @@ void GraphicsSystem::SetCurrentTexture(const DGL_Texture* texture)
 {
     // Save the texture
     mCurrentTexture = texture;
+}
+
+//*************************************************************************************************
+void GraphicsSystem::ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color& color)
+{
+    if (!mInitialized)
+    {
+        gError->SetError("Called DGL_Graphics_ClearRenderTexture when Graphics is not initialized.");
+        return;
+    }
+
+    if (!renderTexture)
+    {
+        gError->SetError("Called DGL_Graphics_ClearRenderTexture with a NULL texture pointer.");
+        return;
+    }
+
+    if (!renderTexture->renderInfo)
+    {
+        gError->SetError("Called DGL_Graphics_ClearRenderTexture with a texture that was not created for rendering.");
+        return;
+    }
+
+    // Clear the texture's render target 
+    TextureManager::ClearRenderTexture(renderTexture, color, D3D.mDeviceContext);
 }
 
 //*************************************************************************************************
@@ -393,11 +444,53 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
         return;
     }
 
+    if (!mesh)
+    {
+        gError->SetError("Called DGL_Graphics_DrawMesh with a NULL mesh pointer.");
+        return;
+    }
+
     CreateTransformMatrix();
 
     // Draw the mesh using the mesh manager
     MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(), 
         D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+}
+
+//*************************************************************************************************
+void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* renderTexture)
+{
+    if (!mInitialized)
+    {
+        gError->SetError("Called DGL_Graphics_DrawMeshToTexture when Graphics is not initialized.");
+        return;
+    }
+
+    if (!mesh || !renderTexture)
+    {
+        gError->SetError("Called DGL_Graphics_DrawMeshToTexture with a NULL pointer.");
+        return;
+    }
+
+    if (!renderTexture->renderInfo)
+    {
+        gError->SetError("Called DGL_Graphics_DrawMeshToTexture with a texture that is not set up for rendering.");
+        return;
+    }
+
+    CreateTransformMatrix();
+
+    D3D.mConstantBuffer.mWorldMatrix = renderTexture->renderInfo->worldMatrix;
+
+    D3D.SetRenderTargetToTexture(renderTexture);
+
+    // Draw the mesh using the mesh manager
+    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(),
+        D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+
+    D3D.ResetRenderTarget();
+
+    D3D.mConstantBuffer.mWorldMatrix = Camera.GetWorldMatrix();
 }
 
 //*************************************************************************************************
@@ -411,8 +504,19 @@ void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& 
 }
 
 //*************************************************************************************************
+void GraphicsSystem::SetTransformMatrix(const DGL_Mat4* transformationMatrix)
+{
+    gGraphics->D3D.mConstantBuffer.mTransformMatrix = *transformationMatrix;
+
+    mCreateMatrix = false;
+}
+
+//*************************************************************************************************
 void GraphicsSystem::CreateTransformMatrix()
 {
+    if (!mCreateMatrix)
+        return;
+
     // Create the scale matrix
     DGL_Mat4 scaleMatrix;
     Matrix_SetToIdentity(scaleMatrix);
@@ -593,6 +697,18 @@ DGL_Texture* DGL_Graphics_LoadTextureFromMemory(const unsigned char* data, int w
 }
 
 //*************************************************************************************************
+DGL_Texture* DGL_Graphics_CreateRenderTexture(int width, int height)
+{
+    return gGraphics->CreateRenderTexture(width, height);
+}
+
+//*************************************************************************************************
+void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color* color)
+{
+    gGraphics->ClearRenderTexture(renderTexture, *color);
+}
+
+//*************************************************************************************************
 void DGL_Graphics_FreeTexture(DGL_Texture** texture)
 {
     if (!texture)
@@ -664,6 +780,12 @@ void DGL_Graphics_DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
 }
 
 //*************************************************************************************************
+void DGL_Graphics_DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* renderTexture)
+{
+    gGraphics->DrawMeshToTexture(mesh, mode, renderTexture);
+}
+
+//*************************************************************************************************
 void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* scale,
     float rotationRadians)
 {
@@ -682,7 +804,7 @@ void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix)
     if (!transformationMatrix)
         return;
 
-    gGraphics->D3D.mConstantBuffer.mTransformMatrix = *transformationMatrix;
+    gGraphics->SetTransformMatrix(transformationMatrix);
 }
 
 //*************************************************************************************************

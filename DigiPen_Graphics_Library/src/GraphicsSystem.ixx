@@ -55,11 +55,17 @@ public:
     // Loads a texture from the provided pixel data
     DGL_Texture* LoadTextureFromMemory(const unsigned char* data, int width, int height);
 
+    // Creates a texture for rendering
+    DGL_Texture* CreateRenderTexture(int width, int height);
+
     // Releases the texture and deletes the struct
     void ReleaseTexture(DGL_Texture* texture);
 
     // Sets the texture to use when drawing a mesh
     void SetCurrentTexture(const DGL_Texture* texture);
+
+    // Clears a render texture with the specified color
+    void ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color& color);
 
     // Starts creating a new mesh by clearing the list of vertices
     void StartMesh();
@@ -79,8 +85,15 @@ public:
     // Draws the mesh with the specified mode
     void DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode);
 
+    // Draws the mesh to the specified texture, with the specified mode
+    // The texture must have been created as a render texture
+    void DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* renderTexture);
+
     // Sets the transform data to be used when drawing the next mesh
     void SetTransformData(const DGL_Vec2& position, const DGL_Vec2& scale, float rotation);
+
+    // Sets the transform matrix directly 
+    void SetTransformMatrix(const DGL_Mat4* transformationMatrix);
 
     D3DInterface D3D;
     CameraObject Camera;

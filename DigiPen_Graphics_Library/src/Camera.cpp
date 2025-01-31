@@ -14,19 +14,10 @@ module;
 module Camera;
 
 import GraphicsSystem;
+import Math;
 
 namespace DGL
 {
-
-//*************************************************************************************************
-DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix)
-{
-    DGL_Mat4 newMatrix;
-    DirectX::XMFLOAT4X4 temp;
-    DirectX::XMStoreFloat4x4(&temp, dxMatrix);
-    memcpy(newMatrix.m, temp.m, sizeof(float) * 16);
-    return newMatrix;
-}
 
 //------------------------------------------------------------------------------------------ Camera
 
@@ -135,8 +126,8 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
     DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixOrthographicLH(
         mWindowSize.x * mScale,
         mWindowSize.y * mScale,
-        1.0f,
-        1000.0f
+        1.0f,                       // screen near
+        1000.0f                     // screen depth
     );
 
     // Store the result of multiplying the matrices
