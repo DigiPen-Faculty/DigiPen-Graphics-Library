@@ -78,6 +78,12 @@ void D3DInterface::EndUpdate()
 }
 
 //*************************************************************************************************
+bool D3DInterface::IsUpdateStarted() const
+{
+    return mUpdateStarted;
+}
+
+//*************************************************************************************************
 void D3DInterface::SetBlendMode(DGL_BlendMode mode)
 {
     if (!mDeviceContext)

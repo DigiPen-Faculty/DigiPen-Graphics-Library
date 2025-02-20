@@ -55,6 +55,9 @@ public:
     // End the current drawing session and present the buffer
     void EndUpdate();
 
+    // Returns true if StartUpdate has been called and EndUpdate has not been called
+    bool IsUpdateStarted() const;
+
     // Set the blend mode to use on the next draw
     void SetBlendMode(DGL_BlendMode mode);
 

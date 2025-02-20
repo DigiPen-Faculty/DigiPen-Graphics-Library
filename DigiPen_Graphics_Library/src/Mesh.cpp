@@ -153,6 +153,12 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
         return;
     }
 
+    if (!gGraphics->D3D.IsUpdateStarted())
+    {
+        gError->SetError("Tried to draw a mesh either before DGL_Graphics_StartDrawing was called or after DGL_Graphics_FinishDrawing was called.");
+        return;
+    }
+
     // Set the primitive topology setting as specified
     switch (mode)
     {
