@@ -184,9 +184,9 @@ void WindowsSystem::SetWindowSizeAndPosition(int windowWidth, int windowHeight, 
     if (!mWindowHandle)
         return;
 
-    if (windowWidth <= 0 || windowHeight <= 0 || windowLeftPos < 0 || windowTopPos < 0)
+    if (windowWidth <= 0 || windowHeight <= 0)
     {
-        gError->SetError("Passed invalid parameter for window size or position.");
+        gError->SetError("Passed invalid parameter for window size.");
         return;
     }
 
