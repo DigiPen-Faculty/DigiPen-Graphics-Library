@@ -60,8 +60,8 @@ export class ShaderManager
 public:
     ~ShaderManager();
 
-    const DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
-    const DGL_VertexShader* LoadVertexShader(std::string_view filename, ID3D11Device* device);
+    DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
+    DGL_VertexShader* LoadVertexShader(std::string_view filename, ID3D11Device* device);
 
     std::size_t PixelShaderCount() const noexcept;
     std::size_t VertexShaderCount() const noexcept;

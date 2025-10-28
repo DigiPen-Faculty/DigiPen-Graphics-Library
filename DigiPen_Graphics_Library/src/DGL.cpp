@@ -68,7 +68,7 @@ void DGL_System_Update(void)
 }
 
 //*************************************************************************************************
-BOOL DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result)
+bool DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result)
 {
     return winSys.HandleWindowsMessage(message, wParam, lParam, result);
 }
@@ -85,7 +85,7 @@ int DGL_System_Exit(void)
 }
 
 //*************************************************************************************************
-BOOL DGL_System_DoesWindowExist(void)
+bool DGL_System_DoesWindowExist(void)
 {
     return winSys.GetWindowExists();
 }

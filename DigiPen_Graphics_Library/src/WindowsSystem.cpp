@@ -327,7 +327,7 @@ BOOL WindowsSystem::HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lPa
 using namespace DGL;
 
 //*************************************************************************************************
-BOOL DGL_Window_HasFocus(void)
+bool DGL_Window_HasFocus(void)
 {
     return gWinSys->GetWindowHasFocus();
 }

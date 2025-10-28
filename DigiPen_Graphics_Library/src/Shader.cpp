@@ -36,7 +36,7 @@ ShaderManager::~ShaderManager()
 }
 
 //*************************************************************************************************
-const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename, ID3D11Device* device)
+DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename, ID3D11Device* device)
 {
     assert(!filename.empty());
     assert(device);
@@ -99,11 +99,11 @@ const DGL_PixelShader* ShaderManager::LoadPixelShader(std::string_view filename,
     }
 
     auto shaderIter = mPixelShaders.insert(shader);
-    return &(*shaderIter.first);
+    return const_cast<DGL_PixelShader*>(&(*shaderIter.first));
 }
 
 //*************************************************************************************************
-const DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filename, ID3D11Device* device)
+DGL_VertexShader* ShaderManager::LoadVertexShader(std::string_view filename, ID3D11Device* device)
 {
     assert(!filename.empty());
     assert(device);

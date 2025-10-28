@@ -125,7 +125,7 @@ int GraphicsSystem::ShutDown()
 }
 
 //*************************************************************************************************
-const DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
+DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
 {
     if (!mInitialized)
     {
@@ -162,7 +162,7 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
 }
 
 //*************************************************************************************************
-const DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
+DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
 {
     if (!mInitialized)
     {
@@ -504,9 +504,9 @@ void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& 
 }
 
 //*************************************************************************************************
-void GraphicsSystem::SetTransformMatrix(const DGL_Mat4* transformationMatrix)
+void GraphicsSystem::SetTransformMatrix(const DGL_Mat4& transformationMatrix)
 {
-    gGraphics->D3D.mConstantBuffer.mTransformMatrix = *transformationMatrix;
+    gGraphics->D3D.mConstantBuffer.mTransformMatrix = transformationMatrix;
 
     mCreateMatrix = false;
 }
@@ -547,12 +547,9 @@ void GraphicsSystem::CreateTransformMatrix()
 using namespace DGL;
 
 //*************************************************************************************************
-DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2* position)
+DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2& position)
 {
-    if (position)
-        return gGraphics->Camera.ScreenToWorld(*position);
-    else
-        return DGL_Vec2{ 0,0 };
+    return gGraphics->Camera.ScreenToWorld(position);
 }
 
 //*************************************************************************************************
@@ -562,10 +559,9 @@ DGL_Vec2 DGL_Camera_GetPosition(void)
 }
 
 //*************************************************************************************************
-void DGL_Camera_SetPosition(const DGL_Vec2* position)
+void DGL_Camera_SetPosition(const DGL_Vec2& position)
 {
-    if (position)
-        gGraphics->Camera.SetCameraPosition(*position);
+    gGraphics->Camera.SetCameraPosition(position);
 }
 
 //*************************************************************************************************
@@ -605,14 +601,11 @@ void DGL_Graphics_FinishDrawing(void)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetBackgroundColor(const DGL_Color* color)
+void DGL_Graphics_SetBackgroundColor(const DGL_Color& color)
 {
-    if (color)
-    {
-        gGraphics->D3D.mBackgroundColor[0] = color->r;
-        gGraphics->D3D.mBackgroundColor[1] = color->g;
-        gGraphics->D3D.mBackgroundColor[2] = color->b;
-    }
+    gGraphics->D3D.mBackgroundColor[0] = color.r;
+    gGraphics->D3D.mBackgroundColor[1] = color.g;
+    gGraphics->D3D.mBackgroundColor[2] = color.b;
 }
 
 //*************************************************************************************************
@@ -653,19 +646,19 @@ void DGL_Graphics_SetTexture(const DGL_Texture* texture)
 }
 
 //*************************************************************************************************
-const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
+DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename)
 {
     return gGraphics->LoadPixelShader(filename);
 }
 
 //*************************************************************************************************
-const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
+DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename)
 {
     return gGraphics->LoadVertexShader(filename);
 }
 
 //*************************************************************************************************
-void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader)
+void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader)
 {
     if (!shader)
         return;
@@ -703,9 +696,9 @@ DGL_Texture* DGL_Graphics_CreateRenderTexture(int width, int height)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color* color)
+void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color& color)
 {
-    gGraphics->ClearRenderTexture(renderTexture, *color);
+    gGraphics->ClearRenderTexture(renderTexture, color);
 }
 
 //*************************************************************************************************
@@ -746,16 +739,16 @@ DGL_Mesh* DGL_Graphics_EndMeshIndexed(unsigned* indices, unsigned indexCount)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_AddVertex(const DGL_Vec2* position, const DGL_Color* color, const DGL_Vec2* textureOffset)
+void DGL_Graphics_AddVertex(const DGL_Vec2& position, const DGL_Color& color, const DGL_Vec2& textureOffset)
 {
-    gGraphics->AddVertex(*position, *color, *textureOffset);
+    gGraphics->AddVertex(position, color, textureOffset);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_AddTriangle(
-    const DGL_Vec2* position1, const DGL_Color* color1, const DGL_Vec2* textureOffset1,
-    const DGL_Vec2* position2, const DGL_Color* color2, const DGL_Vec2* textureOffset2,
-    const DGL_Vec2* position3, const DGL_Color* color3, const DGL_Vec2* textureOffset3
+    const DGL_Vec2& position1, const DGL_Color& color1, const DGL_Vec2& textureOffset1,
+    const DGL_Vec2& position2, const DGL_Color& color2, const DGL_Vec2& textureOffset2,
+    const DGL_Vec2& position3, const DGL_Color& color3, const DGL_Vec2& textureOffset3
 )
 {
     DGL_Graphics_AddVertex(position1, color1, textureOffset1);
@@ -786,37 +779,22 @@ void DGL_Graphics_DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, con
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* scale,
+void DGL_Graphics_SetCB_TransformData(const DGL_Vec2& position, const DGL_Vec2& scale,
     float rotationRadians)
 {
-    if (!position || !scale)
-    {
-        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TransformData.");
-        return;
-    }
-
-    gGraphics->SetTransformData(*position, *scale, rotationRadians);
+    gGraphics->SetTransformData(position, scale, rotationRadians);
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix)
+void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4& transformationMatrix)
 {
-    if (!transformationMatrix)
-        return;
-
     gGraphics->SetTransformMatrix(transformationMatrix);
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2* textureOffset)
+void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2& textureOffset)
 {
-    if (!textureOffset)
-    {
-        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TextureOffset.");
-        return;
-    }
-
-    gGraphics->D3D.mConstantBuffer.mTexOffset = *textureOffset;
+    gGraphics->D3D.mConstantBuffer.mTexOffset = textureOffset;
 }
 
 //*************************************************************************************************
@@ -826,15 +804,9 @@ void DGL_Graphics_SetCB_Alpha(float alpha)
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_TintColor(const DGL_Color* color)
+void DGL_Graphics_SetCB_TintColor(const DGL_Color& color)
 {
-    if (!color)
-    {
-        gError->SetError("Passed in a null parameter to DGL_Graphics_SetCB_TextureOffset.");
-        return;
-    }
-
-    gGraphics->D3D.mConstantBuffer.mTintColor = *color;
+    gGraphics->D3D.mConstantBuffer.mTintColor = color;
 }
 
 //*************************************************************************************************

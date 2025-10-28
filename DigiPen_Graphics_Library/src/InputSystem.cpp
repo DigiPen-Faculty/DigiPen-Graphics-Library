@@ -170,19 +170,19 @@ DGL_Vec2 DGL_Input_GetMousePositionDelta(void)
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyDown(unsigned char key)
+bool DGL_Input_KeyDown(unsigned char key)
 {
     return gInput->KeyDown(key);
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyTriggered(unsigned char key)
+bool DGL_Input_KeyTriggered(unsigned char key)
 {
     return gInput->KeyTriggered(key);
 }
 
 //*************************************************************************************************
-BOOL DGL_Input_KeyReleased(unsigned char key)
+bool DGL_Input_KeyReleased(unsigned char key)
 {
     return gInput->KeyReleased(key);
 }
@@ -194,7 +194,7 @@ unsigned char DGL_Input_LastKeyTriggered(void)
 }
 
 //*************************************************************************************************
-void DGL_Input_ShowCursor(BOOL show)
+void DGL_Input_ShowCursor(bool show)
 {
     if (show)
     {

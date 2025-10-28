@@ -38,13 +38,13 @@ public:
     int ShutDown();
 
     // Loads a pixel shader from the provided file
-    const DGL_PixelShader* LoadPixelShader(const char* fileName);
+    DGL_PixelShader* LoadPixelShader(const char* fileName);
 
     // Releases the pixel shader and deletes the struct
     void ReleasePixelShader(const DGL_PixelShader* shader);
 
     // Loads a vertex shader from the provided file
-    const DGL_VertexShader* LoadVertexShader(const char* filename);
+    DGL_VertexShader* LoadVertexShader(const char* filename);
 
     // Releases the vertex shader and deletes the struct
     void ReleaseVertexShader(const DGL_VertexShader* shader);
@@ -93,7 +93,7 @@ public:
     void SetTransformData(const DGL_Vec2& position, const DGL_Vec2& scale, float rotation);
 
     // Sets the transform matrix directly 
-    void SetTransformMatrix(const DGL_Mat4* transformationMatrix);
+    void SetTransformMatrix(const DGL_Mat4& transformationMatrix);
 
     D3DInterface D3D;
     CameraObject Camera;
