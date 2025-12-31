@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.4.0
+//          v1.4.9
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2026 DigiPen, All rights reserved.
@@ -173,7 +173,7 @@ typedef enum
 // Initializes the DGL using the specified options.
 // This will create the window and initialize graphics and the framerate controller.
 // Returns the window handle, which will be NULL if there was a problem with initialization.
-DGL_API HWND DGL_System_Init(const DGL_SysInitInfo* sysInitInfo);
+DGL_API HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo);
 
 // Resets the framerate controller back to the initial state.
 DGL_API void DGL_System_Reset(void);

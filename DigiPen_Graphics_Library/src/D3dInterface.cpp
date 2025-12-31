@@ -13,6 +13,7 @@ module;
 #include "VShader.h"
 #include "PShader.h"
 #include "PTexShader.h"
+#include <tuple>
 
 module D3DInterface;
 
@@ -309,13 +310,13 @@ void D3DInterface::Release()
 #endif
 
     // Release all the blend states
-    for (auto [key, value] : mBlendStates)
+    for (auto& [key, value] : mBlendStates)
         SafeRelease(value);
 
     // Release all the sampler states
-    for (auto [key, value] : mSamplerStates)
+    for (auto& [key, value] : mSamplerStates)
     {
-        for (auto [key2, value2] : value)
+        for (auto& [key2, value2] : value)
             SafeRelease(value2);
     }
 
@@ -670,6 +671,16 @@ int D3DInterface::CreateConstantBuffer()
         gError->SetError("Problem creating constant buffer. ", hr);
         return 1;
     }
+
+    // Set constant buffer object
+    memset(&mConstantBuffer, 0, sizeof(cbPerObject));
+
+    mConstantBuffer.mWorldMatrix.m[0][0] = 1;
+    mConstantBuffer.mWorldMatrix.m[1][1] = 1;
+    mConstantBuffer.mWorldMatrix.m[2][2] = 1;
+    mConstantBuffer.mWorldMatrix.m[3][3] = 1;
+
+    mConstantBuffer.mAlpha = 1.0f;
 
     return 0;
 }

@@ -2,10 +2,10 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.4.0
+//          v1.4.9
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
-// Copyright © 2024 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #pragma once
@@ -23,24 +23,24 @@
 // This struct is used to pass sets of floats to functions and to return data from functions.
 typedef struct DGL_Vec2
 {
-    float x;
-    float y;
+    float x{ 0 };
+    float y{ 0 };
 } DGL_Vec2;
 
 // This struct is used to pass matrix data to functions.
 typedef struct DGL_Mat4
 {
-    float m[4][4];
+    float m[4][4]{ 0 };
 } DGL_Mat4;
 
 // This struct is used to pass color data to functions. 
 // Color values should be between 0.0 and 1.0.
 typedef struct DGL_Color
 {
-    float r; // red
-    float g; // green
-    float b; // blue
-    float a; // alpha (transparency)
+    float r{ 0 }; // red
+    float g{ 0 }; // green
+    float b{ 0 }; // blue
+    float a{ 0 }; // alpha (transparency)
 } DGL_Color;
 
 // This struct is used to tell DGL information it needs to create the window.
@@ -50,49 +50,49 @@ typedef struct DGL_SysInitInfo
 {
     // This should be set to the first parameter from WinMain.
     // It is used to identify the application instance when creating and closing the window.
-    HINSTANCE mAppInstance;
+    HINSTANCE mAppInstance{ nullptr };
 
     // This should be set to the fourth parameter from WinMain.
     // It is used when creating the window to control whether it is shown or not.
-    int mShow;
+    int mShow{ 0 };
 
     // These two variables specify the width and height of the window to be created.
     // This will be the total window size including title bar and borders (if using).
     // Use the DGL_System_GetWindowSize() function afterwards to get the client size of 
     // a bordered window (the window size without title bar and borders).
-    unsigned int mWindowWidth;
-    unsigned int mWindowHeight;
+    unsigned int mWindowWidth{ 0 };
+    unsigned int mWindowHeight{ 0 };
 
     // This is used to set the framerate controller's maximum framerate. 
-    unsigned int mMaxFrameRate;
+    unsigned int mMaxFrameRate{ 0 };
 
     // Sets the Window Class Style to be used. 
     // This should usually be set to "CS_HREDRAW | CS_VREDRAW".
-    unsigned int mClassStyle;
+    unsigned int mClassStyle{ 0 };
 
     // Sets the Window Style to be used.
     // If you are unsure, use "WS_OVERLAPPEDWINDOW" for a windowed application
     // or "WS_EX_TOPMOST | WS_POPUP" for a fullscreen application.
     // When using "WS_OVERLAPPEDWINDOW", adding "^ WS_THICKFRAME" will disable resizing.
-    unsigned int mWindowStyle;
+    unsigned int mWindowStyle{ 0 };
 
     // Sets the window title text that will be shown on the top bar of a windowed application.
-    const char* mWindowTitle;
+    const char* mWindowTitle{ nullptr };
 
     // Specifies whether a debug console should be created. 
     // Use TRUE to show the console and FALSE to hide it.
     // This console will display output from stdout and stderr, including printf output.
-    BOOL mCreateConsole;
+    bool mCreateConsole{ false };
 
     // The icon resource definition to use for the window title bar icon. 
     // Visual Studio will automatically create a file named Resource.h and a .ico file 
     // with the same name as your project. You can edit the .ico file with your own custom icon. 
     // Usually what you will set this to is IDI_YOURPROJECTNAME.
-    int mWindowIcon;
+    int mWindowIcon{ 0 };
 
     // This should be set to the name of your Windows callback function.
     // When created automatically by Visual Studio this is usually called WndProc. 
-    WNDPROC pWindowsCallback;
+    WNDPROC pWindowsCallback{ nullptr };
 
 } DGL_SysInitInfo;
 
@@ -165,10 +165,6 @@ typedef enum
     DGL_VSM_CUSTOM,     // Draw using the last set custom vertex shader
 } DGL_VertexShaderMode;
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 //*************************************************************************************************
 // System functions
@@ -177,7 +173,7 @@ extern "C"
 // Initializes the DGL using the specified options.
 // This will create the window and initialize graphics and the framerate controller.
 // Returns the window handle, which will be NULL if there was a problem with initialization.
-DGL_API HWND DGL_System_Init(const DGL_SysInitInfo* sysInitInfo);
+DGL_API HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo);
 
 // Resets the framerate controller back to the initial state.
 DGL_API void DGL_System_Reset(void);
@@ -191,7 +187,7 @@ DGL_API void DGL_System_Update(void);
 
 // Handles some of the windows messages. Returns TRUE if the message was handled, otherwise returns FALSE.
 // If the message was handled, use the "result" value to return from the Windows callback.
-DGL_API BOOL DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result);
+DGL_API bool DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result);
 
 // Shuts down the graphics system and de-registers the window.
 // Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
@@ -199,7 +195,7 @@ DGL_API int DGL_System_Exit(void);
 
 // Returns FALSE if there is no window, and TRUE if there is.
 // This is used to check if you should break out of your game loop and exit.
-DGL_API BOOL DGL_System_DoesWindowExist(void);
+DGL_API bool DGL_System_DoesWindowExist(void);
 
 // Returns the Windows window handle, which can be used to manipulate the window or to get data from Windows.
 DGL_API HWND DGL_System_GetWindowHandle(void);
@@ -223,13 +219,13 @@ DGL_API const char* DGL_System_GetLastError(void);
 //*************************************************************************************************
 
 // Takes a position in screen coordinates and returns the equivalent in world coordinates.
-DGL_API DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2* position);
+DGL_API DGL_Vec2 DGL_Camera_ScreenCoordToWorld(const DGL_Vec2& position);
 
 // Returns the current X and Y position of the camera, in world coordinates.
 DGL_API DGL_Vec2 DGL_Camera_GetPosition(void);
 
 // Sets the position of the camera, in world coordinates.
-DGL_API void DGL_Camera_SetPosition(const DGL_Vec2* position);
+DGL_API void DGL_Camera_SetPosition(const DGL_Vec2& position);
 
 // Returns the current zoom level of the camera.
 DGL_API float DGL_Camera_GetZoom(void);
@@ -253,7 +249,7 @@ DGL_API void DGL_Camera_SetRotation(float radians);
 // *** Settings ***********************************************************************************
 
 // Sets the background color of the window. The alpha value of the color parameter will be ignored.
-DGL_API void DGL_Graphics_SetBackgroundColor(const DGL_Color* color);
+DGL_API void DGL_Graphics_SetBackgroundColor(const DGL_Color& color);
 
 // Sets the texture sampling mode and address mode to use for all textures drawn after this call.
 DGL_API void DGL_Graphics_SetTextureSamplerData(DGL_TextureSampleMode sampleMode, 
@@ -279,19 +275,19 @@ DGL_API void DGL_Graphics_SetTexture(const DGL_Texture* texture);
 
 // Loads a pixel shader with the provided name and path into memory.
 // Returns a pointer to the new pixel shader instance
-DGL_API const DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename);
+DGL_API DGL_PixelShader* DGL_Graphics_LoadPixelShader(const char* filename);
 
 // Loads a vertex shader with the provided name and path into memory.
 // Returns a pointer to the new vertex shader instance
-DGL_API const DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename);
+DGL_API DGL_VertexShader* DGL_Graphics_LoadVertexShader(const char* filename);
 
 // Unloads the provided pixel shader from memory.
 // The pointer passed in will be set to NULL.
-DGL_API void DGL_Graphics_FreePixelShader(const DGL_PixelShader** shader);
+DGL_API void DGL_Graphics_FreePixelShader(DGL_PixelShader** shader);
 
 // Unloads the provided vertex shader from memory.
 // The pointer passed in will be set to NULL.
-DGL_API void DGL_Graphics_FreeVertexShader(const DGL_VertexShader** shader);
+DGL_API void DGL_Graphics_FreeVertexShader(DGL_VertexShader** shader);
 
 //-------------------------------------------------------------------------------------------------
 // *** Textures ***********************************************************************************
@@ -311,7 +307,7 @@ DGL_API DGL_Texture* DGL_Graphics_CreateRenderTexture(int width, int height);
 
 // Clears the specified render texture and fills it with the specified color.
 // Note: if the alpha of this color is not zero, drawing transparent textures onto it may not work well.
-DGL_API void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color* color);
+DGL_API void DGL_Graphics_ClearRenderTexture(const DGL_Texture* renderTexture, const DGL_Color& color);
 
 // Unloads the provided texture from memory.
 // The pointer passed in will be set to NULL.
@@ -338,14 +334,14 @@ DGL_API DGL_Mesh* DGL_Graphics_EndMesh(void);
 DGL_API DGL_Mesh* DGL_Graphics_EndMeshIndexed(unsigned* indices, unsigned indexCount);
 
 // Adds a new vertex to the list for the current mesh.
-DGL_API void DGL_Graphics_AddVertex(const DGL_Vec2* position, const DGL_Color* color, 
-    const DGL_Vec2* textureOffset);
+DGL_API void DGL_Graphics_AddVertex(const DGL_Vec2& position, const DGL_Color& color, 
+    const DGL_Vec2& textureOffset);
 
 // Adds a triangle (three vertexes) to the list for the current mesh.
 DGL_API void DGL_Graphics_AddTriangle(
-    const DGL_Vec2* position1, const DGL_Color* color1, const DGL_Vec2* textureOffset1,
-    const DGL_Vec2* position2, const DGL_Color* color2, const DGL_Vec2* textureOffset2,
-    const DGL_Vec2* position3, const DGL_Color* color3, const DGL_Vec2* textureOffset3
+    const DGL_Vec2& position1, const DGL_Color& color1, const DGL_Vec2& textureOffset1,
+    const DGL_Vec2& position2, const DGL_Color& color2, const DGL_Vec2& textureOffset2,
+    const DGL_Vec2& position3, const DGL_Color& color3, const DGL_Vec2& textureOffset3
 );
 
 // Releases the provided mesh from memory.
@@ -374,20 +370,20 @@ DGL_API void DGL_Graphics_DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode m
 // *** Constant buffer ****************************************************************************
 
 // Sets the position, scale, and rotation (in radians) which will be used for drawing meshes.
-DGL_API void DGL_Graphics_SetCB_TransformData(const DGL_Vec2* position, const DGL_Vec2* scale, 
+DGL_API void DGL_Graphics_SetCB_TransformData(const DGL_Vec2& position, const DGL_Vec2& scale, 
     float rotationRadians);
 
 // Sets the transformation matrix with position, scale, and rotation to use when drawing meshes.
-DGL_API void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4* transformationMatrix);
+DGL_API void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4& transformationMatrix);
 
 // Sets the texture offset to use when drawing meshes with textures.
-DGL_API void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2* textureOffset);
+DGL_API void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2& textureOffset);
 
 // Sets the transparency value which will be multiplied with the alpha value of the mesh and texture.
 DGL_API void DGL_Graphics_SetCB_Alpha(float alpha);
 
 // Sets the tint color to be applied when drawing meshes. 
-DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color* color);
+DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color& color);
 
 // Sets the float data which is available for custom shaders.
 DGL_API void DGL_Graphics_SetCB_ShaderData(float data);
@@ -408,20 +404,20 @@ DGL_API DGL_Vec2 DGL_Input_GetMousePosition(void);
 DGL_API DGL_Vec2 DGL_Input_GetMousePositionDelta(void);
 
 // Returns TRUE if the specified key is currently down, and FALSE if it is not.
-DGL_API BOOL DGL_Input_KeyDown(unsigned char key);
+DGL_API bool DGL_Input_KeyDown(unsigned char key);
 
 // Returns TRUE if the specified key is currently down but was not down last frame, and FALSE if not.
-DGL_API BOOL DGL_Input_KeyTriggered(unsigned char key);
+DGL_API bool DGL_Input_KeyTriggered(unsigned char key);
 
 // Returns TRUE if the specified key is currently not down but was down last frame, and FALSE if not.
-DGL_API BOOL DGL_Input_KeyReleased(unsigned char key);
+DGL_API bool DGL_Input_KeyReleased(unsigned char key);
 
 // Returns the last key that was triggered (down this frame and not down last frame).
 // If no key no key was triggered, will return 0.
 DGL_API unsigned char DGL_Input_LastKeyTriggered(void);
 
 // Pass in FALSE to hide the mouse cursor and TRUE to display it.
-DGL_API void DGL_Input_ShowCursor(BOOL show);
+DGL_API void DGL_Input_ShowCursor(bool show);
 
 
 //*************************************************************************************************
@@ -431,7 +427,7 @@ DGL_API void DGL_Input_ShowCursor(BOOL show);
 // Returns TRUE if the application window currently has focus, and FALSE if it does not.
 // This can be used to do things such as automatically pause and resume when 
 // the application window is minimized or un-selected.
-DGL_API BOOL DGL_Window_HasFocus(void);
+DGL_API bool DGL_Window_HasFocus(void);
 
 // Returns the width and height of the user's current monitor.
 DGL_API DGL_Vec2 DGL_Window_GetMonitorSize(void);
@@ -449,9 +445,3 @@ DGL_API void DGL_Window_SetSize(int windowWidth, int windowHeight);
 // Changes the style of the current window. This can be used to switch between fullscreen and windowed modes.
 DGL_API void DGL_Window_SetStyle(unsigned style);
 
-
-
-
-#ifdef __cplusplus
-}
-#endif

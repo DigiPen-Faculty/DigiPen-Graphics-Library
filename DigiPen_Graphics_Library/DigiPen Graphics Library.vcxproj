@@ -30,13 +30,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -204,6 +204,8 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     </ClCompile>
     <ClCompile Include="src\GraphicsSystem.ixx">
       <FileType>Document</FileType>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCppModule</CompileAs>
     </ClCompile>
     <ClCompile Include="src\Error.ixx">
       <FileType>Document</FileType>
@@ -216,6 +218,8 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     </ClCompile>
     <ClCompile Include="src\Texture.ixx">
       <FileType>Document</FileType>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCppModule</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCppModule</CompileAs>
     </ClCompile>
     <ClInclude Include="src\WICTextureLoader11.h" />
     <ClCompile Include="src\WindowsSystem.ixx">
@@ -223,6 +227,8 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     </ClCompile>
     <ClCompile Include="src\Shader.ixx">
       <FileType>Document</FileType>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCppModule</CompileAs>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +242,10 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     <ClCompile Include="src\Math.ixx" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\D3dInterface.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Shader.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
+    </ClCompile>
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\WICTextureLoader11.cpp" />
     <ClCompile Include="src\WindowsSystem.cpp" />

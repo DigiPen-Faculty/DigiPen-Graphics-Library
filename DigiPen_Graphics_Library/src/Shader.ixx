@@ -21,8 +21,9 @@ export struct DGL_PixelShader
     DGL_PixelShader(std::string_view name) :
         name(name)
     {}
+    DGL_PixelShader(const DGL_PixelShader& other) = delete;
 
-    bool operator==(const DGL_PixelShader&) const noexcept = default;
+    ~DGL_PixelShader() { if (shader) shader->Release(); }
 
     ID3D11PixelShader* shader{ nullptr };
     std::string name;
@@ -41,15 +42,6 @@ export struct DGL_VertexShader
     std::string filename;
 };
 
-template <>
-struct std::hash<DGL_PixelShader>
-{
-    std::size_t operator()(const DGL_PixelShader& shader) const
-    {
-        return std::hash<std::string>{}(shader.name);
-    }
-};
-
 namespace DGL
 {
 
@@ -58,7 +50,6 @@ namespace DGL
 export class ShaderManager
 {
 public:
-    ~ShaderManager();
 
     DGL_PixelShader* LoadPixelShader(std::string_view filename, ID3D11Device* device);
     DGL_VertexShader* LoadVertexShader(std::string_view filename, ID3D11Device* device);
@@ -70,7 +61,7 @@ public:
     void Release(const DGL_VertexShader* shader);
 
 private:
-    std::unordered_set<DGL_PixelShader> mPixelShaders;
+    std::unordered_map<std::string, std::unique_ptr<DGL_PixelShader>> mPixelShaders;
     std::unordered_map<std::string, std::unique_ptr<DGL_VertexShader>> mVertexShaders;
 };
 }

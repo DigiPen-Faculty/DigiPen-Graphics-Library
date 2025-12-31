@@ -22,7 +22,7 @@ DGL::ErrorHandler error;
 
 
 //*************************************************************************************************
-HWND DGL_System_Init(const DGL_SysInitInfo* sysInitInfo)
+HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
 {
     // Initialize the window and save the window handle
     HWND handle = winSys.Initialize(sysInitInfo);
@@ -35,7 +35,7 @@ HWND DGL_System_Init(const DGL_SysInitInfo* sysInitInfo)
         return NULL;
 
     // Initialize the frame rate controller with the provided max frame rate
-    frameController.Initialize(sysInitInfo->mMaxFrameRate);
+    frameController.Initialize(sysInitInfo.mMaxFrameRate);
 
     // Return the window handle
     return handle;

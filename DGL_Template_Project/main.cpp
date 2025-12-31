@@ -16,11 +16,11 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
     if (DGL_System_HandleWindowsMessage(message, wParam, lParam, &result))
         return result;
 
-    switch (message)
-    {
-    default:
+    //switch (message)
+    //{
+    //default:
         return DefWindowProc(hWnd, message, wParam, lParam);
-    }
+    //}
 }
 
 
@@ -34,19 +34,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     initInfo.mMaxFrameRate = 60;
     initInfo.mShow = nCmdShow;
     initInfo.mWindowStyle = WS_OVERLAPPEDWINDOW;
-    initInfo.mWindowTitle = "Game Window";
+    initInfo.mWindowTitle = "Awesome Game";
     initInfo.mWindowHeight = 768;
     initInfo.mWindowWidth = 1024;
     initInfo.mCreateConsole = TRUE;
     initInfo.pWindowsCallback = WndProc;
     initInfo.mWindowIcon = IDI_DGLTEMPLATE;
 
-    HWND windowHandle = DGL_System_Init(&initInfo);
+    HWND windowHandle = DGL_System_Init(initInfo);
     if (windowHandle == NULL)
         return 1;
 
-    DGL_Color color = { 0.1f, 0.1f, 0.1f, 1.0f };
-    DGL_Graphics_SetBackgroundColor(&color);
+    DGL_Graphics_SetBackgroundColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 
     int running = TRUE;
     while (running)

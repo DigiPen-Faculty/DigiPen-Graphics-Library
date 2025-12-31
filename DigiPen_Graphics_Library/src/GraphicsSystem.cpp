@@ -17,6 +17,7 @@ module GraphicsSystem;
 import Math;
 import Errors;
 import Texture;
+import Shader;
 
 namespace DGL
 {

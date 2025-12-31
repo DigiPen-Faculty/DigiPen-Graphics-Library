@@ -24,7 +24,7 @@ public:
     WindowsSystem();
 
     // Creates the window
-    HWND Initialize(const DGL_SysInitInfo* pSysInitInfo);
+    HWND Initialize(const DGL_SysInitInfo& pSysInitInfo);
 
     // Processes all of the Windows messages
     void Update();

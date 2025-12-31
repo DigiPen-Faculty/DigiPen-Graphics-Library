@@ -117,6 +117,7 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
         DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
     );
 
+    // Create a rotation matrix around the Z axis using the current rotation
     DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(
         DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
         mRotation
@@ -133,7 +134,7 @@ DGL_Mat4 CameraObject::GetWorldMatrix()
     // Store the result of multiplying the matrices
     mViewProjMatrix = viewMatrix * rotationMatrix * projectionMatrix;
 
-    // Return the world matrix, which is the transpose of view * projection
+    // Return the world matrix, which is the transposed view * rotation * projection matrix
     return DxToMat4(DirectX::XMMatrixTranspose(mViewProjMatrix));
 }
 
