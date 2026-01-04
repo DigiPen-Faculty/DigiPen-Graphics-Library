@@ -2,10 +2,10 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.4.0
+//          v1.4.1
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
-// Copyright © 2024 DigiPen, All rights reserved.
+// Copyright © 2025 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #pragma once
