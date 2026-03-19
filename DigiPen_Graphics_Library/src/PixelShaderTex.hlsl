@@ -11,6 +11,8 @@ SamplerState ObjSamplerState;
 
 float4 ps_main(vs_out input) : SV_TARGET{
     float4 color = ObjTexture.Sample(ObjSamplerState, input.tex_coord);
+    
+    clip(color.w * input.alpha - 0.01f);
 
     color.x = color.x + input.color.x;
     color.y = color.y + input.color.y;

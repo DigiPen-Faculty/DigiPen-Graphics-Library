@@ -631,11 +631,11 @@ int D3DInterface::CreateBlendStates()
     // Set render target blend descriptor struct for multiplicative
     rtbd = { 0 };
     rtbd.BlendEnable = true;
-    rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
-    rtbd.DestBlend = D3D11_BLEND_ZERO;
+    rtbd.SrcBlend = D3D11_BLEND_DEST_COLOR;
+    rtbd.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
     rtbd.BlendOp = D3D11_BLEND_OP_ADD;
-    rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
-    rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+    rtbd.SrcBlendAlpha = D3D11_BLEND_ZERO;
+    rtbd.DestBlendAlpha = D3D11_BLEND_ONE;
     rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
     rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     // Set blend descriptor struct

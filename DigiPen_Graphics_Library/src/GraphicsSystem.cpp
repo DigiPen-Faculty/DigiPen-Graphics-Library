@@ -451,8 +451,6 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
         return;
     }
 
-    DGL_Graphics_SetBlendMode(DGL_BM_BLEND);
-
     CreateTransformMatrix();
 
     // Draw the mesh using the mesh manager
@@ -486,8 +484,6 @@ void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
     D3D.mConstantBuffer.mWorldMatrix = renderTexture->renderInfo->worldMatrix;
 
     D3D.SetRenderTargetToTexture(renderTexture);
-
-    DGL_Graphics_SetBlendMode(DGL_BM_BLEND);
 
     // Draw the mesh using the mesh manager
     MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(),
