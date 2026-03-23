@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Mesh functionality
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -150,13 +150,19 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
 {
     if (!deviceContext)
     {
-        gError->SetError("Trying to draw mesh when Graphics is not initialized.");
+        gError->SetError("Trying to draw a mesh when Graphics is not initialized.");
         return;
     }
 
     if (!gGraphics->D3D.IsUpdateStarted())
     {
         gError->SetError("Tried to draw a mesh either before DGL_Graphics_StartDrawing was called or after DGL_Graphics_FinishDrawing was called.");
+        return;
+    }
+
+    if (!texture)
+    {
+        gError->SetError("Trying to draw a mesh with a NULL texture pointer.");
         return;
     }
 
@@ -187,15 +193,8 @@ void MeshManager::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Textur
     deviceContext->VSSetShader(vertexShader, NULL, 0);
     deviceContext->PSSetShader(pixelShader, NULL, 0);
 
-    // If there is a texture, set the shader resource
-    if (gGraphics->D3D.GetPixelShaderMode() != DGL_PSM_COLOR && texture)
-        deviceContext->PSSetShaderResources(0, 1, &(texture->texResourceView));
-    else
-    {
-        ID3D11ShaderResourceView* nullSRV = { nullptr };
-        deviceContext->PSSetShaderResources(0, 1, &nullSRV);
-    }
-
+    // Set the shader resource
+    deviceContext->PSSetShaderResources(0, 1, &(texture->texResourceView));
 
     // Set the vertex buffer
     deviceContext->IASetVertexBuffers(

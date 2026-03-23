@@ -94,6 +94,15 @@ typedef struct DGL_SysInitInfo
     // When created automatically by Visual Studio this is usually called WndProc. 
     WNDPROC pWindowsCallback{ nullptr };
 
+    // This is the name of the default pixel shader file to use.
+    const char* mDefaultPixelShader{ "PixelShader.hlsl" };
+
+    // This is the name of the default vertex shader file to use.
+    const char* mDefaultVertexShader{ "VertexShader.hlsl" };
+
+    // This is the path to the folder where the default shader files are located. 
+    const char* mDefaultShaderPath{ "shaders\\" };
+
 } DGL_SysInitInfo;
 
 // This is the type used for texture data. You will only be working with pointers to this type.
@@ -153,8 +162,7 @@ typedef enum
 // These values are used to specify which pixel shader to use when drawing.
 typedef enum
 {
-    DGL_PSM_COLOR,       // Draw with color data from the mesh
-    DGL_PSM_TEXTURE,     // Draw using data from the current texture
+    DGL_PSM_DEFAULT,     // Draw using the default pixel shader
     DGL_PSM_CUSTOM,      // Draw using the last set custom pixel shader
 } DGL_PixelShaderMode;
 
@@ -387,6 +395,9 @@ DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color& color);
 
 // Sets the float data which is available for custom shaders.
 DGL_API void DGL_Graphics_SetCB_ShaderData(float data);
+
+// Sets the vector of four floats which is available for custom shaders.
+DGL_API void DGL_Graphics_SetCB_ShaderVector(const DGL_Color& vector);
 
 
 //*************************************************************************************************

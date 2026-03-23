@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Graphics system
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -32,7 +32,7 @@ public:
     ~GraphicsSystem();
 
     // Initializes the graphics system
-    int Initialize(HWND window);
+    int Initialize(HWND window, const DGL_SysInitInfo& sysInitInfo);
 
     // Shuts down the graphics system
     int ShutDown();
@@ -97,14 +97,19 @@ public:
 
     D3DInterface D3D;
     CameraObject Camera;
+    ShaderManager mShaderManager;
 
 private:
     void CreateTransformMatrix();
 
     // The number of textures that have been loaded and not released
-    int mTextures{ 0 };
+    int mLoadedTextureCount{ 0 };
     // The number of meshes that have been loaded and not released
-    int mMeshes{ 0 };
+    int mLoadedMeshCount{ 0 };
+    // The number of pixel shaders that have been loaded and not released
+    int mLoadedPixelShaderCount{ 0 };
+    // The number of vertex shaders that have been loaded and not released
+    int mLoadedVertexShaderCount{ 0 };
     // The texture to use when drawing the next mesh
     const DGL_Texture* mCurrentTexture{ nullptr };
     // Tracks whether or not the graphics system has been initialized
@@ -119,7 +124,6 @@ private:
     float mDrawRotation{ 0 };
 
     MeshManager Meshes;
-    ShaderManager mShaderManager;
 };
 
 // Global pointer for accessing the graphics system

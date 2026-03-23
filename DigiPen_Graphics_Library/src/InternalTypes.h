@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Definitions of exposed types that are not defined in the public header file
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #pragma once
@@ -14,6 +14,7 @@
 #include <string_view>
 #include <string>
 
+// Data used for a render texture, stored in DGL_Texture if the texture is a render texture.
 typedef struct RenderTextureInfo
 {
     // The D3D render target view object
@@ -25,6 +26,7 @@ typedef struct RenderTextureInfo
 
 } RenderTextureInfo;
 
+// Stores information about a texture.
 typedef struct DGL_Texture
 {
     // The D3D 2D texture object
@@ -37,7 +39,8 @@ typedef struct DGL_Texture
     DGL_Vec2 textureSize{ 0 };
 } DGL_Texture;
 
-struct DGL_PixelShader
+// Stores information about a pixel shader, automatically releases the shader when destroyed.
+typedef struct DGL_PixelShader
 {
     DGL_PixelShader(std::string_view name) :
         name(name)
@@ -48,9 +51,10 @@ struct DGL_PixelShader
 
     ID3D11PixelShader* shader{ nullptr };
     std::string name;
-};
+}DGL_PixelShader;
 
-struct DGL_VertexShader
+// Stores information about a vertex shader, automatically releases the shader when destroyed.
+typedef struct DGL_VertexShader
 {
     DGL_VertexShader(std::string_view name) :
         filename(name)
@@ -61,9 +65,11 @@ struct DGL_VertexShader
 
     ID3D11VertexShader* shader{ nullptr };
     std::string filename;
-};
+}DGL_VertexShader;
 
-typedef struct
+// Stores the data for a single vertex, including position, color, and texture coordinates.
+// Meshes use a list of these to store their vertex data.
+typedef struct VertexData
 {
     // The position of this vertex
     DGL_Vec2 mPosition;
@@ -73,6 +79,7 @@ typedef struct
     DGL_Vec2 mTexCoord;
 } VertexData;
 
+// Stores information about a mesh, including vertex data, index data (if applicable), and D3D buffer objects.
 typedef struct DGL_Mesh
 {
     // The list of vertex data for this mesh

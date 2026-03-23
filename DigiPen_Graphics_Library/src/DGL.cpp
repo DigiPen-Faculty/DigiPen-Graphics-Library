@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Base DGL functionality
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 #include "DGL.h"
@@ -31,7 +31,7 @@ HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
         return NULL;
 
     // Initialize graphics and check for an error
-    if (graphics.Initialize(handle) != 0)
+    if (graphics.Initialize(handle, sysInitInfo) != 0)
         return NULL;
 
     // Initialize the frame rate controller with the provided max frame rate

@@ -5,9 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\Shaders">
-      <UniqueIdentifier>{fbb2e347-c92a-4b92-b4a7-02731261f392}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\API Header">
       <UniqueIdentifier>{2e7c0b02-2b1f-4b99-a731-71afeadaf7b0}</UniqueIdentifier>
     </Filter>
@@ -26,6 +23,9 @@
       <Filter>Source Files\API Header</Filter>
     </ClInclude>
     <ClInclude Include="src\WICTextureLoader11.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InternalTypes.h">
       <Filter>Source Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,17 +102,6 @@
     <ClCompile Include="src\Shader.ixx">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\PixelShader.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="src\VertexShader.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="src\PixelShaderTex.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -3,7 +3,7 @@
 // author:  Andy Ellinger
 // brief:   Texture functionality
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;

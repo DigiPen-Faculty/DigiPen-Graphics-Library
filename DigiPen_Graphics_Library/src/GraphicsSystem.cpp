@@ -3,7 +3,7 @@
 // author:  Andy Ellinger, Kenny Mecham
 // brief:   Graphics system
 //
-// Copyright � 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -41,7 +41,7 @@ GraphicsSystem::~GraphicsSystem()
 }
 
 //*************************************************************************************************
-int GraphicsSystem::Initialize(HWND window)
+int GraphicsSystem::Initialize(HWND window, const DGL_SysInitInfo& sysInitInfo)
 {
     Camera.Initialize(window);
 
@@ -53,8 +53,10 @@ int GraphicsSystem::Initialize(HWND window)
         return 1;
     }
 
+    mInitialized = true;
+
     // Initialize the shaders and check for any errors
-    if (D3D.InitializeShaders() != 0)
+    if (D3D.InitializeShaders(sysInitInfo) != 0)
     {
         // Release anything that was created
         D3D.Release();
@@ -63,8 +65,6 @@ int GraphicsSystem::Initialize(HWND window)
 
     // Initializes the COM library for use by this thread
     CoInitialize(NULL);
-
-    mInitialized = true;
 
     return 0;
 }
@@ -80,37 +80,37 @@ int GraphicsSystem::ShutDown()
     // Set an error if there are meshes or textures that weren't released
     std::stringstream msg;
     msg << "The following resources were not released: ";
-    if (mMeshes)
+    if (mLoadedMeshCount)
     {
         returnValue = 1;
-        msg << mMeshes << " meshes";
+        msg << mLoadedMeshCount << " meshes";
     }
-    if (mTextures)
+    if (mLoadedTextureCount)
     {
         if (returnValue)
             msg << ", ";
         else
             returnValue = 1;
 
-        msg << mTextures << " textures";
+        msg << mLoadedTextureCount << " textures";
     }
-    if (mShaderManager.PixelShaderCount())
+    if (mLoadedPixelShaderCount)
     {
         if (returnValue)
             msg << ", ";
         else
             returnValue = 1;
 
-        msg << mShaderManager.PixelShaderCount() << " pixel shaders";
+        msg << mLoadedPixelShaderCount << " pixel shaders";
     }
-    if (mShaderManager.VertexShaderCount())
+    if (mLoadedVertexShaderCount)
     {
         if (returnValue)
             msg << ", ";
         else
             returnValue = 1;
 
-        msg << mShaderManager.VertexShaderCount() << " vertex shaders";
+        msg << mLoadedVertexShaderCount << " vertex shaders";
     }
     if (returnValue)
         gError->SetError(msg.str());
@@ -141,7 +141,10 @@ DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
         return nullptr;
     }
 
-    auto shader = mShaderManager.LoadPixelShader(filename, D3D.mDevice);
+    DGL_PixelShader* shader = mShaderManager.LoadPixelShader(filename);
+
+    if (shader)
+        mLoadedPixelShaderCount++;
 
     return shader;
 }
@@ -161,6 +164,7 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
     }
 
     mShaderManager.Release(shader);
+    mLoadedPixelShaderCount--;
 }
 
 //*************************************************************************************************
@@ -178,7 +182,10 @@ DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
         return nullptr;
     }
 
-    auto shader = mShaderManager.LoadVertexShader(filename, D3D.mDevice);
+    DGL_VertexShader* shader = mShaderManager.LoadVertexShader(filename);
+
+    if (shader)
+        mLoadedVertexShaderCount++;
 
     return shader;
 }
@@ -198,6 +205,7 @@ void GraphicsSystem::ReleaseVertexShader(const DGL_VertexShader* shader)
     }
 
     mShaderManager.Release(shader);
+    mLoadedVertexShaderCount--;
 }
 
 //*************************************************************************************************
@@ -220,7 +228,7 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
 
     // If it loaded successfuly, increase the texture counter
     if (texture)
-        ++mTextures;
+        ++mLoadedTextureCount;
 
     // Return the new texture
     return texture;
@@ -252,7 +260,7 @@ DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, in
 
     // If it loaded successfuly, increase the texture counter
     if (texture)
-        ++mTextures;
+        ++mLoadedTextureCount;
 
     // Return the new texture
     return texture;
@@ -278,7 +286,7 @@ DGL_Texture* GraphicsSystem::CreateRenderTexture(int width, int height)
 
     // If it loaded successfuly, increase the texture counter
     if (texture)
-        ++mTextures;
+        ++mLoadedTextureCount;
 
     // Return the new texture
     return texture;
@@ -295,7 +303,7 @@ void GraphicsSystem::ReleaseTexture(DGL_Texture* texture)
     TextureManager::ReleaseTexture(texture);
 
     // Decrease the texture counter
-    --mTextures;
+    --mLoadedTextureCount;
 }
 
 //*************************************************************************************************
@@ -372,7 +380,7 @@ DGL_Mesh* GraphicsSystem::EndMesh()
 
     // If it was successful, increase the mesh counter
     if (newMesh)
-        ++mMeshes;
+        ++mLoadedMeshCount;
 
     // Reset the flag
     mCreatingMesh = false;
@@ -401,7 +409,7 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
 
     // If it was successful, increase the mesh counter
     if (newMesh)
-        ++mMeshes;
+        ++mLoadedMeshCount;
 
     // Reset the flag
     mCreatingMesh = false;
@@ -434,7 +442,7 @@ void GraphicsSystem::ReleaseMesh(DGL_Mesh* mesh)
     MeshManager::ReleaseMesh(mesh);
 
     // Reduce the mesh counter
-    --mMeshes;
+    --mLoadedMeshCount;
 }
 
 //*************************************************************************************************
@@ -455,8 +463,8 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
     CreateTransformMatrix();
 
     // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(), 
-        D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+    MeshManager::Draw(mesh, mode, mCurrentTexture, mShaderManager.GetCurrentVertexShader(), 
+        mShaderManager.GetCurrentPixelShader(), D3D.mDeviceContext);
 }
 
 //*************************************************************************************************
@@ -487,8 +495,8 @@ void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
     D3D.SetRenderTargetToTexture(renderTexture);
 
     // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, D3D.GetCurrentVertexShader(),
-        D3D.GetCurrentPixelShader(), D3D.mDeviceContext);
+    MeshManager::Draw(mesh, mode, mCurrentTexture, mShaderManager.GetCurrentVertexShader(),
+        mShaderManager.GetCurrentPixelShader(), D3D.mDeviceContext);
 
     D3D.ResetRenderTarget();
 
@@ -625,20 +633,20 @@ void DGL_Graphics_SetBlendMode(DGL_BlendMode mode)
 //*************************************************************************************************
 void DGL_Graphics_SetShaderMode(DGL_PixelShaderMode pixelMode, DGL_VertexShaderMode vertexMode)
 {
-    gGraphics->D3D.SetPixelShaderMode(pixelMode);
-    gGraphics->D3D.SetVertexShaderMode(vertexMode);
+    gGraphics->mShaderManager.mCurrentPixelShaderMode = pixelMode;
+    gGraphics->mShaderManager.mCurrentVertexShaderMode = vertexMode;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCustomPixelShader(const DGL_PixelShader* shader)
 {
-    gGraphics->D3D.SetCustomPixelShader(shader);
+    gGraphics->mShaderManager.SetCustomPixelShader(shader);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCustomVertexShader(const DGL_VertexShader* shader)
 {
-    gGraphics->D3D.SetCustomVertexShader(shader);
+    gGraphics->mShaderManager.SetCustomVertexShader(shader);
 }
 
 //*************************************************************************************************
@@ -815,4 +823,10 @@ void DGL_Graphics_SetCB_TintColor(const DGL_Color& color)
 void DGL_Graphics_SetCB_ShaderData(float data)
 {
     gGraphics->D3D.mConstantBuffer.mShaderData = data;
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetCB_ShaderVector(const DGL_Color& vector)
+{
+    gGraphics->D3D.mConstantBuffer.mShaderVector = vector;
 }

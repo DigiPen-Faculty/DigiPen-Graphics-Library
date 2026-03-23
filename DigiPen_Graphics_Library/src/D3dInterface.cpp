@@ -3,7 +3,7 @@
 // author:  Andy Ellinger, Kenny Mecham
 // brief:   Wrapper for D3D functionality
 //
-// Copyright © 2022 DigiPen, All rights reserved.
+// Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
 module;
@@ -11,9 +11,6 @@ module;
 #include "DGL.h"
 #include "InternalTypes.h"
 #include <d3d11.h>
-#include "VShader.h"
-#include "PShader.h"
-#include "PTexShader.h"
 #include <tuple>
 
 module D3DInterface;
@@ -166,96 +163,6 @@ void D3DInterface::SetSamplerState(DGL_TextureSampleMode newSampleMode, DGL_Text
 }
 
 //*************************************************************************************************
-DGL_PixelShaderMode D3DInterface::GetPixelShaderMode() const
-{
-    return mCurrentPixelShaderMode;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetPixelShaderMode(DGL_PixelShaderMode mode)
-{
-    if (mode < 0 || mode > DGL_PSM_CUSTOM)
-    {
-        gError->SetError("Passed in an invalid DGL_PixelShaderMode value to DGL_Graphics_SetShaderMode.");
-        return;
-    }
-
-    // Set the shader mode to use on the next draw call
-    mCurrentPixelShaderMode = mode;
-}
-
-//*************************************************************************************************
-DGL_VertexShaderMode D3DInterface::GetVertexShaderMode() const
-{
-    return mCurrentVertexShaderMode;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetVertexShaderMode(DGL_VertexShaderMode mode)
-{
-    if (mode < 0 || mode > DGL_VSM_CUSTOM)
-    {
-        gError->SetError("Passed in an invalid DGL_VertexShaderMode value to DGL_Graphics_SetShaderMode.");
-        return;
-    }
-
-    // Set the shader mode to use on the next draw call
-    mCurrentVertexShaderMode = mode;
-}
-
-//*************************************************************************************************
-void D3DInterface::SetCustomPixelShader(const DGL_PixelShader* shader)
-{
-    if (shader)
-    {
-        mPixelCustomShader = shader->shader;
-    }
-    else
-    {
-        mPixelCustomShader = nullptr;
-    }
-}
-
-//*************************************************************************************************
-void D3DInterface::SetCustomVertexShader(const DGL_VertexShader* shader)
-{
-    if (shader)
-    {
-        mVertexCustomShader = shader->shader;
-    }
-    else
-    {
-        mVertexCustomShader = nullptr;
-    }
-}
-
-//*************************************************************************************************
-ID3D11PixelShader* D3DInterface::GetCurrentPixelShader() const
-{
-    // Return the appropriate pixel shader for the current shader mode
-    switch (GetPixelShaderMode())
-    {
-        case DGL_PSM_TEXTURE: return mPixelTextureShader;
-        case DGL_PSM_COLOR:   return mPixelShader;
-        case DGL_PSM_CUSTOM:  return mPixelCustomShader;
-    }
-
-    return nullptr;
-}
-
-//*************************************************************************************************
-ID3D11VertexShader* D3DInterface::GetCurrentVertexShader() const
-{
-    switch (GetVertexShaderMode())
-    {
-        case DGL_VSM_DEFAULT: return mVertexShader;
-        case DGL_VSM_CUSTOM:  return mVertexCustomShader;
-    }
-
-    return nullptr;
-}
-
-//*************************************************************************************************
 void D3DInterface::UpdateConstantBuffer()
 {
     if (!mDeviceContext)
@@ -321,12 +228,12 @@ void D3DInterface::Release()
             SafeRelease(value2);
     }
 
+    // Release the default shaders
+    gGraphics->mShaderManager.ShutDown();
+
     // Release all other D3D objects
     SafeRelease(mPerObjectBuffer);
     SafeRelease(mInputLayout);
-    SafeRelease(mPixelShader);
-    SafeRelease(mPixelTextureShader);
-    SafeRelease(mVertexShader);
     SafeRelease(mRenderTargetView);
     SafeRelease(mSwapChain);
     SafeRelease(mDeviceContext);
@@ -370,70 +277,13 @@ int D3DInterface::InitializeD3D()
 }
 
 //*************************************************************************************************
-int D3DInterface::InitializeShaders()
+int D3DInterface::InitializeShaders(const DGL_SysInitInfo& sysInitInfo)
 {
-    // Create vertex shader from compiled header
-    HRESULT hr = mDevice->CreateVertexShader(
-        gVShader,
-        sizeof(gVShader),
-        nullptr,
-        &mVertexShader
-    );
-    if (FAILED(hr))
-    {
-        gError->SetError("Problem creating default vertex shader. ", hr);
-        return 1;
-    }
-
-    // Create pixel shader from compiled header
-    hr = mDevice->CreatePixelShader(
-        gPShader,
-        sizeof(gPShader),
-        nullptr,
-        &mPixelShader
-    );
-    if (FAILED(hr))
-    {
-        gError->SetError("Problem creating default pixel color shader. ", hr);
-        return 1;
-    }
-
-    // Create pixel shader for textures from compiled header
-    hr = mDevice->CreatePixelShader(
-        gPTexShader,
-        sizeof(gPTexShader),
-        nullptr,
-        &mPixelTextureShader
-    );
-    if (FAILED(hr))
-    {
-        gError->SetError("Problem creating default pixel texture shader. ", hr);
-        return 1;
-    }
-
-    // Create input description struct
-    D3D11_INPUT_ELEMENT_DESC inputElementDesc[] = {
-        { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEX", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-    // Create and save input layout
-    hr = mDevice->CreateInputLayout(
-        inputElementDesc,
-        ARRAYSIZE(inputElementDesc),
-        gVShader,
-        sizeof(gVShader),
-        &mInputLayout
-    );
-    if (FAILED(hr))
-    {
-        gError->SetError("Problem creating shader input layout. ", hr);
-        return 1;
-    }
+    gGraphics->mShaderManager.Initialize(mDevice, sysInitInfo);
 
     // Set the shaders and sampler to defaults
-    mDeviceContext->VSSetShader(mVertexShader, NULL, 0);
-    mDeviceContext->PSSetShader(mPixelTextureShader, NULL, 0);
+    mDeviceContext->VSSetShader(gGraphics->mShaderManager.GetCurrentVertexShader(), NULL, 0);
+    mDeviceContext->PSSetShader(gGraphics->mShaderManager.GetCurrentPixelShader(), NULL, 0);
     mDeviceContext->PSSetSamplers(0, 1, &(mSamplerStates[SampleModes::Linear][TextureAddressModes::Wrap]));
 
     return 0;
