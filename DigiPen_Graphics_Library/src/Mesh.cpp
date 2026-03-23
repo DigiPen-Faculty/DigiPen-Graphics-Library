@@ -8,6 +8,7 @@
 
 module;
 
+#include "InternalTypes.h"
 #include "DGL.h"
 #include <d3d11.h>
 #include <vector>

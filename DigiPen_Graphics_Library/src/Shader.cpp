@@ -8,6 +8,7 @@
 
 module;
 
+#include "InternalTypes.h"
 #include <d3d11.h>
 #include <unordered_set>
 #include <string>

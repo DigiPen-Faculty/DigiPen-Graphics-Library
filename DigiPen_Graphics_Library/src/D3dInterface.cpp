@@ -9,6 +9,7 @@
 module;
 
 #include "DGL.h"
+#include "InternalTypes.h"
 #include <d3d11.h>
 #include "VShader.h"
 #include "PShader.h"

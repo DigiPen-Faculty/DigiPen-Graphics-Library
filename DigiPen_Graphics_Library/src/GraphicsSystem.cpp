@@ -9,6 +9,7 @@
 module;
 
 #include "DGL.h"
+#include "InternalTypes.h"
 #include <objbase.h>
 #include <sstream>
 

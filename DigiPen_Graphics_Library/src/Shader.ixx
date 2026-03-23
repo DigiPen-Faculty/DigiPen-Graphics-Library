@@ -8,6 +8,7 @@
 
 module;
 
+#include "DGL.h"
 #include <d3d11.h>
 #include <unordered_set>
 #include <unordered_map>
@@ -15,32 +16,6 @@ module;
 #include <memory>
 
 export module Shader;
-
-export struct DGL_PixelShader
-{
-    DGL_PixelShader(std::string_view name) :
-        name(name)
-    {}
-    DGL_PixelShader(const DGL_PixelShader& other) = delete;
-
-    ~DGL_PixelShader() { if (shader) shader->Release(); }
-
-    ID3D11PixelShader* shader{ nullptr };
-    std::string name;
-};
-
-export struct DGL_VertexShader
-{
-    DGL_VertexShader(std::string_view name) :
-        filename(name)
-    {}
-    DGL_VertexShader(const DGL_VertexShader& other) = delete;
-
-    ~DGL_VertexShader() { if (shader) shader->Release(); }
-
-    ID3D11VertexShader* shader{ nullptr };
-    std::string filename;
-};
 
 namespace DGL
 {

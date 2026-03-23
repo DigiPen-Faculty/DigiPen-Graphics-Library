@@ -9,36 +9,11 @@
 module;
 
 #include "DGL.h"
+#include "InternalTypes.h"
 #include <d3d11.h>
 #include <vector>
 
 export module Mesh;
-
-export typedef struct
-{
-    // The position of this vertex
-    DGL_Vec2 mPosition;
-    // The color associated with this vertex
-    DGL_Color mColor;
-    // The texture coordinates associated with this vertex
-    DGL_Vec2 mTexCoord;
-} VertexData;
-
-export typedef struct DGL_Mesh
-{
-    // The list of vertex data for this mesh
-    VertexData* mVertexList{ nullptr };
-    // The number of vertices in this mesh
-    unsigned mVertexCount{ 0 };
-    // The array of indices for an indexed mesh (will be null for a non-indexed mesh)
-    unsigned* mIndices{ nullptr };
-    // The number of indices in the index array
-    unsigned mIndexCount{ 0 };
-    // The D3D vertex buffer object
-    ID3D11Buffer* mVertexBuffer{ nullptr };
-    // The D3D index buffer object
-    ID3D11Buffer* mIndexBuffer{ nullptr };
-} DGL_Mesh;
 
 namespace DGL
 {

@@ -8,6 +8,7 @@
 
 module;
 
+#include "InternalTypes.h"
 #include "WICTextureLoader11.h"
 #include <DirectXMath.h>
 #include <sstream>
