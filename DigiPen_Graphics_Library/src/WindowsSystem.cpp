@@ -34,7 +34,7 @@ WindowsSystem::WindowsSystem()
 HWND WindowsSystem::Initialize(const DGL_SysInitInfo& pSysInitInfo)
 {
     // Check if we should create a console
-    if (pSysInitInfo.mCreateConsole)
+    if (pSysInitInfo.createConsole)
     {
         // Create the console
         AllocConsole();
@@ -45,22 +45,22 @@ HWND WindowsSystem::Initialize(const DGL_SysInitInfo& pSysInitInfo)
     }
 
     // Save the instance
-    mInstance = pSysInitInfo.mAppInstance;
+    mInstance = pSysInitInfo.appInstance;
 
     // Set up the struct used for registering the window class
     WNDCLASSEX wcex = { 0 };
     wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = pSysInitInfo.mClassStyle;
-    wcex.lpfnWndProc = pSysInitInfo.pWindowsCallback;
+    wcex.style = pSysInitInfo.classStyle;
+    wcex.lpfnWndProc = pSysInitInfo.windowsCallback;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = pSysInitInfo.mAppInstance;
-    wcex.hIcon = LoadIcon(pSysInitInfo.mAppInstance, MAKEINTRESOURCE(pSysInitInfo.mWindowIcon));
+    wcex.hInstance = pSysInitInfo.appInstance;
+    wcex.hIcon = LoadIcon(pSysInitInfo.appInstance, MAKEINTRESOURCE(pSysInitInfo.windowIcon));
     wcex.hCursor = LoadCursor(0, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
     wcex.lpszMenuName = NULL;
     wcex.lpszClassName = cWindowClassName;
-    wcex.hIconSm = LoadIcon(pSysInitInfo.mAppInstance, MAKEINTRESOURCE(pSysInitInfo.mWindowIcon));
+    wcex.hIconSm = LoadIcon(pSysInitInfo.appInstance, MAKEINTRESOURCE(pSysInitInfo.windowIcon));
 
     // Register the window class and check the result
     if (!RegisterClassEx(&wcex))
@@ -72,15 +72,15 @@ HWND WindowsSystem::Initialize(const DGL_SysInitInfo& pSysInitInfo)
     // Create the window
     mWindowHandle = CreateWindow(
         cWindowClassName,
-        pSysInitInfo.mWindowTitle,
-        pSysInitInfo.mWindowStyle,
+        pSysInitInfo.windowTitle,
+        pSysInitInfo.windowStyle,
         CW_USEDEFAULT, 
         CW_USEDEFAULT,
-        pSysInitInfo.mWindowWidth,
-        pSysInitInfo.mWindowHeight,
+        (int)pSysInitInfo.windowSize.x,
+        (int)pSysInitInfo.windowSize.y,
         NULL,
         NULL,
-        pSysInitInfo.mAppInstance,
+        pSysInitInfo.appInstance,
         NULL
     );
     // Check if the window was created successfully
@@ -91,7 +91,7 @@ HWND WindowsSystem::Initialize(const DGL_SysInitInfo& pSysInitInfo)
     }
 
     // Show and update the window
-    ShowWindow(mWindowHandle, pSysInitInfo.mShow);
+    ShowWindow(mWindowHandle, pSysInitInfo.show);
     UpdateWindow(mWindowHandle);
 
     // Return the window handle

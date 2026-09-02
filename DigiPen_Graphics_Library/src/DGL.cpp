@@ -35,7 +35,7 @@ HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
         return NULL;
 
     // Initialize the frame rate controller with the provided max frame rate
-    frameController.Initialize(sysInitInfo.mMaxFrameRate);
+    frameController.Initialize(sysInitInfo.maxFrameRate);
 
     // Return the window handle
     return handle;

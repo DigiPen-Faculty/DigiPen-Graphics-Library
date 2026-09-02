@@ -35,13 +35,13 @@ void ShaderManager::Initialize(ID3D11Device* device, const DGL_SysInitInfo& sysI
     mDevice = device;
 
     // Create default vertex shader
-    string shaderPath{ sysInitInfo.mDefaultShaderPath };
-    shaderPath += sysInitInfo.mDefaultVertexShader;
+    string shaderPath{ sysInitInfo.defaultShaderPath };
+    shaderPath += sysInitInfo.defaultVertexShader;
     mVertexShader = CreateVertexShader(shaderPath, true);
 
     // Create default pixel shader 
-    shaderPath = sysInitInfo.mDefaultShaderPath;
-    shaderPath += sysInitInfo.mDefaultPixelShader;
+    shaderPath = sysInitInfo.defaultShaderPath;
+    shaderPath += sysInitInfo.defaultPixelShader;
     mPixelShader = CreatePixelShader(shaderPath);
 }
 
