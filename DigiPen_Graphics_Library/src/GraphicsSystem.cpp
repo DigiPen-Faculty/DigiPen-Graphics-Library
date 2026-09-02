@@ -490,7 +490,7 @@ void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
 
     CreateTransformMatrix();
 
-    D3D.mConstantBuffer.mWorldMatrix = renderTexture->renderInfo->worldMatrix;
+    D3D.mConstantBuffer.worldMatrix = renderTexture->renderInfo->worldMatrix;
 
     D3D.SetRenderTargetToTexture(renderTexture);
 
@@ -500,7 +500,7 @@ void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
 
     D3D.ResetRenderTarget();
 
-    D3D.mConstantBuffer.mWorldMatrix = Camera.GetWorldMatrix();
+    D3D.mConstantBuffer.worldMatrix = Camera.GetWorldMatrix();
 }
 
 //*************************************************************************************************
@@ -516,7 +516,7 @@ void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& 
 //*************************************************************************************************
 void GraphicsSystem::SetTransformMatrix(const DGL_Mat4& transformationMatrix)
 {
-    gGraphics->D3D.mConstantBuffer.mTransformMatrix = transformationMatrix;
+    gGraphics->D3D.mConstantBuffer.transformMatrix = transformationMatrix;
 
     mCreateMatrix = false;
 }
@@ -546,7 +546,7 @@ void GraphicsSystem::CreateTransformMatrix()
     DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
 
     // Set the transform matrix on the constant buffer
-    D3D.mConstantBuffer.mTransformMatrix = result;
+    D3D.mConstantBuffer.transformMatrix = result;
 
     mCreateMatrix = false;
 }
@@ -804,29 +804,35 @@ void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4& transformationMatrix)
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2& textureOffset)
 {
-    gGraphics->D3D.mConstantBuffer.mTexOffset = textureOffset;
+    gGraphics->D3D.mConstantBuffer.texOffset = textureOffset;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_Alpha(float alpha)
 {
-    gGraphics->D3D.mConstantBuffer.mAlpha = alpha;
+    gGraphics->D3D.mConstantBuffer.alpha = alpha;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TintColor(const DGL_Color& color)
 {
-    gGraphics->D3D.mConstantBuffer.mTintColor = color;
+    gGraphics->D3D.mConstantBuffer.tintColor = color;
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_ShaderData(float data)
+void DGL_Graphics_SetCB_ShaderFloat(float data)
 {
-    gGraphics->D3D.mConstantBuffer.mShaderData = data;
+    gGraphics->D3D.mConstantBuffer.shaderFloat = data;
 }
 
 //*************************************************************************************************
-void DGL_Graphics_SetCB_ShaderVector(const DGL_Color& vector)
+void DGL_Graphics_SetCB_ShaderVec4(const DGL_Color& vector)
 {
-    gGraphics->D3D.mConstantBuffer.mShaderVector = vector;
+    gGraphics->D3D.mConstantBuffer.shaderVec4 = vector;
+}
+
+//*************************************************************************************************
+void DGL_Graphics_SetConstantBuffer(const DGL_ConstantBuffer& data)
+{
+    memcpy(&gGraphics->D3D.mConstantBuffer, &data, sizeof(DGL_ConstantBuffer));
 }

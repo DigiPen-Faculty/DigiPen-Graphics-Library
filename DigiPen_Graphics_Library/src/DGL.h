@@ -118,6 +118,34 @@ typedef struct DGL_PixelShader DGL_PixelShader;
 // This is the type used for custom vertex shaders. You will only be working with pointers to this type.
 typedef struct DGL_VertexShader DGL_VertexShader;
 
+// This struct defines the data that is sent to the shaders for every mesh that is drawn.
+// Do not modify this struct unless you are sure you know what you're doing!
+struct DGL_ConstantBuffer
+{
+    // The world view matrix, taking into account the window size, camera position, and scale
+    DGL_Mat4 worldMatrix{
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+    // The transformation matrix, with the position, rotation, and scale of the object being drawn
+    DGL_Mat4 transformMatrix{ 0 };
+    // The color that will be added to the object's color
+    DGL_Color tintColor{ 0 };
+    // The texture offset coordinates to use when getting texture data for the object
+    DGL_Vec2 texOffset{ 0 };
+    // The alpha value to multiply with the color
+    float alpha{ 1.0f };
+    // Extra data which can be used by custom shaders
+    float shaderFloat{ 0 };
+    // Extra data which can be used by custom shaders
+    DGL_Color shaderVec4{ 0 };
+
+    // Note: if adding any additional variables, the size of the struct 
+    // must be a multiple of 16, so you may need to add padding 
+};
+
 
 //*************************************************************************************************
 // Enum definitions
@@ -395,10 +423,15 @@ DGL_API void DGL_Graphics_SetCB_Alpha(float alpha);
 DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color& color);
 
 // Sets the float data which is available for custom shaders.
-DGL_API void DGL_Graphics_SetCB_ShaderData(float data);
+DGL_API void DGL_Graphics_SetCB_ShaderFloat(float data);
 
 // Sets the vector of four floats which is available for custom shaders.
-DGL_API void DGL_Graphics_SetCB_ShaderVector(const DGL_Color& vector);
+DGL_API void DGL_Graphics_SetCB_ShaderVec4(const DGL_Color& vector);
+
+// Sets the constant buffer data directly. It is your responsibility to make sure
+// all information is filled out correctly.
+// Note: this will be overwritten when calling any of the other SetCB functions.
+DGL_API void DGL_Graphics_SetConstantBuffer(const DGL_ConstantBuffer& data);
 
 
 //*************************************************************************************************

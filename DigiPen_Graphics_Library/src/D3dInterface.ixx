@@ -19,32 +19,6 @@ namespace DGL
 
 using std::unordered_map;
 
-export struct cbPerObject
-{
-    // The world view matrix, taking into account the window size, camera position, and scale
-    DGL_Mat4 mWorldMatrix{ 
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f
-    };
-    // The transformation matrix, with the position, rotation, and scale of the object being drawn
-    DGL_Mat4 mTransformMatrix{ 0 };
-    // The color that will be added to the object's color
-    DGL_Color mTintColor{ 0 };
-    // The texture offset coordinates to use when getting texture data for the object
-    DGL_Vec2 mTexOffset{ 0 };
-    // The alpha value to multiply with the color
-    float mAlpha{ 1.0f };
-    // Extra data which can be used by custom shaders
-    float mShaderData{ 0 };
-    // Extra data which can be used by custom shaders
-    DGL_Color mShaderVector{ 0 };
-
-    // Note: if adding any additional variables, you must account
-    // for the valid constant buffer sizes
-};
-
 //------------------------------------------------------------------------------------ D3DInterface
 
 export class D3DInterface
@@ -73,7 +47,7 @@ public:
     void ResetOnSizeChange();
 
     // Stores the constant buffer data that will be applied 
-    cbPerObject mConstantBuffer;
+    DGL_ConstantBuffer mConstantBuffer;
 
     // The color that will be used to clear the render target view
     float mBackgroundColor[4]{ 0.0f, 0.0f, 0.0f, 1.0f };

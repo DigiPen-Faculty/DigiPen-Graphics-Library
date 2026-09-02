@@ -206,7 +206,7 @@ void D3DInterface::ResetOnSizeChange()
     SetViewport();
 
     // Get the updated world matrix for the constant buffer
-    mConstantBuffer.mWorldMatrix = gGraphics->Camera.GetWorldMatrix();
+    mConstantBuffer.worldMatrix = gGraphics->Camera.GetWorldMatrix();
 }
 
 //*************************************************************************************************
@@ -269,9 +269,16 @@ int D3DInterface::InitializeD3D()
     if (CreateSamplers() == 1)
         return 1;
 
+    // Set default sampler states
+    SetSamplerState(DGL_TSM_LINEAR, DGL_AM_CLAMP);
+
     SetViewport();
 
-    mConstantBuffer.mWorldMatrix = gGraphics->Camera.GetWorldMatrix();
+    mConstantBuffer.worldMatrix = gGraphics->Camera.GetWorldMatrix();
+
+    // Set the background color by doing a dummy update
+    StartUpdate();
+    EndUpdate();
 
     return 0;
 }
@@ -301,6 +308,8 @@ int D3DInterface::CreateDevice()
 
     // Create swap chain description struct
     DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
+    swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+    swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
     swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;
@@ -361,7 +370,7 @@ int D3DInterface::CreateDevice()
 int D3DInterface::CreateRenderTarget()
 {
     // Create frame buffer
-    ID3D11Texture2D* frameBuffer;
+    ID3D11Texture2D* frameBuffer{ nullptr };
     HRESULT hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&frameBuffer);
     if (FAILED(hr))
     {
@@ -513,7 +522,7 @@ int D3DInterface::CreateConstantBuffer()
     // Create constant buffer descriptor struct
     D3D11_BUFFER_DESC cbBufferDesc = { 0 };
     cbBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    cbBufferDesc.ByteWidth = sizeof(cbPerObject);
+    cbBufferDesc.ByteWidth = sizeof(DGL_ConstantBuffer);
     cbBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     // Create and save constant buffer
     HRESULT hr = mDevice->CreateBuffer(&cbBufferDesc, NULL, &mPerObjectBuffer);
@@ -524,14 +533,14 @@ int D3DInterface::CreateConstantBuffer()
     }
 
     // Set constant buffer object
-    memset(&mConstantBuffer, 0, sizeof(cbPerObject));
+    memset(&mConstantBuffer, 0, sizeof(DGL_ConstantBuffer));
 
-    mConstantBuffer.mWorldMatrix.m[0][0] = 1;
-    mConstantBuffer.mWorldMatrix.m[1][1] = 1;
-    mConstantBuffer.mWorldMatrix.m[2][2] = 1;
-    mConstantBuffer.mWorldMatrix.m[3][3] = 1;
+    mConstantBuffer.worldMatrix.m[0][0] = 1;
+    mConstantBuffer.worldMatrix.m[1][1] = 1;
+    mConstantBuffer.worldMatrix.m[2][2] = 1;
+    mConstantBuffer.worldMatrix.m[3][3] = 1;
 
-    mConstantBuffer.mAlpha = 1.0f;
+    mConstantBuffer.alpha = 1.0f;
 
     return 0;
 }
