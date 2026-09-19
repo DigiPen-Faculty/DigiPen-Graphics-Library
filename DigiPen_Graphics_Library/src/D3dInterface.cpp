@@ -532,15 +532,18 @@ int D3DInterface::CreateConstantBuffer()
         return 1;
     }
 
-    // Set constant buffer object
+    // Set constant buffer object memory to 0s
     memset(&mConstantBuffer, 0, sizeof(DGL_ConstantBuffer));
 
+    // Set the default world matrix
     mConstantBuffer.worldMatrix.m[0][0] = 1;
     mConstantBuffer.worldMatrix.m[1][1] = 1;
     mConstantBuffer.worldMatrix.m[2][2] = 1;
     mConstantBuffer.worldMatrix.m[3][3] = 1;
-
+    // Set the default alpha
     mConstantBuffer.alpha = 1.0f;
+    // Set the default tint color
+    mConstantBuffer.tintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     return 0;
 }

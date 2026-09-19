@@ -122,28 +122,28 @@ typedef struct DGL_VertexShader DGL_VertexShader;
 // Do not modify this struct unless you are sure you know what you're doing!
 struct DGL_ConstantBuffer
 {
-    // The world view matrix, taking into account the window size, camera position, and scale
+    // The world view matrix, taking into account the window size, camera position, and scale.
     DGL_Mat4 worldMatrix{
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    // The transformation matrix, with the position, rotation, and scale of the object being drawn
+    // The transformation matrix, with the position, rotation, and scale of the object being drawn.
     DGL_Mat4 transformMatrix{ 0 };
-    // The color that will be added to the object's color
-    DGL_Color tintColor{ 0 };
-    // The texture offset coordinates to use when getting texture data for the object
-    DGL_Vec2 texOffset{ 0 };
-    // The alpha value to multiply with the color
+    // The color that will be multiplied with the object's vertex and texture color.
+    DGL_Color tintColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+    // The texture offset coordinates to use when getting texture data for the object.
+    DGL_Vec2 texOffset{ 0, 0 };
+    // The alpha value to multiply with the color.
     float alpha{ 1.0f };
-    // Extra data which can be used by custom shaders
+    // Extra data which can be used by custom shaders.
     float shaderFloat{ 0 };
-    // Extra data which can be used by custom shaders
-    DGL_Color shaderVec4{ 0 };
+    // Extra data which can be used by custom shaders.
+    DGL_Color shaderVec4{ 0, 0, 0, 0 };
 
     // Note: if adding any additional variables, the size of the struct 
-    // must be a multiple of 16, so you may need to add padding 
+    // must be a multiple of 16, so you may need to add padding.
 };
 
 
@@ -420,6 +420,7 @@ DGL_API void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2& textureOffset);
 DGL_API void DGL_Graphics_SetCB_Alpha(float alpha);
 
 // Sets the tint color to be applied when drawing meshes. 
+// This color will be multiplied with the vertex color and texture color.
 DGL_API void DGL_Graphics_SetCB_TintColor(const DGL_Color& color);
 
 // Sets the float data which is available for custom shaders.

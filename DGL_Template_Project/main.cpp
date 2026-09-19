@@ -29,17 +29,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     lpCmdLine;
     hPrevInstance;
     DGL_SysInitInfo initInfo;
-    initInfo.mAppInstance = hInstance;
-    initInfo.mClassStyle = CS_HREDRAW | CS_VREDRAW;
-    initInfo.mMaxFrameRate = 60;
-    initInfo.mShow = nCmdShow;
-    initInfo.mWindowStyle = WS_OVERLAPPEDWINDOW;
-    initInfo.mWindowTitle = "Awesome Game";
-    initInfo.mWindowHeight = 768;
-    initInfo.mWindowWidth = 1024;
-    initInfo.mCreateConsole = TRUE;
-    initInfo.pWindowsCallback = WndProc;
-    initInfo.mWindowIcon = IDI_DGLTEMPLATE;
+    initInfo.appInstance = hInstance;
+    initInfo.classStyle = CS_HREDRAW | CS_VREDRAW;
+    initInfo.maxFrameRate = 60;
+    initInfo.show = nCmdShow;
+    initInfo.windowStyle = WS_OVERLAPPEDWINDOW;
+    initInfo.windowTitle = "Awesome Game";
+    initInfo.windowSize.y = 768;
+    initInfo.windowSize.x = 1024;
+    initInfo.createConsole = TRUE;
+    initInfo.windowsCallback = WndProc;
+    initInfo.windowIcon = IDI_DGLTEMPLATE;
 
     HWND windowHandle = DGL_System_Init(initInfo);
     if (windowHandle == NULL)
