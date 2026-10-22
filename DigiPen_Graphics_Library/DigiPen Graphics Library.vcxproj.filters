@@ -48,7 +48,7 @@
     <ClCompile Include="src\DGL.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsSystem.cpp">
+    <ClCompile Include="src\WindowSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Error.cpp">
@@ -93,7 +93,7 @@
     <ClCompile Include="src\GraphicsSystem.ixx">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsSystem.ixx">
+    <ClCompile Include="src\WindowSystem.ixx">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
@@ -105,5 +105,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="vcpkg.json" />
   </ItemGroup>
 </Project>

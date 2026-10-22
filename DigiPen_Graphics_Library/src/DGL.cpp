@@ -7,38 +7,42 @@
 //-------------------------------------------------------------------------------------------------
 
 #include "DGL.h"
+#include <chrono>
 
 import Errors;
 import FrameRateControl;
 import Input;
 import GraphicsSystem;
-import WindowsSystem;
+import WindowSystem;
 
 DGL::GraphicsSystem graphics;
 DGL::FrameRateController frameController;
-DGL::WindowsSystem winSys;
+DGL::WindowSystem winSys;
 DGL::InputSystem input;
 DGL::ErrorHandler error;
 
 
 //*************************************************************************************************
-HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
+bool DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
 {
-    // Initialize the window and save the window handle
-    HWND handle = winSys.Initialize(sysInitInfo);
-    // Check for an error
-    if (handle == NULL)
-        return NULL;
+    // Initialize the window and check for an error
+    if (!winSys.Initialize(sysInitInfo))
+    {
+        winSys.ShutDown();
+        return false;
+    }
 
     // Initialize graphics and check for an error
-    if (graphics.Initialize(handle, sysInitInfo) != 0)
-        return NULL;
+    if (graphics.Initialize(sysInitInfo) != 0)
+    {
+        winSys.ShutDown();
+        return false;
+    }
 
     // Initialize the frame rate controller with the provided max frame rate
     frameController.Initialize(sysInitInfo.maxFrameRate);
 
-    // Return the window handle
-    return handle;
+    return true;
 }
 
 //*************************************************************************************************
@@ -68,12 +72,6 @@ void DGL_System_Update(void)
 }
 
 //*************************************************************************************************
-bool DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result)
-{
-    return winSys.HandleWindowsMessage(message, wParam, lParam, result);
-}
-
-//*************************************************************************************************
 int DGL_System_Exit(void)
 {
     // Save the return value from shutting down graphics
@@ -91,9 +89,15 @@ bool DGL_System_DoesWindowExist(void)
 }
 
 //*************************************************************************************************
-HWND DGL_System_GetWindowHandle(void)
+void DGL_System_CloseWindow(void)
 {
-    return winSys.GetWindowHandle();
+    winSys.Close();
+}
+
+//*************************************************************************************************
+void* DGL_System_GetNativeWindowHandle(void)
+{
+    return winSys.GetNativeHandle();
 }
 
 //*************************************************************************************************
@@ -111,15 +115,7 @@ unsigned DGL_System_GetFrameCount(void)
 //*************************************************************************************************
 double DGL_System_GetTime(void)
 {
-    signed long long countsPerSecond, t;
-    double r, r0, r1;
-
-    QueryPerformanceFrequency((LARGE_INTEGER*)(&countsPerSecond));
-    QueryPerformanceCounter((LARGE_INTEGER*)(&t));
-
-    r0 = (double)(t / countsPerSecond);
-    r1 = (t - ((t / countsPerSecond) * countsPerSecond)) / (double)(countsPerSecond);
-    r = r0 + r1;
-
-    return r;
+    // Use a steady (monotonic) high-resolution clock, converted to seconds
+    auto now = std::chrono::steady_clock::now().time_since_epoch();
+    return std::chrono::duration<double>(now).count();
 }

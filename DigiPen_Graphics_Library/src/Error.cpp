@@ -11,10 +11,11 @@ module;
 #include "DGL.h"
 #include <iostream>
 #include <sstream>
+#include <Windows.h>
 
 module Errors;
 
-import WindowsSystem;
+import WindowSystem;
 
 namespace DGL
 {
@@ -79,7 +80,7 @@ void ErrorHandler::SetError(string_view text)
 
     std::cerr << msg << std::endl;
 
-    MessageBox(gWinSys->GetWindowHandle(), msg.c_str(), "DGL Error", MB_ICONWARNING | MB_APPLMODAL);
+    MessageBox((HWND)gWinSys->GetNativeHandle(), msg.c_str(), "DGL Error", MB_ICONWARNING | MB_APPLMODAL);
 
     DebugBreak();
 #endif

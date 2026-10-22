@@ -9,6 +9,7 @@
 module;
 
 #include "DGL.h"
+#include <cstring>
 #include <math.h>
 #include <DirectXMath.h>
 

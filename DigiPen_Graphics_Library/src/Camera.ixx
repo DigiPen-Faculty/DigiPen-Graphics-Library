@@ -23,7 +23,7 @@ export class CameraObject
 public:
 
     // Set the window handle and initialize the camera
-    void Initialize(HWND windowHandle);
+    void Initialize();
 
     // Returns the current camera position
     DGL_Vec2 GetCameraPosition() const;
@@ -67,8 +67,8 @@ private:
     DGL_Vec2 mWindowSize;
     // The current view matrix and projection matrix multiplied together
     DirectX::XMMATRIX mViewProjMatrix{ DirectX::XMMatrixIdentity() };
-
-    HWND mWindowHandle{ nullptr };
+    // Whether Initialize has been called
+    bool mInitialized{ false };
 };
 
 } // namespace DGL

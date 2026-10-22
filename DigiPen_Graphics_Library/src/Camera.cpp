@@ -15,6 +15,7 @@ module Camera;
 
 import GraphicsSystem;
 import Math;
+import WindowSystem;
 
 namespace DGL
 {
@@ -22,16 +23,12 @@ namespace DGL
 //------------------------------------------------------------------------------------------ Camera
 
 //*************************************************************************************************
-void CameraObject::Initialize(HWND windowHandle)
+void CameraObject::Initialize()
 {
-    mWindowHandle = windowHandle;
-
-    // Get the window size 
-    RECT rect;
-    GetClientRect(mWindowHandle, &rect);
-
     // Save the window size
-    mWindowSize = { (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) };
+    mWindowSize = gWinSys->GetWindowSize();
+
+    mInitialized = true;
 }
 
 //*************************************************************************************************
@@ -88,15 +85,11 @@ void CameraObject::SetCameraRotation(float radians)
 //*************************************************************************************************
 void CameraObject::ResetWindowSize()
 {
-    if (!mWindowHandle)
+    if (!mInitialized)
         return;
 
-    // Get the window size 
-    RECT rect;
-    GetClientRect(mWindowHandle, &rect);
-
     // Save the window size
-    mWindowSize = { (float)(rect.right - rect.left), (float)(rect.bottom - rect.top) };
+    mWindowSize = gWinSys->GetWindowSize();
     if (mWindowSize.x <= 0.0f || mWindowSize.y <= 0.0f)
         return;
 

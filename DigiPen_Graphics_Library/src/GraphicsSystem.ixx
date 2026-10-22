@@ -32,7 +32,7 @@ public:
     ~GraphicsSystem();
 
     // Initializes the graphics system
-    int Initialize(HWND window, const DGL_SysInitInfo& sysInitInfo);
+    int Initialize(const DGL_SysInitInfo& sysInitInfo);
 
     // Shuts down the graphics system
     int ShutDown();

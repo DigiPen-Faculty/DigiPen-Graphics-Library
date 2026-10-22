@@ -2,10 +2,8 @@
 *.user
 
 .vs
-PShader.h
-VShader.h
-PTexShader.h
 /DigiPen_Graphics_Library/x64
 /DGL_Template_Project/x64
 /DGL_Template_Project/Win32
 /DigiPen_Graphics_Library/Win32
+/DigiPen_Graphics_Library/vcpkg_installed/

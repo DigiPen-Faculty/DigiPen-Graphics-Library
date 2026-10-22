@@ -2,7 +2,7 @@
 // file:    DGL.h
 // author:  Andy Ellinger
 // brief:   DGL API interface 
-//          v1.4.9
+//          v2.0.0
 //          Documentation: https://github.com/DigiPen-Faculty/DigiPen-Graphics-Library/wiki 
 //
 // Copyright © 2026 DigiPen, All rights reserved.
@@ -10,11 +10,11 @@
 
 #pragma once
 
+#if defined(DGL_EXPORTS)
 #define DGL_API __declspec(dllexport)
-
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
+#else
+#define DGL_API __declspec(dllimport)
+#endif
 
 //*************************************************************************************************
 // Struct type definitions
@@ -48,50 +48,34 @@ typedef struct DGL_Color
 // Make sure that all variables in the struct are set correctly.
 typedef struct DGL_SysInitInfo
 {
-    // This should be set to the first parameter from WinMain.
-    // It is used to identify the application instance when creating and closing the window.
-    HINSTANCE appInstance{ nullptr };
-
-    // This should be set to the fourth parameter from WinMain.
-    // It is used when creating the window to control whether it is shown or not.
-    int show{ 0 };
-
     // This specifies the width and height of the window to be created, using X for width.
-    // This will be the total window size including title bar and borders (if using).
-    // Use the DGL_System_GetWindowSize() function afterwards to get the client size of 
-    // a bordered window (the window size without title bar and borders).
-    DGL_Vec2 windowSize;
+    // This is the size of the drawable area of the window (not including the title bar and borders).
+    // When "fullscreen" is true this is ignored and the monitor's resolution is used.
+    DGL_Vec2 windowSize{ 1024, 768 };
 
     // This is used to set the framerate controller's maximum framerate. 
     unsigned int maxFrameRate{ 0 };
 
-    // Sets the Window Class Style to be used. 
-    // This should usually be set to "CS_HREDRAW | CS_VREDRAW".
-    unsigned int classStyle{ 0 };
-
-    // Sets the Window Style to be used.
-    // If you are unsure, use "WS_OVERLAPPEDWINDOW" for a windowed application
-    // or "WS_EX_TOPMOST | WS_POPUP" for a fullscreen application.
-    // When using "WS_OVERLAPPEDWINDOW", adding "^ WS_THICKFRAME" will disable resizing.
-    unsigned int windowStyle{ 0 };
-
     // Sets the window title text that will be shown on the top bar of a windowed application.
-    const char* windowTitle{ nullptr };
+    const char* windowTitle{ "DGL" };
 
     // Specifies whether a debug console should be created. 
     // Use TRUE to show the console and FALSE to hide it.
     // This console will display output from stdout and stderr, including printf output.
     bool createConsole{ false };
 
-    // The icon resource definition to use for the window title bar icon. 
-    // Visual Studio will automatically create a file named Resource.h and a .ico file 
-    // with the same name as your project. You can edit the .ico file with your own custom icon. 
-    // Usually what you will set this to is IDI_YOURPROJECTNAME.
-    int windowIcon{ 0 };
+    // Use true to create a fullscreen window on the primary monitor, false for a normal window.
+    bool fullscreen{ false };
 
-    // This should be set to the name of your Windows callback function.
-    // When created automatically by Visual Studio this is usually called WndProc. 
-    WNDPROC windowsCallback{ nullptr };
+    // Use true to allow the user to resize the window, false to keep it at a fixed size.
+    bool resizable{ true };
+
+    // Use true to show the title bar and borders, false for a borderless window.
+    bool decorated{ true };
+
+    // The relative path to an image file (such as a .png) to use for the window title bar icon.
+    // Leave as NULL to use the default icon.
+    const char* windowIconFile{ nullptr };
 
     // This is the name of the default pixel shader file to use. It must exist in the folder
     // specified in "defaultShaderPath"
@@ -102,7 +86,7 @@ typedef struct DGL_SysInitInfo
     const char* defaultVertexShader{ "VertexShader.hlsl" };
 
     // This is the relative path to the folder where the default shader files are located.
-    const char* defaultShaderPath{ "shaders\\" };
+    const char* defaultShaderPath{ "shaders/" };
 
 } DGL_SysInitInfo;
 
@@ -202,6 +186,87 @@ typedef enum
     DGL_VSM_CUSTOM,     // Draw using the last set custom vertex shader
 } DGL_VertexShaderMode;
 
+// These values are used with the DGL_Input key functions to specify which key or mouse button to check.
+// Letter and number keys can also be specified with their uppercase character, such as 'A' or '1'.
+typedef enum
+{
+    DGL_MOUSE_LEFT = 0x01,
+    DGL_MOUSE_RIGHT = 0x02,
+    DGL_MOUSE_MIDDLE = 0x04,
+    DGL_MOUSE_BUTTON_4 = 0x05,
+    DGL_MOUSE_BUTTON_5 = 0x06,
+
+    DGL_KEY_BACKSPACE = 0x08,
+    DGL_KEY_TAB = 0x09,
+    DGL_KEY_ENTER = 0x0D,
+    DGL_KEY_SHIFT = 0x10, // Either shift key
+    DGL_KEY_CONTROL = 0x11, // Either control key
+    DGL_KEY_ALT = 0x12, // Either alt key
+    DGL_KEY_PAUSE = 0x13,
+    DGL_KEY_CAPS_LOCK = 0x14,
+    DGL_KEY_ESCAPE = 0x1B,
+    DGL_KEY_SPACE = 0x20,
+    DGL_KEY_PAGE_UP = 0x21,
+    DGL_KEY_PAGE_DOWN = 0x22,
+    DGL_KEY_END = 0x23,
+    DGL_KEY_HOME = 0x24,
+    DGL_KEY_LEFT = 0x25,
+    DGL_KEY_UP = 0x26,
+    DGL_KEY_RIGHT = 0x27,
+    DGL_KEY_DOWN = 0x28,
+    DGL_KEY_PRINT_SCREEN = 0x2C,
+    DGL_KEY_INSERT = 0x2D,
+    DGL_KEY_DELETE = 0x2E,
+
+    DGL_KEY_0 = '0', DGL_KEY_1, DGL_KEY_2, DGL_KEY_3, DGL_KEY_4,
+    DGL_KEY_5, DGL_KEY_6, DGL_KEY_7, DGL_KEY_8, DGL_KEY_9,
+
+    DGL_KEY_A = 'A', DGL_KEY_B, DGL_KEY_C, DGL_KEY_D, DGL_KEY_E, DGL_KEY_F, DGL_KEY_G,
+    DGL_KEY_H, DGL_KEY_I, DGL_KEY_J, DGL_KEY_K, DGL_KEY_L, DGL_KEY_M, DGL_KEY_N, DGL_KEY_O,
+    DGL_KEY_P, DGL_KEY_Q, DGL_KEY_R, DGL_KEY_S, DGL_KEY_T, DGL_KEY_U, DGL_KEY_V, DGL_KEY_W,
+    DGL_KEY_X, DGL_KEY_Y, DGL_KEY_Z,
+
+    DGL_KEY_LEFT_SUPER = 0x5B, // Left Windows key
+    DGL_KEY_RIGHT_SUPER = 0x5C, // Right Windows key
+    DGL_KEY_MENU = 0x5D,
+
+    DGL_KEY_NUMPAD_0 = 0x60,
+    DGL_KEY_NUMPAD_1, DGL_KEY_NUMPAD_2, DGL_KEY_NUMPAD_3, DGL_KEY_NUMPAD_4, DGL_KEY_NUMPAD_5,
+    DGL_KEY_NUMPAD_6, DGL_KEY_NUMPAD_7, DGL_KEY_NUMPAD_8, DGL_KEY_NUMPAD_9,
+    DGL_KEY_NUMPAD_MULTIPLY = 0x6A,
+    DGL_KEY_NUMPAD_ADD = 0x6B,
+    DGL_KEY_NUMPAD_SUBTRACT = 0x6D,
+    DGL_KEY_NUMPAD_DECIMAL = 0x6E,
+    DGL_KEY_NUMPAD_DIVIDE = 0x6F,
+
+    DGL_KEY_F1 = 0x70,
+    DGL_KEY_F2, DGL_KEY_F3, DGL_KEY_F4, DGL_KEY_F5, DGL_KEY_F6, DGL_KEY_F7, DGL_KEY_F8,
+    DGL_KEY_F9, DGL_KEY_F10, DGL_KEY_F11, DGL_KEY_F12, DGL_KEY_F13, DGL_KEY_F14, DGL_KEY_F15,
+    DGL_KEY_F16, DGL_KEY_F17, DGL_KEY_F18, DGL_KEY_F19, DGL_KEY_F20, DGL_KEY_F21, DGL_KEY_F22,
+    DGL_KEY_F23, DGL_KEY_F24,
+
+    DGL_KEY_NUM_LOCK = 0x90,
+    DGL_KEY_SCROLL_LOCK = 0x91,
+    DGL_KEY_LEFT_SHIFT = 0xA0,
+    DGL_KEY_RIGHT_SHIFT = 0xA1,
+    DGL_KEY_LEFT_CONTROL = 0xA2,
+    DGL_KEY_RIGHT_CONTROL = 0xA3,
+    DGL_KEY_LEFT_ALT = 0xA4,
+    DGL_KEY_RIGHT_ALT = 0xA5,
+
+    DGL_KEY_SEMICOLON = 0xBA, // ;
+    DGL_KEY_EQUAL = 0xBB, // =
+    DGL_KEY_COMMA = 0xBC, // ,
+    DGL_KEY_MINUS = 0xBD, // -
+    DGL_KEY_PERIOD = 0xBE, // .
+    DGL_KEY_SLASH = 0xBF, // /
+    DGL_KEY_GRAVE_ACCENT = 0xC0, // `
+    DGL_KEY_LEFT_BRACKET = 0xDB, // [
+    DGL_KEY_BACKSLASH = 0xDC, // \ (backslash)
+    DGL_KEY_RIGHT_BRACKET = 0xDD, // ]
+    DGL_KEY_APOSTROPHE = 0xDE, // '
+} DGL_KeyCode;
+
 
 //*************************************************************************************************
 // System functions
@@ -209,8 +274,8 @@ typedef enum
 
 // Initializes the DGL using the specified options.
 // This will create the window and initialize graphics and the framerate controller.
-// Returns the window handle, which will be NULL if there was a problem with initialization.
-DGL_API HWND DGL_System_Init(const DGL_SysInitInfo& sysInitInfo);
+// Returns true if successful, or false if there was a problem with initialization.
+DGL_API bool DGL_System_Init(const DGL_SysInitInfo& sysInitInfo);
 
 // Resets the framerate controller back to the initial state.
 DGL_API void DGL_System_Reset(void);
@@ -222,10 +287,6 @@ DGL_API void DGL_System_FrameControl(void);
 // Updates input and Windows messages. Should be called near the beginning of the update loop.
 DGL_API void DGL_System_Update(void);
 
-// Handles some of the windows messages. Returns TRUE if the message was handled, otherwise returns FALSE.
-// If the message was handled, use the "result" value to return from the Windows callback.
-DGL_API bool DGL_System_HandleWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam, int* result);
-
 // Shuts down the graphics system and de-registers the window.
 // Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
 DGL_API int DGL_System_Exit(void);
@@ -234,8 +295,12 @@ DGL_API int DGL_System_Exit(void);
 // This is used to check if you should break out of your game loop and exit.
 DGL_API bool DGL_System_DoesWindowExist(void);
 
-// Returns the Windows window handle, which can be used to manipulate the window or to get data from Windows.
-DGL_API HWND DGL_System_GetWindowHandle(void);
+// Tells the window to close. After this, DGL_System_DoesWindowExist() will return false.
+DGL_API void DGL_System_CloseWindow(void);
+
+// Returns the native operating system window handle (an HWND on Windows), or NULL if there is no window.
+// This is only needed for advanced uses, such as passing the window to another library.
+DGL_API void* DGL_System_GetNativeWindowHandle(void);
 
 // Returns the time between the beginning of the last frame and the beginning of this frame, in seconds.
 DGL_API double DGL_System_GetDeltaTime(void);
@@ -450,19 +515,22 @@ DGL_API DGL_Vec2 DGL_Input_GetMousePosition(void);
 DGL_API DGL_Vec2 DGL_Input_GetMousePositionDelta(void);
 
 // Returns TRUE if the specified key is currently down, and FALSE if it is not.
+// Use a DGL_KeyCode value (such as DGL_KEY_SPACE or DGL_MOUSE_LEFT) or an uppercase character (such as 'A').
 DGL_API bool DGL_Input_KeyDown(unsigned char key);
 
 // Returns TRUE if the specified key is currently down but was not down last frame, and FALSE if not.
+// Use a DGL_KeyCode value (such as DGL_KEY_SPACE or DGL_MOUSE_LEFT) or an uppercase character (such as 'A').
 DGL_API bool DGL_Input_KeyTriggered(unsigned char key);
 
 // Returns TRUE if the specified key is currently not down but was down last frame, and FALSE if not.
+// Use a DGL_KeyCode value (such as DGL_KEY_SPACE or DGL_MOUSE_LEFT) or an uppercase character (such as 'A').
 DGL_API bool DGL_Input_KeyReleased(unsigned char key);
 
 // Returns the last key that was triggered (down this frame and not down last frame).
 // If no key no key was triggered, will return 0.
 DGL_API unsigned char DGL_Input_LastKeyTriggered(void);
 
-// Pass in FALSE to hide the mouse cursor and TRUE to display it.
+// Pass in false to hide the mouse cursor and true to display it.
 DGL_API void DGL_Input_ShowCursor(bool show);
 
 
@@ -470,7 +538,7 @@ DGL_API void DGL_Input_ShowCursor(bool show);
 // Window functions
 //*************************************************************************************************
 
-// Returns TRUE if the application window currently has focus, and FALSE if it does not.
+// Returns true if the application window currently has focus, and false if it does not.
 // This can be used to do things such as automatically pause and resume when 
 // the application window is minimized or un-selected.
 DGL_API bool DGL_Window_HasFocus(void);
@@ -482,12 +550,26 @@ DGL_API DGL_Vec2 DGL_Window_GetMonitorSize(void);
 DGL_API DGL_Vec2 DGL_Window_GetSize(void);
 
 // Changes the width, height, and position of the application window.
+// The width and height are the size of the drawable area (not including the title bar and borders).
+// The position is the top left corner of the drawable area, in screen coordinates.
+// Has no effect while the window is fullscreen.
 DGL_API void DGL_Window_SetSizeAndPosition(int windowWidth, int windowHeight, int windowLeftPos, 
     int windowTopPos);
 
 // Changes the width and height of the application window, leaving it in the same position.
+// Has no effect while the window is fullscreen.
 DGL_API void DGL_Window_SetSize(int windowWidth, int windowHeight);
 
-// Changes the style of the current window. This can be used to switch between fullscreen and windowed modes.
-DGL_API void DGL_Window_SetStyle(unsigned style);
+// Pass in true to make the window fullscreen on its current monitor, or false to return to a normal window.
+// When returning to a normal window, the previous size and position are restored.
+DGL_API void DGL_Window_SetFullscreen(bool fullscreen);
+
+// Returns true if the window is currently fullscreen, and false if it is not.
+DGL_API bool DGL_Window_IsFullscreen(void);
+
+// Pass in true to allow the user to resize the window, or false to prevent it.
+DGL_API void DGL_Window_SetResizable(bool resizable);
+
+// Pass in true to show the title bar and borders, or false for a borderless window.
+DGL_API void DGL_Window_SetDecorated(bool decorated);
 

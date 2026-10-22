@@ -41,9 +41,9 @@ GraphicsSystem::~GraphicsSystem()
 }
 
 //*************************************************************************************************
-int GraphicsSystem::Initialize(HWND window, const DGL_SysInitInfo& sysInitInfo)
+int GraphicsSystem::Initialize(const DGL_SysInitInfo& sysInitInfo)
 {
-    Camera.Initialize(window);
+    Camera.Initialize();
 
     // Initialize D3D and check for any errors
     if (D3D.InitializeD3D() != 0)

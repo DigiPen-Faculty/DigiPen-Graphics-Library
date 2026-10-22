@@ -41,8 +41,8 @@ public:
     // Sets the state of the specified key
     void SetKeyState(unsigned char key, bool state);
 
-    // Sets the mouse scroll delta value
-    void SetMouseScrollDelta(int delta);
+    // Adds to the mouse scroll delta value for this frame
+    void AddMouseScrollDelta(double delta);
 
     // Returns true if the specified key is currently pressed
     bool KeyDown(unsigned char key) const;
@@ -58,7 +58,7 @@ public:
     unsigned char LastKeyTriggered() const;
 
 private:
-    // Number of keys in the array. See the Windows virtual key list for all possible values.
+    // Number of keys in the array. See the DGL_KeyCode enum for all possible values.
     static constexpr int cInputKeyCount{ 256 };
     // Stores the current state of all keys. 
     std::array<bool, cInputKeyCount> mKeyState{ false };
@@ -70,6 +70,9 @@ private:
     DGL_Vec2 mMouseDelta{ 0, 0 };
     // Stores the change in the mouse wheel position. 
     int mMouseWheelDelta{ 0 };
+    // Stores partial scroll amounts (from high-resolution wheels and touchpads) until they add up
+    // to a whole step.
+    double mMouseWheelRemainder{ 0.0 };
     // Stores the key associated with the last key down message, if it was previously up. 
     // Cleared every update.
     unsigned char mLastKeyTriggered{ 0 };

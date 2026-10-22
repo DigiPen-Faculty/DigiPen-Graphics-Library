@@ -17,7 +17,7 @@ module D3DInterface;
 
 import Errors;
 import GraphicsSystem;
-import WindowsSystem;
+import WindowSystem;
 import Shader;
 import Texture;
 
@@ -315,7 +315,7 @@ int D3DInterface::CreateDevice()
     swapChainDesc.SampleDesc.Quality = 0;
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDesc.BufferCount = 2;
-    swapChainDesc.OutputWindow = gWinSys->GetWindowHandle();
+    swapChainDesc.OutputWindow = (HWND)gWinSys->GetNativeHandle();
     swapChainDesc.Windowed = true;
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
@@ -558,7 +558,7 @@ void D3DInterface::SetViewport()
 
     // Get the current client size
     RECT winRect;
-    GetClientRect(gWinSys->GetWindowHandle(), &winRect);
+    GetClientRect((HWND)gWinSys->GetNativeHandle(), &winRect);
     // Create the viewport data
     D3D11_VIEWPORT viewport = {
         0.0f,

@@ -13,7 +13,7 @@ module;
 module Input;
 
 import Errors;
-import WindowsSystem;
+import WindowSystem;
 
 namespace DGL
 {
@@ -42,18 +42,15 @@ void InputSystem::Update()
     if (!gWinSys->GetWindowHasFocus())
         mKeyState.fill(false);
 
-    // Use the Windows point struct to get the cursor position.
-    POINT mouseCoord;
-    GetCursorPos(&mouseCoord);
-    // Adjust the position to be relative to our window instead of the whole screen.
-    ScreenToClient(gWinSys->GetWindowHandle(), &mouseCoord);
+    // Get the cursor position relative to our window.
+    DGL_Vec2 mouseCoord = gWinSys->GetCursorPosition();
 
     // Save the change in mouse position using our variable which has the value from last frame.
     mMouseDelta.x = mouseCoord.x - mMousePos.x;
     mMouseDelta.y = mouseCoord.y - mMousePos.y;
 
     // Save the current mouse position into our variable.
-    mMousePos = { (float)mouseCoord.x, (float)mouseCoord.y };
+    mMousePos = mouseCoord;
 
     // Reset the mouse wheel delta variable. 
     mMouseWheelDelta = 0;
@@ -97,9 +94,13 @@ void InputSystem::SetKeyState(unsigned char key, bool state)
 }
 
 //*************************************************************************************************
-void InputSystem::SetMouseScrollDelta(int delta)
+void InputSystem::AddMouseScrollDelta(double delta)
 {
-    mMouseWheelDelta = delta;
+    // Add the whole steps to the delta and save any partial step for later
+    mMouseWheelRemainder += delta;
+    int steps = (int)mMouseWheelRemainder;
+    mMouseWheelDelta += steps;
+    mMouseWheelRemainder -= steps;
 }
 
 //*************************************************************************************************
@@ -196,18 +197,7 @@ unsigned char DGL_Input_LastKeyTriggered(void)
 //*************************************************************************************************
 void DGL_Input_ShowCursor(bool show)
 {
-    if (show)
-    {
-        int count = ShowCursor(true);
-        while (count <= 0)
-            count = ShowCursor(true);
-    }
-    else
-    {
-        int count = ShowCursor(false);
-        while (count > -1)
-            count = ShowCursor(false);
-    }
+    gWinSys->SetCursorVisible(show);
 }
 
 

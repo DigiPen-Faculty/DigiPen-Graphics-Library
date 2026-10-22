@@ -1,0 +1,9 @@
+{
+  "name": "digipen-graphics-library",
+  "version-string": "2.0.0",
+  "builtin-baseline": "ee5c9041e8126600e79e0c80f7e6c70101c1353a",
+  "dependencies": [
+    "glfw3",
+    "stb"
+  ]
+}
