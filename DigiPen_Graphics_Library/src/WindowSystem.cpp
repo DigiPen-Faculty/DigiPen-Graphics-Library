@@ -518,9 +518,9 @@ void WindowSystem::SetCursorVisible(bool visible) const
 {
     int visibleValue;
     if (visible)
-        visibleValue = GLFW_TRUE;
+        visibleValue = GLFW_CURSOR_NORMAL;
     else
-        visibleValue = GLFW_FALSE;
+        visibleValue = GLFW_CURSOR_HIDDEN;
 
     if (mWindow)
         glfwSetInputMode(mWindow, GLFW_CURSOR, visibleValue);
