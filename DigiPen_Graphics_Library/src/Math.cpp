@@ -11,7 +11,6 @@ module;
 #include "DGL.h"
 #include <cstring>
 #include <math.h>
-#include <DirectXMath.h>
 
 module Math;
 
@@ -67,15 +66,16 @@ void Matrix_SetToIdentity(DGL_Mat4& matrix)
     matrix.m[3][3] = 1;
 }
 
-
 //*************************************************************************************************
-DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix)
+DGL_Mat4 Matrix_Transpose(const DGL_Mat4& matrix)
 {
-    DGL_Mat4 newMatrix;
-    DirectX::XMFLOAT4X4 temp;
-    DirectX::XMStoreFloat4x4(&temp, dxMatrix);
-    memcpy(newMatrix.m, temp.m, sizeof(float) * 16);
-    return newMatrix;
+    DGL_Mat4 result;
+    for (int row = 0; row < 4; ++row)
+    {
+        for (int column = 0; column < 4; ++column)
+            result.m[row][column] = matrix.m[column][row];
+    }
+    return result;
 }
 
 } // namepspace DGL

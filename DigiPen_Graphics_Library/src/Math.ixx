@@ -9,7 +9,6 @@
 module;
 
 #include "DGL.h"
-#include <DirectXMath.h>
 
 export module Math;
 
@@ -26,7 +25,7 @@ export DGL_Mat4 Matrix_Multiply(const DGL_Mat4& matrix1, const DGL_Mat4& matrix2
 // Sets the provided matrix to the identity values
 export void Matrix_SetToIdentity(DGL_Mat4& matrix);
 
-// Translates a DirectX matrix to a DGL matrix
-export DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix);
+// Returns the transpose of the matrix (rows and columns swapped)
+export DGL_Mat4 Matrix_Transpose(const DGL_Mat4& matrix);
 
 } // namespace DGL

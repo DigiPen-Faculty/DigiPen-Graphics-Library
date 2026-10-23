@@ -9,7 +9,7 @@
 module;
 
 #include "DGL.h"
-#include <DirectXMath.h>
+#include <math.h>
 
 module Camera;
 
@@ -98,62 +98,52 @@ void CameraObject::ResetWindowSize()
 }
 
 //*************************************************************************************************
-DGL_Mat4 CameraObject::GetWorldMatrix()
+DGL_Mat4 CameraObject::GetWorldMatrix() const
 {
-    // Create the view matrix 
-    // The first parameter is the eye position (the current camera position)
-    // The second parameter is the position the eye is looking at (directly in front of the camera)
-    // The third parameter is the up direction
-    DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(
-        DirectX::XMVectorSet(mCameraPosition.x, mCameraPosition.y, mCameraZ, 0.0f),
-        DirectX::XMVectorSet(mCameraPosition.x, mCameraPosition.y, 0.0f, 0.0f),
-        DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-    );
+    // These matrices are built for row vectors (position * matrix), then the result is transposed
+    // for the shaders. This gives the same values as the left-handed DirectXMath functions DGL used
+    // before (XMMatrixLookAtLH, XMMatrixRotationAxis, and XMMatrixOrthographicLH).
 
-    // Create a rotation matrix around the Z axis using the current rotation
-    DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(
-        DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
-        mRotation
-    );
+    // The view matrix moves the camera position to the origin
+    DGL_Mat4 viewMatrix;
+    Matrix_SetToIdentity(viewMatrix);
+    viewMatrix.m[3][0] = -mCameraPosition.x;
+    viewMatrix.m[3][1] = -mCameraPosition.y;
+    viewMatrix.m[3][2] = cCameraDistance;
 
-    // Create an orthographic projection matrix using the current window size and scale
-    DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixOrthographicLH(
-        mWindowSize.x * mScale,
-        mWindowSize.y * mScale,
-        1.0f,                       // screen near
-        1000.0f                     // screen depth
-    );
+    // The rotation matrix rotates around the Z axis (transposed, since Matrix_RotateZ is for column vectors)
+    DGL_Mat4 rotationMatrix = Matrix_Transpose(Matrix_RotateZ(mRotation));
 
-    // Store the result of multiplying the matrices
-    mViewProjMatrix = viewMatrix * rotationMatrix * projectionMatrix;
+    // The orthographic projection matrix scales the visible area to the -1 to 1 range,
+    // and the visible depth to the 0 to 1 range
+    float depthRange = 1.0f / (cFarPlane - cNearPlane);
+    DGL_Mat4 projectionMatrix{ 0 };
+    projectionMatrix.m[0][0] = 2.0f / mWindowSize.x * mScale;
+    projectionMatrix.m[1][1] = 2.0f / mWindowSize.y * mScale;
+    projectionMatrix.m[2][2] = depthRange;
+    projectionMatrix.m[3][2] = -depthRange * cNearPlane;
+    projectionMatrix.m[3][3] = 1.0f;
 
-    // Return the world matrix, which is the transposed view * rotation * projection matrix
-    return DxToMat4(DirectX::XMMatrixTranspose(mViewProjMatrix));
+    return Matrix_Transpose(Matrix_Multiply(Matrix_Multiply(viewMatrix, rotationMatrix), projectionMatrix));
 }
 
 //*************************************************************************************************
 DGL_Vec2 CameraObject::ScreenToWorld(const DGL_Vec2& screenPos) const
 {
-    // The XMMatrixInverse function needs a vector as the first parameter,
-    // but it doesn't actually matter what that vector is
-    DirectX::XMVECTOR temp;
-    // Get the inverse of the view matrix * projection matrix
-    DirectX::XMMATRIX invViewProj = DirectX::XMMatrixInverse(&temp, mViewProjMatrix);
+    // Convert the screen position to the -1 to 1 range (with +Y up)
+    float x = ((2.0f * screenPos.x) / mWindowSize.x) - 1.0f;
+    float y = -(((2.0f * screenPos.y) / mWindowSize.y) - 1.0f);
 
-    // Adjust the screen position so it's in a -1 to 1 range
-    DirectX::XMVECTOR adjPosVec{
-        (((2.0f * screenPos.x) / mWindowSize.x) - 1),
-        -(((2.0f * screenPos.y) / mWindowSize.y) - 1),
-        1.0, 0.0f
-    };
+    // Undo the projection scale
+    x *= mWindowSize.x * mScale / 2.0f;
+    y *= mWindowSize.y * mScale / 2.0f;
 
-    // Multiply the adjusted screen position by the inverse projection view matrix
-    DirectX::XMVECTOR transformedPos = DirectX::XMVector4Transform(adjPosVec, invViewProj);
-
-    // Return the X and Y values of the transformed vector
+    // Undo the rotation, then the camera position
+    float cosine = cosf(mRotation);
+    float sine = sinf(mRotation);
     return {
-        DirectX::XMVectorGetX(transformedPos) + mCameraPosition.x,
-        DirectX::XMVectorGetY(transformedPos) + mCameraPosition.y
+        x * cosine + y * sine + mCameraPosition.x,
+        -x * sine + y * cosine + mCameraPosition.y
     };
 }
 

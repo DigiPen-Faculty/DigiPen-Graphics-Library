@@ -9,7 +9,6 @@
 module;
 
 #include "DGL.h"
-#include <DirectXMath.h>
 
 export module Camera;
 
@@ -47,7 +46,7 @@ public:
     void ResetWindowSize();
 
     // Returns the world matrix based on the current camera position and window size
-    DGL_Mat4 GetWorldMatrix();
+    DGL_Mat4 GetWorldMatrix() const;
 
     // Translates a position in screen coordinates to the equivalent world coordinates
     // Screen coordinates go from (0, 0) in the top left corner to
@@ -66,9 +65,13 @@ private:
     // The current size of the window
     DGL_Vec2 mWindowSize;
     // The current view matrix and projection matrix multiplied together
-    DirectX::XMMATRIX mViewProjMatrix{ DirectX::XMMatrixIdentity() };
+    DGL_Mat4 mViewProjMatrix;
     // Whether Initialize has been called
     bool mInitialized{ false };
+
+    static constexpr float cCameraDistance{ 10.0f };
+    static constexpr float cNearPlane{ 1.0f };
+    static constexpr float cFarPlane{ 1000.0f };
 };
 
 } // namespace DGL
