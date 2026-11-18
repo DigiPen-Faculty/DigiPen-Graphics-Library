@@ -173,6 +173,15 @@ void TextureManager::ReleaseTexture(DGL_Texture* texture)
     delete texture;
 }
 
+DGL_Mat4 DxToMat4(const DirectX::XMMATRIX& dxMatrix)
+{
+    DGL_Mat4 newMatrix;
+    DirectX::XMFLOAT4X4 temp;
+    DirectX::XMStoreFloat4x4(&temp, dxMatrix);
+    memcpy(newMatrix.m, temp.m, sizeof(float) * 16);
+    return newMatrix;
+}
+
 //*************************************************************************************************
 DGL_Texture* TextureManager::CreateRenderTexture(int width, int height, ID3D11Device* device)
 {
