@@ -21,11 +21,7 @@
 #include <GLFW/glfw3native.h>
 #endif
 
-// The stb_image implementation is compiled here (it is used to load the window icon)
-#pragma warning(push, 0)
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#pragma warning(pop)
 
 #include "Error.h"
 #include "InputSystem.h"
@@ -269,6 +265,9 @@ bool WindowSystem::Initialize(const DGL_SysInitInfo& sysInitInfo)
     glfwWindowHint(GLFW_DECORATED, sysInitInfo.decorated ? GLFW_TRUE : GLFW_FALSE);
     // Don't minimize a fullscreen window when it loses focus
     glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
+    // Start hidden, so the window isn't seen empty (white) while graphics are set up. It is shown
+    // once the first frame has been drawn. (GLFW ignores this for fullscreen windows.)
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Save the windowed size, which will be used if switching from fullscreen to windowed
     mWindowedWidth = width;
@@ -310,6 +309,13 @@ void WindowSystem::Update()
 {
     // Process all of the window events (this will call the callback functions)
     glfwPollEvents();
+
+    // Avoids a white screen when window is shown before graphics is set up
+    if (mFirstFrame && mWindow)
+    {
+        mFirstFrame = false;
+        glfwShowWindow(mWindow);
+    }
 }
 
 //*************************************************************************************************

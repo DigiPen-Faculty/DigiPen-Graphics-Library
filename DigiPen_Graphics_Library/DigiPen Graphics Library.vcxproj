@@ -113,11 +113,13 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4744</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\$(Platform)\DGL_d.dll" "$(ProjectDir)..\DGL\lib\$(Platform)\" /s /r /y /q
@@ -137,13 +139,15 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4744</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\$(Platform)\DGL.dll" "$(ProjectDir)..\DGL\lib\$(Platform)\" /s /r /y /q
@@ -153,7 +157,7 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;DGL_EXPORTS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -161,11 +165,13 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4744</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\$(Platform)\DGL_d.dll" "$(ProjectDir)..\DGL\lib\$(Platform)\" /s /r /y /q
@@ -175,7 +181,7 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -185,13 +191,15 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4744</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;windowscodecs.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)\$(Platform)\DGL.dll" "$(ProjectDir)..\DGL\lib\$(Platform)\" /s /r /y /q
@@ -208,10 +216,8 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     <ClInclude Include="src\GraphicsSystem.h" />
     <ClInclude Include="src\Error.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\D3dInterface.h" />
-    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\InternalTypes.h" />
-    <ClInclude Include="src\WICTextureLoader11.h" />
+    <ClInclude Include="src\VulkanRenderer.h" />
     <ClInclude Include="src\WindowSystem.h" />
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>
@@ -224,13 +230,11 @@ xcopy "$(ProjectDir)\src\DGL.h" "$(ProjectDir)..\DGL\inc\" /s /r /y /q</Command>
     <ClCompile Include="src\Math.cpp" />
     <ClCompile Include="src\DGL.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\D3dInterface.cpp" />
     <ClCompile Include="src\Shader.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src\WICTextureLoader11.cpp" />
+    <ClCompile Include="src\VulkanRenderer.cpp" />
     <ClCompile Include="src\WindowSystem.cpp" />
   </ItemGroup>
   <ItemGroup>

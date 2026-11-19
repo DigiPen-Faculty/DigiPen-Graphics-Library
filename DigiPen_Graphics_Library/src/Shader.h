@@ -9,56 +9,67 @@
 #pragma once
 
 #include "DGL.h"
-#include <d3d11.h>
-#include <unordered_set>
-#include <unordered_map>
-#include <string>
+#include "InternalTypes.h"
+#include <cstdint>
 #include <memory>
+#include <string_view>
+#include <vector>
 
 namespace DGL
 {
 
-//------------------------------------------------------------------------------- ShaderManager
+// Compiles HLSL to SPIR-V with DXC (defined in Shader.cpp, since it uses the DXC headers)
+class ShaderCompiler;
 
+//----------------------------------------------------------------------------------- ShaderManager
+
+// Loads HLSL shader files, compiling them to SPIR-V with the DXC compiler.
+// Files ending in ".spv" are loaded as already-compiled SPIR-V.
 class ShaderManager
 {
 public:
-    ShaderManager() = default;
-    ~ShaderManager() = default;
+    ShaderManager();
+    ~ShaderManager();
 
-    void Initialize(ID3D11Device* device, const DGL_SysInitInfo& sysInitInfo);
+    // Loads the default shaders. Returns false if there was an error.
+    bool Initialize(const DGL_SysInitInfo& sysInitInfo);
+
+    // Releases the default shaders and the compiler
     void ShutDown();
 
-    DGL_PixelShader* LoadPixelShader(std::string_view filename);
-    DGL_VertexShader* LoadVertexShader(std::string_view filename);
+    // Loads a shader from the file. Returns null if there was an error (and sets the error message).
+    std::unique_ptr<DGL_PixelShader> LoadPixelShader(std::string_view filename);
+    std::unique_ptr<DGL_VertexShader> LoadVertexShader(std::string_view filename);
 
+    // Sets the shaders to use with the custom shader modes
     void SetCustomPixelShader(const DGL_PixelShader* shader);
     void SetCustomVertexShader(const DGL_VertexShader* shader);
 
-    ID3D11PixelShader* GetCurrentPixelShader() const;
-    ID3D11VertexShader* GetCurrentVertexShader() const;
+    // Stops using the shader as the custom shader (if it is), since it is about to be deleted
+    void StopUsing(const DGL_PixelShader* shader);
+    void StopUsing(const DGL_VertexShader* shader);
 
-    void Release(const DGL_PixelShader* shader);
-    void Release(const DGL_VertexShader* shader);
+    // Returns the shaders to use with the current shader modes (null if there is no custom shader set)
+    const DGL_PixelShader* GetCurrentPixelShader() const;
+    const DGL_VertexShader* GetCurrentVertexShader() const;
 
-    // The current pixel shader mode
+    // The current shader modes (checked when they are set)
     DGL_PixelShaderMode mCurrentPixelShaderMode{ DGL_PSM_DEFAULT };
-    // The current vertex shader mode
     DGL_VertexShaderMode mCurrentVertexShaderMode{ DGL_VSM_DEFAULT };
 
 private:
-    // The D3D device object
-    ID3D11Device* mDevice{ nullptr };
-    // The default D3D vertex shader object
-    ID3D11VertexShader* mVertexShader{ nullptr };
-    // The default D3D pixel shader object 
-    ID3D11PixelShader* mPixelShader{ nullptr };
-    // The current custom D3D pixel shader that a user gives us
-    ID3D11PixelShader* mPixelCustomShader{ nullptr };
-    // The current custom D3D vertex shader that a user gives us
-    ID3D11VertexShader* mVertexCustomShader{ nullptr };
+    // Compiles an HLSL file, creating the compiler the first time
+    bool CompileHlsl(std::string_view filename, const wchar_t* profile, bool reflect, std::vector<uint32_t>& code);
 
-    ID3D11PixelShader* CreatePixelShader(std::string_view filename);
-    ID3D11VertexShader* CreateVertexShader(std::string_view filename, bool createLayout = false);
+    // The default shaders
+    std::unique_ptr<DGL_PixelShader> mPixelShader;
+    std::unique_ptr<DGL_VertexShader> mVertexShader;
+    // The current custom shaders that a user gives us
+    const DGL_PixelShader* mPixelCustomShader{ nullptr };
+    const DGL_VertexShader* mVertexCustomShader{ nullptr };
+    // Created the first time an HLSL file is compiled, so programs that only use .spv files
+    // don't need dxcompiler.dll
+    std::unique_ptr<ShaderCompiler> mCompiler;
 };
+
 }

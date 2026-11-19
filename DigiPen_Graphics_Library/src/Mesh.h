@@ -10,37 +10,42 @@
 
 #include "DGL.h"
 #include "InternalTypes.h"
-#include <d3d11.h>
+#include <memory>
 #include <vector>
 
 namespace DGL
 {
 
-//------------------------------------------------------------------------------------- MeshManager
+//------------------------------------------------------------------------------------- MeshBuilder
 
-class MeshManager
+// Collects vertices between DGL_Graphics_StartMesh and DGL_Graphics_EndMesh, then creates the mesh.
+// The calls are checked by the graphics system before they get here.
+class MeshBuilder
 {
 public:
+    // Starts a new mesh, discarding any vertices from a previous one
+    void Start();
 
-    // Creates a new mesh based on the current vertices in the list
-    DGL_Mesh* CreateMesh(ID3D11Device* device);
+    // Returns true if a mesh has been started and not finished
+    bool IsStarted() const;
 
-    // Creates a new indexed mesh based on the current vertices in the list 
-    // and the provided index list
-    DGL_Mesh* CreateMeshIndexed(unsigned* indices, unsigned indexCount, ID3D11Device* device);
+    // Adds a vertex to the mesh being built
+    void AddVertex(const VertexData& vertex);
 
-    // Releases the data in the provided mesh and deletes the mesh object
-    static void ReleaseMesh(DGL_Mesh* mesh);
+    // Returns the number of vertices added so far
+    size_t GetVertexCount() const;
 
-    // Draws the mesh with the provided mode, texture, and shader
-    static void Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* texture,
-        ID3D11VertexShader* vertexShader, ID3D11PixelShader* pixelShader, ID3D11DeviceContext* deviceContext);
+    // Creates a mesh from the vertices (indexed, if indices is not null) and stops building.
+    // Returns null if there was an error.
+    std::unique_ptr<DGL_Mesh> Finish(const unsigned* indices = nullptr, unsigned indexCount = 0);
 
-    // List of vertex data to use when creating a new mesh
-    std::vector<VertexData> mVertexList;
+    // Stops building without creating a mesh
+    void Cancel();
 
-    static constexpr UINT vertex_stride{ sizeof(VertexData) };
-    static constexpr UINT vertex_offset{ 0 };
+private:
+    std::vector<VertexData> mVertices;
+    bool mStarted{ false };
 };
+
 
 } // namespace DGL

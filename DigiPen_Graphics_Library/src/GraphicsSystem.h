@@ -10,11 +10,10 @@
 
 #include "DGL.h"
 #include <vector>
-
+#include "VulkanRenderer.h"
 #include "Camera.h"
-#include "D3dInterface.h"
-#include "Mesh.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 namespace DGL
 {
@@ -30,10 +29,10 @@ public:
     ~GraphicsSystem();
 
     // Initializes the graphics system
-    int Initialize(const DGL_SysInitInfo& sysInitInfo);
+    bool Initialize(const DGL_SysInitInfo& sysInitInfo);
 
     // Shuts down the graphics system
-    int ShutDown();
+    void ShutDown();
 
     // Loads a pixel shader from the provided file
     DGL_PixelShader* LoadPixelShader(const char* fileName);
@@ -93,27 +92,26 @@ public:
     // Sets the transform matrix directly 
     void SetTransformMatrix(const DGL_Mat4& transformationMatrix);
 
-    D3DInterface D3D;
+    VulkanRenderer Renderer;
     CameraObject Camera;
     ShaderManager mShaderManager;
 
 private:
     void CreateTransformMatrix();
 
-    // The number of textures that have been loaded and not released
-    int mLoadedTextureCount{ 0 };
-    // The number of meshes that have been loaded and not released
-    int mLoadedMeshCount{ 0 };
-    // The number of pixel shaders that have been loaded and not released
-    int mLoadedPixelShaderCount{ 0 };
-    // The number of vertex shaders that have been loaded and not released
-    int mLoadedVertexShaderCount{ 0 };
+    // Checks the draw call and draws the mesh (to the render texture, if it isn't null).
+    // functionName is the API function, for error messages.
+    void Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* renderTexture, const char* functionName);
+
+    std::unordered_map<const DGL_Texture*, std::unique_ptr<DGL_Texture>> mTextures;
+    std::unordered_map<const DGL_Mesh*, std::unique_ptr<DGL_Mesh>> mMeshes;
+    std::unordered_map<const DGL_PixelShader*, std::unique_ptr<DGL_PixelShader>> mPixelShaders;
+    std::unordered_map<const DGL_VertexShader*, std::unique_ptr<DGL_VertexShader>> mVertexShaders;
+
     // The texture to use when drawing the next mesh
     const DGL_Texture* mCurrentTexture{ nullptr };
     // Tracks whether or not the graphics system has been initialized
     bool mInitialized{ false };
-    // Tracks mesh creation status
-    bool mCreatingMesh{ false };
     // Tracks whether we need to recreate the transform matrix
     bool mCreateMatrix{ true };
 
@@ -121,7 +119,8 @@ private:
     DGL_Vec2 mDrawScale{ 0,0 };
     float mDrawRotation{ 0 };
 
-    MeshManager Meshes;
+    // Collects the vertices for the mesh being created
+    MeshBuilder mMeshBuilder;
 };
 
 // Global pointer for accessing the graphics system

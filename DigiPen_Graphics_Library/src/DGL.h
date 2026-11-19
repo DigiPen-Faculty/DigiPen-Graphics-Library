@@ -288,8 +288,7 @@ DGL_API void DGL_System_FrameControl(void);
 DGL_API void DGL_System_Update(void);
 
 // Shuts down the graphics system and de-registers the window.
-// Will return 1 if there were any problems, such as unreleased meshes and textures, otherwise returns 0.
-DGL_API int DGL_System_Exit(void);
+DGL_API void DGL_System_Exit(void);
 
 // Returns FALSE if there is no window, and TRUE if there is.
 // This is used to check if you should break out of your game loop and exit.

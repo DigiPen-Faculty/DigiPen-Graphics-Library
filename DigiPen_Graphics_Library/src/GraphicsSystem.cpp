@@ -10,13 +10,15 @@
 
 #include "DGL.h"
 #include "InternalTypes.h"
-#include <objbase.h>
+#include <cstring>
+#include <memory>
 #include <sstream>
-
+#include <string>
+#include <vector>
 #include "DGLMath.h"
 #include "Error.h"
-#include "Texture.h"
 #include "Shader.h"
+#include "WindowSystem.h"
 
 namespace DGL
 {
@@ -39,89 +41,91 @@ GraphicsSystem::~GraphicsSystem()
 }
 
 //*************************************************************************************************
-int GraphicsSystem::Initialize(const DGL_SysInitInfo& sysInitInfo)
+bool GraphicsSystem::Initialize(const DGL_SysInitInfo& sysInitInfo)
 {
     Camera.Initialize();
 
-    // Initialize D3D and check for any errors
-    if (D3D.InitializeD3D() != 0)
+    // Initialize and check for any errors
+    if (Renderer.Initialize(sysInitInfo) != 0)
     {
         // Release anything that was created
-        D3D.Release();
-        return 1;
+        Renderer.Release();
+        return false;
     }
 
     mInitialized = true;
 
     // Initialize the shaders and check for any errors
-    if (D3D.InitializeShaders(sysInitInfo) != 0)
+    if (!mShaderManager.Initialize(sysInitInfo) != 0)
     {
         // Release anything that was created
-        D3D.Release();
-        return 1;
+        mShaderManager.ShutDown();
+        Renderer.Release();
+        mInitialized = false;
+        return false;
     }
 
-    // Initializes the COM library for use by this thread
-    CoInitialize(NULL);
-
-    return 0;
+    return true;
 }
 
 //*************************************************************************************************
-int GraphicsSystem::ShutDown()
+void GraphicsSystem::ShutDown()
 {
     if (!mInitialized)
-        return 0;
-
-    int returnValue = 0;
+        return;
 
     // Set an error if there are meshes or textures that weren't released
+    bool error{ false };
     std::stringstream msg;
     msg << "The following resources were not released: ";
-    if (mLoadedMeshCount)
+    if (!mMeshes.empty())
     {
-        returnValue = 1;
-        msg << mLoadedMeshCount << " meshes";
+        msg << mMeshes.size() << " meshes";
+        error = true;
     }
-    if (mLoadedTextureCount)
+    if (!mTextures.empty())
     {
-        if (returnValue)
+        if (error)
             msg << ", ";
         else
-            returnValue = 1;
+            error = true;
 
-        msg << mLoadedTextureCount << " textures";
+        msg << mTextures.size() << " textures";
     }
-    if (mLoadedPixelShaderCount)
+    if (!mPixelShaders.empty())
     {
-        if (returnValue)
+        if (error)
             msg << ", ";
         else
-            returnValue = 1;
+            error = true;
 
-        msg << mLoadedPixelShaderCount << " pixel shaders";
+        msg << mPixelShaders.size() << " pixel shaders";
     }
-    if (mLoadedVertexShaderCount)
+    if (!mVertexShaders.empty())
     {
-        if (returnValue)
+        if (error)
             msg << ", ";
         else
-            returnValue = 1;
+            error = true;
 
-        msg << mLoadedVertexShaderCount << " vertex shaders";
+        msg << mVertexShaders.size() << " vertex shaders";
     }
-    if (returnValue)
+    if (error)
         gError->SetError(msg.str());
 
-    // Release all D3D objects
-    D3D.Release();
+    // Delete anything that wasn't released, since Vulkan objects must be destroyed before the device
+    mMeshes.clear();
+    mTextures.clear();
+    mPixelShaders.clear();
+    mVertexShaders.clear();
+    mCurrentTexture = nullptr;
+    mMeshBuilder.Cancel();
 
-    // Uninitialize the COM library 
-    CoUninitialize();
+    // Release the default shaders, then all Vulkan objects
+    mShaderManager.ShutDown();
+    Renderer.Release();
 
     mInitialized = false;
-
-    return returnValue;
 }
 
 //*************************************************************************************************
@@ -139,12 +143,12 @@ DGL_PixelShader* GraphicsSystem::LoadPixelShader(const char* filename)
         return nullptr;
     }
 
-    DGL_PixelShader* shader = mShaderManager.LoadPixelShader(filename);
+    std::unique_ptr<DGL_PixelShader> shader = mShaderManager.LoadPixelShader(filename);
+    DGL_PixelShader* shaderPtr = shader.get();
+    if (shaderPtr)
+        mPixelShaders.emplace(shaderPtr, std::move(shader));
 
-    if (shader)
-        mLoadedPixelShaderCount++;
-
-    return shader;
+    return shaderPtr;
 }
 
 //*************************************************************************************************
@@ -157,12 +161,17 @@ void GraphicsSystem::ReleasePixelShader(const DGL_PixelShader* shader)
     }
     
     if (!shader)
+        return;
+
+    auto found = mPixelShaders.find(shader);
+    if (found == mPixelShaders.end())
     {
+        gError->SetError("Called DGL_Graphics_FreePixelShader with a shader that was already freed.");
         return;
     }
 
-    mShaderManager.Release(shader);
-    mLoadedPixelShaderCount--;
+    mShaderManager.StopUsing(shader);
+    mPixelShaders.erase(found);
 }
 
 //*************************************************************************************************
@@ -180,12 +189,12 @@ DGL_VertexShader* GraphicsSystem::LoadVertexShader(const char* filename)
         return nullptr;
     }
 
-    DGL_VertexShader* shader = mShaderManager.LoadVertexShader(filename);
+    std::unique_ptr<DGL_VertexShader> shader = mShaderManager.LoadVertexShader(filename);
+    DGL_VertexShader* shaderPtr = shader.get();
+    if (shaderPtr)
+        mVertexShaders.emplace(shaderPtr, std::move(shader));
 
-    if (shader)
-        mLoadedVertexShaderCount++;
-
-    return shader;
+    return shaderPtr;
 }
 
 //*************************************************************************************************
@@ -198,12 +207,17 @@ void GraphicsSystem::ReleaseVertexShader(const DGL_VertexShader* shader)
     }
     
     if (!shader)
+        return;
+
+    auto found = mVertexShaders.find(shader);
+    if (found == mVertexShaders.end())
     {
+        gError->SetError("Called DGL_Graphics_FreeVertexShader with a shader that was already freed.");
         return;
     }
 
-    mShaderManager.Release(shader);
-    mLoadedVertexShaderCount--;
+    mShaderManager.StopUsing(shader);
+    mVertexShaders.erase(found);
 }
 
 //*************************************************************************************************
@@ -221,15 +235,12 @@ DGL_Texture* GraphicsSystem::LoadTexture(const char* pFileName)
         return nullptr;
     }
 
-    // Create the texture through the texture manager
-    DGL_Texture* texture = TextureManager::LoadTexture(pFileName, D3D.mDevice);
+    std::unique_ptr<DGL_Texture> texture = Texture::LoadTextureFile(pFileName);
+    DGL_Texture* texturePtr = texture.get();
+    if (texturePtr)
+        mTextures.emplace(texturePtr, std::move(texture));
 
-    // If it loaded successfuly, increase the texture counter
-    if (texture)
-        ++mLoadedTextureCount;
-
-    // Return the new texture
-    return texture;
+    return texturePtr;
 }
 
 //*************************************************************************************************
@@ -253,15 +264,12 @@ DGL_Texture* GraphicsSystem::LoadTextureFromMemory(const unsigned char* data, in
         return nullptr;
     }
 
-    // Create the texture through the texture manager
-    DGL_Texture* texture = TextureManager::LoadTextureFromMemory(data, width, height, D3D.mDevice);
+    std::unique_ptr<DGL_Texture> texture = Texture::CreateTexture(data, width, height);
+    DGL_Texture* texturePtr = texture.get();
+    if (texturePtr)
+        mTextures.emplace(texturePtr, std::move(texture));
 
-    // If it loaded successfuly, increase the texture counter
-    if (texture)
-        ++mLoadedTextureCount;
-
-    // Return the new texture
-    return texture;
+    return texturePtr;
 }
 
 //*************************************************************************************************
@@ -279,15 +287,12 @@ DGL_Texture* GraphicsSystem::CreateRenderTexture(int width, int height)
         return nullptr;
     }
 
-    // Create the texture through the texture manager
-    DGL_Texture* texture = TextureManager::CreateRenderTexture(width, height, D3D.mDevice);
+    std::unique_ptr<DGL_Texture> texture = Texture::CreateRenderTexture(width, height);
+    DGL_Texture* texturePtr = texture.get();
+    if (texturePtr)
+        mTextures.emplace(texturePtr, std::move(texture));
 
-    // If it loaded successfuly, increase the texture counter
-    if (texture)
-        ++mLoadedTextureCount;
-
-    // Return the new texture
-    return texture;
+    return texturePtr;
 }
 
 //*************************************************************************************************
@@ -297,11 +302,18 @@ void GraphicsSystem::ReleaseTexture(DGL_Texture* texture)
     if (!texture)
         return;
 
-    // Release the texture through the texture manager
-    TextureManager::ReleaseTexture(texture);
+    auto found = mTextures.find(texture);
+    if (found == mTextures.end())
+    {
+        gError->SetError("Called DGL_Graphics_FreeTexture with a texture that was already freed.");
+        return;
+    }
 
-    // Decrease the texture counter
-    --mLoadedTextureCount;
+    // Stop using the texture if it is the current one
+    if (mCurrentTexture == texture)
+        mCurrentTexture = nullptr;
+
+    mTextures.erase(found);
 }
 
 //*************************************************************************************************
@@ -326,14 +338,13 @@ void GraphicsSystem::ClearRenderTexture(const DGL_Texture* renderTexture, const 
         return;
     }
 
-    if (!renderTexture->renderInfo)
+    if (!renderTexture->IsRenderTexture())
     {
         gError->SetError("Called DGL_Graphics_ClearRenderTexture with a texture that was not created for rendering.");
         return;
     }
 
-    // Clear the texture's render target 
-    TextureManager::ClearRenderTexture(renderTexture, color, D3D.mDeviceContext);
+    Renderer.ClearImage(renderTexture->image, color);
 }
 
 //*************************************************************************************************
@@ -345,17 +356,13 @@ void GraphicsSystem::StartMesh()
         return;
     }
 
-    if (mCreatingMesh)
+    if (mMeshBuilder.IsStarted())
     {
         gError->SetError("Called DGL_Graphics_StartMesh again without calling DGL_Graphics_EndMesh.");
         return;
     }
-     
-    // Clear any existing vertices in the list
-    Meshes.mVertexList.clear();
 
-    // Set the flag
-    mCreatingMesh = true;
+    mMeshBuilder.Start();
 }
 
 //*************************************************************************************************
@@ -367,24 +374,25 @@ DGL_Mesh* GraphicsSystem::EndMesh()
         return nullptr;
     }
 
-    if (!mCreatingMesh)
+    if (!mMeshBuilder.IsStarted())
     {
         gError->SetError("Called DGL_Graphics_EndMesh without calling DGL_Graphics_StartMesh.");
         return nullptr;
     }
 
-    // Create the new mesh using the mesh manager
-    DGL_Mesh* newMesh = Meshes.CreateMesh(D3D.mDevice);
+    if (mMeshBuilder.GetVertexCount() == 0)
+    {
+        gError->SetError("Couldn't create mesh, no vertices added.");
+        mMeshBuilder.Cancel();
+        return nullptr;
+    }
 
-    // If it was successful, increase the mesh counter
-    if (newMesh)
-        ++mLoadedMeshCount;
+    std::unique_ptr<DGL_Mesh> mesh = mMeshBuilder.Finish();
+    DGL_Mesh* meshPtr = mesh.get();
+    if (meshPtr)
+        mMeshes.emplace(meshPtr, std::move(mesh));
 
-    // Reset the flag
-    mCreatingMesh = false;
-
-    // Return the new mesh
-    return newMesh;
+    return meshPtr;
 }
 
 //*************************************************************************************************
@@ -396,37 +404,44 @@ DGL_Mesh* GraphicsSystem::EndMeshIndexed(unsigned* indices, unsigned indexCount)
         return nullptr;
     }
 
-    if (!mCreatingMesh)
+    if (!mMeshBuilder.IsStarted())
     {
         gError->SetError("Called DGL_Graphics_EndMeshIndexed without calling DGL_Graphics_StartMesh.");
         return nullptr;
     }
 
-    // Create the new indexed mesh using the mesh manager
-    DGL_Mesh* newMesh = Meshes.CreateMeshIndexed(indices, indexCount, D3D.mDevice);
+    if (!indices || indexCount == 0)
+    {
+        gError->SetError("Couldn't create indexed mesh, no indexes.");
+        mMeshBuilder.Cancel();
+        return nullptr;
+    }
 
-    // If it was successful, increase the mesh counter
-    if (newMesh)
-        ++mLoadedMeshCount;
+    if (mMeshBuilder.GetVertexCount() == 0)
+    {
+        gError->SetError("Couldn't create mesh, no vertices added.");
+        mMeshBuilder.Cancel();
+        return nullptr;
+    }
 
-    // Reset the flag
-    mCreatingMesh = false;
+    std::unique_ptr<DGL_Mesh> mesh = mMeshBuilder.Finish(indices, indexCount);
+    DGL_Mesh* meshPtr = mesh.get();
+    if (meshPtr)
+        mMeshes.emplace(meshPtr, std::move(mesh));
 
-    // Return the new mesh
-    return newMesh;
+    return meshPtr;
 }
 
 //*************************************************************************************************
 void GraphicsSystem::AddVertex(const DGL_Vec2& position, const DGL_Color& color, const DGL_Vec2& texCoord)
 {
-    if (!mCreatingMesh)
+    if (!mMeshBuilder.IsStarted())
     {
         gError->SetError("Called DGL_Graphics_AddVertex or DGL_Graphics_AddTriangle without calling DGL_Graphics_StartMesh.");
         return;
     }
 
-    // Add the vertex to the list on the mesh manager
-    Meshes.mVertexList.push_back({ position, color, texCoord });
+    mMeshBuilder.AddVertex({ position, color, texCoord });
 }
 
 //*************************************************************************************************
@@ -436,11 +451,14 @@ void GraphicsSystem::ReleaseMesh(DGL_Mesh* mesh)
     if (!mesh)
         return;
 
-    // Delete the mesh
-    MeshManager::ReleaseMesh(mesh);
+    auto found = mMeshes.find(mesh);
+    if (found == mMeshes.end())
+    {
+        gError->SetError("Called DGL_Graphics_FreeMesh with a mesh that was already freed.");
+        return;
+    }
 
-    // Reduce the mesh counter
-    --mLoadedMeshCount;
+    mMeshes.erase(found);
 }
 
 //*************************************************************************************************
@@ -448,21 +466,11 @@ void GraphicsSystem::DrawMesh(const DGL_Mesh* mesh, DGL_DrawMode mode)
 {
     if (!mInitialized)
     {
-        gError->SetError("Called DGL_Graphics_DrawMesh when Graphics is not initialized.");
+        gError->SetError("Called DGL_Graphics_DrawMeshToTexture when Graphics is not initialized.");
         return;
     }
 
-    if (!mesh)
-    {
-        gError->SetError("Called DGL_Graphics_DrawMesh with a NULL mesh pointer.");
-        return;
-    }
-
-    CreateTransformMatrix();
-
-    // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, mShaderManager.GetCurrentVertexShader(), 
-        mShaderManager.GetCurrentPixelShader(), D3D.mDeviceContext);
+    Draw(mesh, mode, nullptr, "DGL_Graphics_DrawMesh");
 }
 
 //*************************************************************************************************
@@ -474,31 +482,19 @@ void GraphicsSystem::DrawMeshToTexture(const DGL_Mesh* mesh, DGL_DrawMode mode, 
         return;
     }
 
-    if (!mesh || !renderTexture)
+    if (!renderTexture)
     {
         gError->SetError("Called DGL_Graphics_DrawMeshToTexture with a NULL pointer.");
         return;
     }
 
-    if (!renderTexture->renderInfo)
+    if (!renderTexture->IsRenderTexture())
     {
         gError->SetError("Called DGL_Graphics_DrawMeshToTexture with a texture that is not set up for rendering.");
         return;
     }
 
-    CreateTransformMatrix();
-
-    D3D.mConstantBuffer.worldMatrix = renderTexture->renderInfo->worldMatrix;
-
-    D3D.SetRenderTargetToTexture(renderTexture);
-
-    // Draw the mesh using the mesh manager
-    MeshManager::Draw(mesh, mode, mCurrentTexture, mShaderManager.GetCurrentVertexShader(),
-        mShaderManager.GetCurrentPixelShader(), D3D.mDeviceContext);
-
-    D3D.ResetRenderTarget();
-
-    D3D.mConstantBuffer.worldMatrix = Camera.GetWorldMatrix();
+    Draw(mesh, mode, renderTexture, "DGL_Graphics_DrawMeshToTexture");
 }
 
 //*************************************************************************************************
@@ -514,7 +510,7 @@ void GraphicsSystem::SetTransformData(const DGL_Vec2& position, const DGL_Vec2& 
 //*************************************************************************************************
 void GraphicsSystem::SetTransformMatrix(const DGL_Mat4& transformationMatrix)
 {
-    gGraphics->D3D.mConstantBuffer.transformMatrix = transformationMatrix;
+    Renderer.mConstantBuffer.transformMatrix = transformationMatrix;
 
     mCreateMatrix = false;
 }
@@ -544,9 +540,57 @@ void GraphicsSystem::CreateTransformMatrix()
     DGL_Mat4 result = Matrix_Multiply(Matrix_Multiply(txMatrix, rotationMatrix), scaleMatrix);
 
     // Set the transform matrix on the constant buffer
-    D3D.mConstantBuffer.transformMatrix = result;
+    Renderer.mConstantBuffer.transformMatrix = result;
 
     mCreateMatrix = false;
+}
+
+//*************************************************************************************************
+void GraphicsSystem::Draw(const DGL_Mesh* mesh, DGL_DrawMode mode, const DGL_Texture* renderTexture, const char* functionName)
+{
+    if (!mesh)
+    {
+        gError->SetError(std::string("Called ") + functionName + " with a NULL mesh pointer.");
+        return;
+    }
+
+    if (!Renderer.IsUpdateStarted())
+    {
+        gError->SetError("Tried to draw a mesh either before DGL_Graphics_StartDrawing was called or after DGL_Graphics_FinishDrawing was called.");
+        return;
+    }
+
+    if (!mCurrentTexture)
+    {
+        gError->SetError("Trying to draw a mesh with a NULL texture pointer.");
+        return;
+    }
+
+    if (mCurrentTexture == renderTexture)
+    {
+        gError->SetError("Tried to draw a render texture onto itself.");
+        return;
+    }
+
+    const DGL_VertexShader* vertexShader = mShaderManager.GetCurrentVertexShader();
+    const DGL_PixelShader* pixelShader = mShaderManager.GetCurrentPixelShader();
+    if (!vertexShader || !pixelShader)
+    {
+        gError->SetError("Tried to draw using a custom shader mode without setting a custom shader.");
+        return;
+    }
+
+    CreateTransformMatrix();
+
+    // Render textures use their own world matrix, showing the whole texture
+    if (renderTexture)
+        Renderer.mConstantBuffer.worldMatrix = *renderTexture->renderWorldMatrix;
+
+    Renderer.DrawMesh(*mesh, mode, mCurrentTexture->image, *vertexShader, *pixelShader,
+        renderTexture ? &renderTexture->image : nullptr);
+
+    if (renderTexture)
+        Renderer.mConstantBuffer.worldMatrix = Camera.GetWorldMatrix();
 }
 
 } // namepspace DGL
@@ -599,33 +643,33 @@ void DGL_Camera_SetRotation(float radians)
 //*************************************************************************************************
 void DGL_Graphics_StartDrawing(void)
 {
-    gGraphics->D3D.StartUpdate();
+    gGraphics->Renderer.StartUpdate();
 }
 
 //*************************************************************************************************
 void DGL_Graphics_FinishDrawing(void)
 {
-    gGraphics->D3D.EndUpdate();
+    gGraphics->Renderer.EndUpdate();
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetBackgroundColor(const DGL_Color& color)
 {
-    gGraphics->D3D.mBackgroundColor[0] = color.r;
-    gGraphics->D3D.mBackgroundColor[1] = color.g;
-    gGraphics->D3D.mBackgroundColor[2] = color.b;
+    gGraphics->Renderer.mBackgroundColor[0] = color.r;
+    gGraphics->Renderer.mBackgroundColor[1] = color.g;
+    gGraphics->Renderer.mBackgroundColor[2] = color.b;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetTextureSamplerData(DGL_TextureSampleMode sampleMode, DGL_TextureAddressMode addressMode)
 {
-    gGraphics->D3D.SetSamplerState(sampleMode, addressMode);
+    gGraphics->Renderer.SetSamplerState(sampleMode, addressMode);
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetBlendMode(DGL_BlendMode mode)
 {
-    gGraphics->D3D.SetBlendMode(mode);
+    gGraphics->Renderer.SetBlendMode(mode);
 }
 
 //*************************************************************************************************
@@ -725,7 +769,7 @@ DGL_Vec2 DGL_Graphics_GetTextureSize(DGL_Texture* texture)
     if (!texture)
         return DGL_Vec2{ 0 };
 
-    return texture->textureSize;
+    return DGL_Vec2{ (float)texture->image.extent.width, (float)texture->image.extent.height };
 }
 
 //*************************************************************************************************
@@ -802,35 +846,35 @@ void DGL_Graphics_SetCB_TransformMatrix(const DGL_Mat4& transformationMatrix)
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TextureOffset(const DGL_Vec2& textureOffset)
 {
-    gGraphics->D3D.mConstantBuffer.texOffset = textureOffset;
+    gGraphics->Renderer.mConstantBuffer.texOffset = textureOffset;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_Alpha(float alpha)
 {
-    gGraphics->D3D.mConstantBuffer.alpha = alpha;
+    gGraphics->Renderer.mConstantBuffer.alpha = alpha;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_TintColor(const DGL_Color& color)
 {
-    gGraphics->D3D.mConstantBuffer.tintColor = color;
+    gGraphics->Renderer.mConstantBuffer.tintColor = color;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_ShaderFloat(float data)
 {
-    gGraphics->D3D.mConstantBuffer.shaderFloat = data;
+    gGraphics->Renderer.mConstantBuffer.shaderFloat = data;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetCB_ShaderVec4(const DGL_Color& vector)
 {
-    gGraphics->D3D.mConstantBuffer.shaderVec4 = vector;
+    gGraphics->Renderer.mConstantBuffer.shaderVec4 = vector;
 }
 
 //*************************************************************************************************
 void DGL_Graphics_SetConstantBuffer(const DGL_ConstantBuffer& data)
 {
-    memcpy(&gGraphics->D3D.mConstantBuffer, &data, sizeof(DGL_ConstantBuffer));
+    memcpy(&gGraphics->Renderer.mConstantBuffer, &data, sizeof(DGL_ConstantBuffer));
 }

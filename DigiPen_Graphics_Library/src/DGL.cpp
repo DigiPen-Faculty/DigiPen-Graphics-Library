@@ -32,7 +32,7 @@ bool DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)
     }
 
     // Initialize graphics and check for an error
-    if (graphics.Initialize(sysInitInfo) != 0)
+    if (!graphics.Initialize(sysInitInfo))
     {
         winSys.ShutDown();
         return false;
@@ -71,14 +71,12 @@ void DGL_System_Update(void)
 }
 
 //*************************************************************************************************
-int DGL_System_Exit(void)
+void DGL_System_Exit(void)
 {
     // Save the return value from shutting down graphics
-    int returnValue = graphics.ShutDown();
+    graphics.ShutDown();
     // Shut down the window
     winSys.ShutDown();
-    // Return the value from graphics
-    return returnValue;
 }
 
 //*************************************************************************************************

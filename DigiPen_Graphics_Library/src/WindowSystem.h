@@ -98,6 +98,8 @@ private:
     int mWindowedTop{ 0 };
     int mWindowedWidth{ 0 };
     int mWindowedHeight{ 0 };
+
+    bool mFirstFrame{ true };
 };
 
 // Global variable for accessing this system

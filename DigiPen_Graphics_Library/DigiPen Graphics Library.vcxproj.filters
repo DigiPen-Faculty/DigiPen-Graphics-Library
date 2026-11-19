@@ -17,16 +17,13 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{3185e69d-b982-43b0-8581-f78eb8fe7f51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Vulkan">
+      <UniqueIdentifier>{0ddc017e-c9da-4ac3-8e6d-81e41da9c65b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DGL.h">
       <Filter>Source Files\API Header</Filter>
-    </ClInclude>
-    <ClInclude Include="src\WICTextureLoader11.h">
-      <Filter>Source Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\InternalTypes.h">
-      <Filter>Source Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="src\DGLMath.h">
       <Filter>Source Files\Utility</Filter>
@@ -49,24 +46,21 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\D3dInterface.h">
-      <Filter>Source Files\Graphics</Filter>
+    <ClInclude Include="src\VulkanRenderer.h">
+      <Filter>Source Files\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InternalTypes.h">
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Texture.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Math.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\WICTextureLoader11.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="src\FrameRateController.cpp">
@@ -87,20 +81,17 @@
     <ClCompile Include="src\Error.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="src\D3dInterface.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="src\VulkanRenderer.cpp">
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Mesh.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\Graphics\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

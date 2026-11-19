@@ -46,10 +46,17 @@ public:
     // Returns the world matrix based on the current camera position and window size
     DGL_Mat4 GetWorldMatrix() const;
 
+    // Returns a world matrix with an arbitrary position, rotation, width, and height
+    static DGL_Mat4 CreateWorldMatrix(const DGL_Vec2& position, float rotation, float width, float height);
+
     // Translates a position in screen coordinates to the equivalent world coordinates
     // Screen coordinates go from (0, 0) in the top left corner to
     // (window width, window height) in the bottom right corner
     DGL_Vec2 ScreenToWorld(const DGL_Vec2& screenPos) const;
+
+    // Screen to world calculation for an arbitrary screen
+    static DGL_Vec2 ScreenToWorld(const DGL_Vec2& screenPos, const DGL_Vec2& screenSize,
+        const DGL_Vec2& position, float rotation, float width, float height);
 
 private:
     // The current camera position
