@@ -1,23 +1,21 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Camera.ixx
+// file:    Camera.h
 // author:  Andy Ellinger
 // brief:   Header for camera functionality
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
-
-export module Camera;
 
 namespace DGL
 {
 
 //------------------------------------------------------------------------------------------ Camera
 
-export class CameraObject
+class CameraObject
 {
 public:
 

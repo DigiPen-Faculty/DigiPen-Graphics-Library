@@ -6,7 +6,7 @@
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "Shader.h"
 
 #include "InternalTypes.h"
 #include <d3d11.h>
@@ -18,9 +18,8 @@ module;
 #include <format>
 #include <cassert>
 
-module Shader;
-import Errors;
-import GraphicsSystem;
+#include "Error.h"
+#include "GraphicsSystem.h"
 
 namespace DGL
 {

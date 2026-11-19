@@ -6,27 +6,25 @@
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "D3dInterface.h"
 
 #include "DGL.h"
 #include "InternalTypes.h"
 #include <d3d11.h>
 #include <tuple>
 
-module D3DInterface;
-
-import Errors;
-import GraphicsSystem;
-import WindowSystem;
-import Shader;
-import Texture;
+#include "Error.h"
+#include "GraphicsSystem.h"
+#include "WindowSystem.h"
+#include "Shader.h"
+#include "Texture.h"
 
 namespace DGL
 {
 
 //*************************************************************************************************
 template<typename RefType>
-void SafeRelease(RefType& pInterface)
+static void SafeRelease(RefType& pInterface)
 {
     if (pInterface) pInterface->Release();
     pInterface = nullptr;

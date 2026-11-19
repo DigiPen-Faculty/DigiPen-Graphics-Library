@@ -6,14 +6,12 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "InputSystem.h"
 
 #include "DGL.h"
 
-module Input;
-
-import Errors;
-import WindowSystem;
+#include "Error.h"
+#include "WindowSystem.h"
 
 namespace DGL
 {

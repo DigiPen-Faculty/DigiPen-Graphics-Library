@@ -1,29 +1,27 @@
 //-------------------------------------------------------------------------------------------------
-// file:    GraphicsSystem.ixx
+// file:    GraphicsSystem.h
 // author:  Andy Ellinger
 // brief:   Graphics system
 //
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
 #include <vector>
 
-export module GraphicsSystem;
-
-import Camera;
-import D3DInterface;
-import Mesh;
-import Shader;
+#include "Camera.h"
+#include "D3dInterface.h"
+#include "Mesh.h"
+#include "Shader.h"
 
 namespace DGL
 {
 
 //---------------------------------------------------------------------------------- GraphicsSystem
 
-export class GraphicsSystem
+class GraphicsSystem
 {
 public:
     // Sets the global pointer
@@ -127,6 +125,6 @@ private:
 };
 
 // Global pointer for accessing the graphics system
-export extern GraphicsSystem* gGraphics;
+extern GraphicsSystem* gGraphics;
 
 } // namepspace DGL

@@ -1,18 +1,16 @@
 //-------------------------------------------------------------------------------------------------
-// file:    D3dInterface.ixx
+// file:    D3dInterface.h
 // author:  Andy Ellinger
 // brief:   Wrapper for D3D functionality
 //
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
 #include <d3d11.h>
 #include <unordered_map>
-
-export module D3DInterface;
 
 namespace DGL
 {
@@ -21,7 +19,7 @@ using std::unordered_map;
 
 //------------------------------------------------------------------------------------ D3DInterface
 
-export class D3DInterface
+class D3DInterface
 {
 public:
 

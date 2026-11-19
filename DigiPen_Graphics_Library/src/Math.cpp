@@ -6,13 +6,11 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "DGLMath.h"
 
 #include "DGL.h"
 #include <cstring>
 #include <math.h>
-
-module Math;
 
 namespace DGL
 {

@@ -1,25 +1,24 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Texture.ixx
+// file:    Texture.h
 // author:  Andy Ellinger
 // brief:   Header for texture functionality
 //
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
+
+#include "DGL.h"
 
 #include <d3d11.h>
 #include <DirectXMath.h>
-#include "DGL.h"
-
-export module Texture;
 
 namespace DGL
 {
 
 //---------------------------------------------------------------------------------- TextureManager
 
-export class TextureManager
+class TextureManager
 {
 public:
 

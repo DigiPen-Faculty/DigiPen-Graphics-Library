@@ -1,27 +1,25 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Error.ixx
+// file:    Error.h
 // author:  Andy Ellinger
 // brief:   Handler for error messages
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include <string_view>
 #include <string>
 
-export module Errors;
-
 namespace DGL
 {
 
-export using std::string_view;
-export using std::string;
+using std::string_view;
+using std::string;
 
 //------------------------------------------------------------------------------------ ErrorHandler
 
-export class ErrorHandler
+class ErrorHandler
 {
 public:
     // Sets the global pointer
@@ -41,6 +39,6 @@ private:
 };
 
 // Global pointer for accessing the system
-export extern ErrorHandler* gError;
+extern ErrorHandler* gError;
 
 } // namepspace DGL

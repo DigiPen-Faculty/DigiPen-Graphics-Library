@@ -6,16 +6,14 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "Camera.h"
 
 #include "DGL.h"
 #include <math.h>
 
-module Camera;
-
-import GraphicsSystem;
-import Math;
-import WindowSystem;
+#include "GraphicsSystem.h"
+#include "DGLMath.h"
+#include "WindowSystem.h"
 
 namespace DGL
 {

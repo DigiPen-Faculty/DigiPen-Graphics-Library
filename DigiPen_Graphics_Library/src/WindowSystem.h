@@ -1,26 +1,24 @@
 //-------------------------------------------------------------------------------------------------
-// file:    WindowSystem.ixx
+// file:    WindowSystem.h
 // author:  Andy Ellinger
 // brief:   Windows system
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-export module WindowSystem;
-
 namespace DGL
 {
 
 //----------------------------------------------------------------------------------- WindowSystem
 
-export class WindowSystem
+class WindowSystem
 {
 public:
     // Sets the global variable
@@ -103,6 +101,6 @@ private:
 };
 
 // Global variable for accessing this system
-export extern WindowSystem* gWinSys;
+extern WindowSystem* gWinSys;
 
 } // namepspace DGL

@@ -6,18 +6,16 @@
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "Mesh.h"
 
 #include "InternalTypes.h"
 #include "DGL.h"
 #include <d3d11.h>
 #include <vector>
 
-module Mesh;
-
-import Errors;
-import Texture;
-import GraphicsSystem;
+#include "Error.h"
+#include "Texture.h"
+#include "GraphicsSystem.h"
 
 namespace DGL
 {

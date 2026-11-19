@@ -6,23 +6,21 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "Error.h"
 
 #include "DGL.h"
 #include <iostream>
 #include <sstream>
 #include <Windows.h>
 
-module Errors;
-
-import WindowSystem;
+#include "WindowSystem.h"
 
 namespace DGL
 {
 ErrorHandler* gError = nullptr;
 
 //*************************************************************************************************
-string GetMessageFromHresult(long hr)
+static string GetMessageFromHresult(long hr)
 {
     if (HRESULT_FACILITY(hr) == FACILITY_WINDOWS)
         hr = HRESULT_CODE(hr);

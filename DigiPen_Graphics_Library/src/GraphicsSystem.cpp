@@ -6,19 +6,17 @@
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "GraphicsSystem.h"
 
 #include "DGL.h"
 #include "InternalTypes.h"
 #include <objbase.h>
 #include <sstream>
 
-module GraphicsSystem;
-
-import Math;
-import Errors;
-import Texture;
-import Shader;
+#include "DGLMath.h"
+#include "Error.h"
+#include "Texture.h"
+#include "Shader.h"
 
 namespace DGL
 {

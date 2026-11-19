@@ -28,6 +28,39 @@
     <ClInclude Include="src\InternalTypes.h">
       <Filter>Source Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="src\DGLMath.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Error.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FrameRateController.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InputSystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsSystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WindowSystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\D3dInterface.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Math.cpp">
@@ -66,40 +99,7 @@
     <ClCompile Include="src\Mesh.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math.ixx">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Error.ixx">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FrameRateController.ixx">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\InputSystem.ixx">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.ixx">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\D3dInterface.ixx">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mesh.ixx">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Texture.ixx">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GraphicsSystem.ixx">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\WindowSystem.ixx">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shader.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Shader.ixx">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

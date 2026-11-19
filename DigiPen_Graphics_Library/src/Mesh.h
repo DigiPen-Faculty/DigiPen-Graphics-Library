@@ -1,26 +1,24 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Mesh.ixx
+// file:    Mesh.h
 // author:  Andy Ellinger
 // brief:   Header for mesh functionality
 //
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
 #include "InternalTypes.h"
 #include <d3d11.h>
 #include <vector>
 
-export module Mesh;
-
 namespace DGL
 {
 
 //------------------------------------------------------------------------------------- MeshManager
 
-export class MeshManager
+class MeshManager
 {
 public:
 

@@ -6,17 +6,15 @@
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "Texture.h"
 
 #include "InternalTypes.h"
 #include "WICTextureLoader11.h"
 #include <DirectXMath.h>
 #include <sstream>
 
-module Texture;
-
-import Errors;
-import Math;
+#include "Error.h"
+#include "DGLMath.h"
 
 namespace DGL
 {

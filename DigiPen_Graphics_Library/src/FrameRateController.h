@@ -1,19 +1,19 @@
 //-------------------------------------------------------------------------------------------------
-// file:    FrameRateController.cpp
+// file:    FrameRateController.h
 // author:  Andy Ellinger
 // brief:   Functionality for frame rate control
 //
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-export module FrameRateControl;
+#pragma once
 
 namespace DGL
 {
 
 //----------------------------------------------------------------------------- FrameRateController
 
-export class FrameRateController
+class FrameRateController
 {
 public:
     // Sets the max frame rate and resets the controller

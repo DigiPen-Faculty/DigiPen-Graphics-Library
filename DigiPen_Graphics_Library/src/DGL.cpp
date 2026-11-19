@@ -9,18 +9,17 @@
 #include "DGL.h"
 #include <chrono>
 
-import Errors;
-import FrameRateControl;
-import Input;
-import GraphicsSystem;
-import WindowSystem;
+#include "Error.h"
+#include "FrameRateController.h"
+#include "InputSystem.h"
+#include "GraphicsSystem.h"
+#include "WindowSystem.h"
 
 DGL::GraphicsSystem graphics;
 DGL::FrameRateController frameController;
 DGL::WindowSystem winSys;
 DGL::InputSystem input;
 DGL::ErrorHandler error;
-
 
 //*************************************************************************************************
 bool DGL_System_Init(const DGL_SysInitInfo& sysInitInfo)

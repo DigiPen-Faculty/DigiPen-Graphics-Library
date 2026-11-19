@@ -1,12 +1,12 @@
 //-------------------------------------------------------------------------------------------------
-// file:    Shader.ixx
+// file:    Shader.h
 // author:  Kenny Mecham, Andy Ellinger
 // brief:   Header for additional shader functionality
 //
 // Copyright © 2026 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#pragma once
 
 #include "DGL.h"
 #include <d3d11.h>
@@ -15,14 +15,12 @@ module;
 #include <string>
 #include <memory>
 
-export module Shader;
-
 namespace DGL
 {
 
 //------------------------------------------------------------------------------- ShaderManager
 
-export class ShaderManager
+class ShaderManager
 {
 public:
     ShaderManager() = default;

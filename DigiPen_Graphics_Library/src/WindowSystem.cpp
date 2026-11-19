@@ -6,7 +6,7 @@
 // Copyright © 2022 DigiPen, All rights reserved.
 //-------------------------------------------------------------------------------------------------
 
-module;
+#include "WindowSystem.h"
 
 #include "DGL.h"
 #include <stdio.h>
@@ -27,11 +27,9 @@ module;
 #include <stb_image.h>
 #pragma warning(pop)
 
-module WindowSystem;
-
-import Errors;
-import Input;
-import GraphicsSystem;
+#include "Error.h"
+#include "InputSystem.h"
+#include "GraphicsSystem.h"
 
 namespace DGL
 {
