@@ -8,8 +8,13 @@
 
 #include "Shader.h"
 
+#if defined(_WIN32)
 #include <Windows.h>
 #include <objbase.h>
+#else
+#include <dlfcn.h>
+#endif
+// On Linux and macOS, dxcapi.h includes DXC's WinAdapter.h, which defines the COM types it uses
 #include <dxc/dxcapi.h>
 #include <cctype>
 #include <cstdio>
@@ -174,7 +179,12 @@ namespace
     //*************************************************************************************************
     bool IsSpirvFile(std::string_view filename)
     {
-        return filename.size() > 4 && _stricmp(std::string(filename.substr(filename.size() - 4)).c_str(), ".spv") == 0;
+        if (filename.size() <= 4)
+            return false;
+        std::string extension(filename.substr(filename.size() - 4));
+        for (char& c : extension)
+            c = (char)tolower((unsigned char)c);
+        return extension == ".spv";
     }
 
     //*************************************************************************************************
@@ -187,12 +197,81 @@ namespace
     }
 
     //*************************************************************************************************
+    // Converts UTF-8 text to a wide string, which is what the DXC functions use
     std::wstring Widen(std::string_view text)
     {
+#if defined(_WIN32)
         int length = MultiByteToWideChar(CP_UTF8, 0, text.data(), (int)text.size(), nullptr, 0);
         std::wstring wide(length, L'\0');
         MultiByteToWideChar(CP_UTF8, 0, text.data(), (int)text.size(), wide.data(), length);
         return wide;
+#else
+        // wchar_t is 32 bits on Linux and macOS, so each character is one code point
+        std::wstring wide;
+        for (size_t i = 0; i < text.size();)
+        {
+            unsigned char c = (unsigned char)text[i];
+            size_t extra = c >= 0xF0 ? 3 : c >= 0xE0 ? 2 : c >= 0xC0 ? 1 : 0;
+            uint32_t codePoint = extra == 3 ? (c & 0x07) : extra == 2 ? (c & 0x0F) : extra == 1 ? (c & 0x1F) : c;
+            for (size_t j = 1; j <= extra && i + j < text.size(); ++j)
+                codePoint = (codePoint << 6) | ((unsigned char)text[i + j] & 0x3F);
+            wide.push_back((wchar_t)codePoint);
+            i += extra + 1;
+        }
+        return wide;
+#endif
+    }
+
+    //*************************************************************************************************
+    // The name of the DXC library on each platform
+#if defined(_WIN32)
+    constexpr const char* DxcLibraryName = "dxcompiler.dll";
+#elif defined(__APPLE__)
+    constexpr const char* DxcLibraryName = "libdxcompiler.dylib";
+#else
+    constexpr const char* DxcLibraryName = "libdxcompiler.so";
+#endif
+
+    //*************************************************************************************************
+    // Loads the DXC library, returning null if it couldn't be found
+    void* LoadDxcLibrary()
+    {
+#if defined(_WIN32)
+        return LoadLibraryA(DxcLibraryName);
+#else
+        // First look in the same folder as the DGL library (like Windows does with the program's folder)
+        Dl_info info{};
+        if (dladdr((void*)&LoadDxcLibrary, &info) && info.dli_fname)
+        {
+            std::string path(info.dli_fname);
+            size_t slash = path.find_last_of('/');
+            path = (slash == std::string::npos ? std::string() : path.substr(0, slash + 1)) + DxcLibraryName;
+            if (void* library = dlopen(path.c_str(), RTLD_NOW | RTLD_LOCAL))
+                return library;
+        }
+        // Then use the normal library search paths (such as the Vulkan SDK's lib folder)
+        return dlopen(DxcLibraryName, RTLD_NOW | RTLD_LOCAL);
+#endif
+    }
+
+    //*************************************************************************************************
+    void* GetLibraryFunction(void* library, const char* name)
+    {
+#if defined(_WIN32)
+        return (void*)GetProcAddress((HMODULE)library, name);
+#else
+        return dlsym(library, name);
+#endif
+    }
+
+    //*************************************************************************************************
+    void FreeDxcLibrary(void* library)
+    {
+#if defined(_WIN32)
+        FreeLibrary((HMODULE)library);
+#else
+        dlclose(library);
+#endif
     }
 
 } // namespace
@@ -215,7 +294,7 @@ public:
     bool Compile(std::string_view filename, const wchar_t* profile, bool reflect, std::vector<uint32_t>& code);
 
 private:
-    HMODULE mLibrary{ nullptr };
+    void* mLibrary{ nullptr };
     IDxcUtils* mUtils{ nullptr };
     IDxcCompiler3* mCompiler{ nullptr };
     IDxcIncludeHandler* mIncludeHandler{ nullptr };
@@ -228,21 +307,21 @@ ShaderCompiler::~ShaderCompiler()
     SafeRelease(mCompiler);
     SafeRelease(mUtils);
     if (mLibrary)
-        FreeLibrary(mLibrary);
+        FreeDxcLibrary(mLibrary);
 }
 
 //*************************************************************************************************
 bool ShaderCompiler::Initialize()
 {
-    mLibrary = LoadLibraryA("dxcompiler.dll");
+    mLibrary = LoadDxcLibrary();
     if (!mLibrary)
     {
-        gError->SetError("Couldn't load dxcompiler.dll, which is needed to compile HLSL shaders. "
-            "Make sure it is in the same folder as DGL.dll.");
+        gError->SetError(std::string("Couldn't load ") + DxcLibraryName + ", which is needed to compile "
+            "HLSL shaders. Make sure it is in the same folder as the DGL library.");
         return false;
     }
 
-    auto createInstance = (DxcCreateInstanceProc)GetProcAddress(mLibrary, "DxcCreateInstance");
+    auto createInstance = (DxcCreateInstanceProc)GetLibraryFunction(mLibrary, "DxcCreateInstance");
     if (!createInstance ||
         FAILED(createInstance(CLSID_DxcUtils, __uuidof(IDxcUtils), (void**)&mUtils)) ||
         FAILED(createInstance(CLSID_DxcCompiler, __uuidof(IDxcCompiler3), (void**)&mCompiler)) ||

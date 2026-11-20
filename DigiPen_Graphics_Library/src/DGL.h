@@ -10,10 +10,16 @@
 
 #pragma once
 
-#if defined(DGL_EXPORTS)
-#define DGL_API __declspec(dllexport)
+#if defined(_WIN32)
+    #if defined(DGL_EXPORTS)
+        #define DGL_API __declspec(dllexport)
+    #else
+        #define DGL_API __declspec(dllimport)
+    #endif
+#elif defined(__GNUC__) || defined(__clang__)
+    #define DGL_API __attribute__((visibility("default")))
 #else
-#define DGL_API __declspec(dllimport)
+    #define DGL_API
 #endif
 
 //*************************************************************************************************

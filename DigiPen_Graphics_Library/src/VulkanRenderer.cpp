@@ -13,11 +13,21 @@
 #include "DGLMath.h"
 #include "Camera.h"
 
+// Turns off warnings from the third-party implementations compiled in this file
+// (GCC and Clang don't have extra warnings turned on in the CMake build, so nothing is needed there)
+#if defined(_MSC_VER)
+#define DGL_DISABLE_WARNINGS __pragma(warning(push, 0))
+#define DGL_RESTORE_WARNINGS __pragma(warning(pop))
+#else
+#define DGL_DISABLE_WARNINGS
+#define DGL_RESTORE_WARNINGS
+#endif
+
 // The Vulkan Memory Allocator implementation is compiled here
-#pragma warning(push, 0)
+DGL_DISABLE_WARNINGS
 #define VMA_IMPLEMENTATION
 #include <vma/vk_mem_alloc.h>
-#pragma warning(pop)
+DGL_RESTORE_WARNINGS
 
 #include <vulkan/vk_enum_string_helper.h>
 #include <algorithm>
@@ -29,10 +39,10 @@
 #include <sstream>
 
 // The stb_image implementation is compiled here
-#pragma warning(push, 0)
+DGL_DISABLE_WARNINGS
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#pragma warning(pop)
+DGL_RESTORE_WARNINGS
 
 //*************************************************************************************************
 DGL_Texture::~DGL_Texture()
@@ -140,6 +150,7 @@ namespace
         }
         return false;
     }
+#endif
 
     //*************************************************************************************************
     bool HasInstanceExtension(const char* name)
@@ -156,7 +167,6 @@ namespace
         }
         return false;
     }
-#endif
 
     //*************************************************************************************************
     bool HasDeviceExtension(const std::vector<VkExtensionProperties>& extensions, const char* name)
@@ -209,6 +219,7 @@ namespace
     // This can be used to choose a GPU on computers with more than one.
     int GetRequestedDeviceIndex()
     {
+#if defined(_MSC_VER)
         char* value = nullptr;
         size_t length = 0;
         if (_dupenv_s(&value, &length, "DGL_VULKAN_DEVICE") != 0 || !value)
@@ -217,6 +228,10 @@ namespace
         int index = atoi(value);
         free(value);
         return index;
+#else
+        const char* value = std::getenv("DGL_VULKAN_DEVICE");
+        return value ? atoi(value) : -1;
+#endif
     }
 
     //*************************************************************************************************
@@ -365,6 +380,15 @@ bool VulkanRenderer::CreateInstance()
     debugInfo.pfnUserCallback = DebugCallback;
 
     VkInstanceCreateInfo instanceInfo{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
+
+    // On macOS, Vulkan runs on top of Metal using MoltenVK, which doesn't support all of Vulkan.
+    // The Vulkan loader hides these "portability" GPUs unless the program asks to see them.
+    if (HasInstanceExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME))
+    {
+        extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        instanceInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+    }
+
     // Passing the debug info here also reports problems with creating and destroying the instance
     instanceInfo.pNext = useValidation ? &debugInfo : nullptr;
     instanceInfo.pApplicationInfo = &appInfo;
@@ -522,6 +546,14 @@ bool VulkanRenderer::CreateDevice()
     std::vector<const char*> extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME };
     if (mHasBresenhamLines)
         extensions.push_back(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+
+    // Vulkan requires turning on the portability subset extension for GPUs that have it (MoltenVK on macOS)
+    uint32_t extensionCount = 0;
+    vkEnumerateDeviceExtensionProperties(mPhysicalDevice, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> available(extensionCount);
+    vkEnumerateDeviceExtensionProperties(mPhysicalDevice, nullptr, &extensionCount, available.data());
+    if (HasDeviceExtension(available, "VK_KHR_portability_subset"))
+        extensions.push_back("VK_KHR_portability_subset");
 
     VkDeviceCreateInfo deviceInfo{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
     deviceInfo.pNext = enabled.Link(mHasBresenhamLines);

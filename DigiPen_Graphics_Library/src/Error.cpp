@@ -11,7 +11,18 @@
 #include "DGL.h"
 #include <iostream>
 #include <sstream>
+#include <cstdio>
+
+#if defined(_WIN32)
 #include <Windows.h>
+#elif defined(__APPLE__)
+#include <csignal>
+#include <sys/sysctl.h>
+#include <unistd.h>
+#else
+#include <csignal>
+#include <fstream>
+#endif
 
 #include "WindowSystem.h"
 
@@ -19,9 +30,41 @@ namespace DGL
 {
 ErrorHandler* gError = nullptr;
 
+#if !defined(_WIN32)
+//*************************************************************************************************
+// Returns true if a debugger is attached, so that we only stop the program when someone can see it
+static bool IsDebuggerAttached()
+{
+#if defined(__APPLE__)
+    int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+    struct kinfo_proc info {};
+    size_t size = sizeof(info);
+    if (sysctl(mib, 4, &info, &size, nullptr, 0) != 0)
+        return false;
+    return (info.kp_proc.p_flag & P_TRACED) != 0;
+#else
+    // On Linux, the TracerPid line is non-zero when a debugger is attached
+    std::ifstream status("/proc/self/status");
+    string line;
+    while (std::getline(status, line))
+    {
+        if (line.rfind("TracerPid:", 0) == 0)
+            return std::stoi(line.substr(10)) != 0;
+    }
+    return false;
+#endif
+}
+#endif
+
 //*************************************************************************************************
 static string GetMessageFromHresult(long hr)
 {
+#if !defined(_WIN32)
+    // There are no system error descriptions for HRESULT values outside of Windows
+    char fullMessage[32];
+    snprintf(fullMessage, sizeof(fullMessage), "Error 0x%08lx", (unsigned long)hr);
+    return string(fullMessage);
+#else
     if (HRESULT_FACILITY(hr) == FACILITY_WINDOWS)
         hr = HRESULT_CODE(hr);
     TCHAR* errorMessage;
@@ -44,6 +87,7 @@ static string GetMessageFromHresult(long hr)
         snprintf(fullMessage, 100, "Error 0x%08x", hr);
 
     return string(fullMessage);
+#endif
 }
 
 //------------------------------------------------------------------------------------ ErrorHandler
@@ -78,9 +122,16 @@ void ErrorHandler::SetError(string_view text)
 
     std::cerr << msg << std::endl;
 
+#if defined(_WIN32)
     MessageBox((HWND)gWinSys->GetNativeHandle(), msg.c_str(), "DGL Error", MB_ICONWARNING | MB_APPLMODAL);
 
     DebugBreak();
+#else
+    // There is no built-in message box, so the error is only printed to stderr.
+    // Without a debugger, SIGTRAP would end the program, so only break when one is attached.
+    if (IsDebuggerAttached())
+        raise(SIGTRAP);
+#endif
 #endif
 }
 

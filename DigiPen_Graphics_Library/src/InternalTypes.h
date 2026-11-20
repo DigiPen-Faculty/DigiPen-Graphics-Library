@@ -10,9 +10,13 @@
 
 #include "DGL.h"
 #include <vulkan/vulkan.h>
+#if defined(_MSC_VER)
 #pragma warning(push, 0)
+#endif
 #include <vma/vk_mem_alloc.h>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 #include <optional>
 #include <string>
 #include <string_view>

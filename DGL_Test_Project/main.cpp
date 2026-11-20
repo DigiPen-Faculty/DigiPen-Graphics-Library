@@ -20,9 +20,12 @@
 #include <cstdlib>
 #include <cstring>
 
-// Windows is only used by the self-test to send input to the window and check window state
+// Windows is only used by the self-test to send input to the window and check window state.
+// On other platforms, the self-test skips the input and native window checks.
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
 
 namespace
 {
@@ -85,6 +88,7 @@ bool WaitForSize(int width, int height)
     return SizeIs(DGL_Window_GetSize(), width, height);
 }
 
+#if defined(_WIN32)
 //*************************************************************************************************
 // Sends a key message directly to the window, the same way Windows does for a real key press
 void PostKey(HWND window, UINT virtualKey, bool down, bool extended = false)
@@ -135,6 +139,7 @@ void CheckMouseButton(HWND window, UINT downMessage, UINT upMessage, unsigned ch
     snprintf(description, sizeof(description), "%s mouse button release is reported", name);
     Check(!DGL_Input_KeyDown(dglKey) && DGL_Input_KeyReleased(dglKey), description);
 }
+#endif
 
 //*************************************************************************************************
 bool NoErrors()
@@ -151,15 +156,19 @@ bool NoErrors()
 //*************************************************************************************************
 void RunSelfTest()
 {
+#if defined(_WIN32)
     HWND window = (HWND)DGL_System_GetNativeWindowHandle();
     Check(window != nullptr && IsWindow(window), "Native window handle is a valid window");
+#endif
     Check(DGL_System_DoesWindowExist(), "Window exists after init");
     Check(SizeIs(DGL_Window_GetSize(), cWindowWidth, cWindowHeight), "Window drawable size matches the requested size");
 
+#if defined(_WIN32)
     RECT clientRect;
     GetClientRect(window, &clientRect);
     Check(clientRect.right == cWindowWidth && clientRect.bottom == cWindowHeight,
         "Win32 client rect matches the requested size");
+#endif
 
     DGL_Vec2 monitor = DGL_Window_GetMonitorSize();
     Check(monitor.x > 0 && monitor.y > 0, "Monitor size is reported");
@@ -181,6 +190,7 @@ void RunSelfTest()
     Check(averageFrame > 0.012 && averageFrame < 0.030, "Frame rate controller limits to about 60 FPS");
     Check(DGL_System_GetDeltaTime() > 0.0 && DGL_System_GetDeltaTime() < 0.1, "Delta time is reasonable");
 
+#if defined(_WIN32)
     // Keyboard
     CheckKey(window, 'A', 'A', "Letter A");
     CheckKey(window, '7', DGL_KEY_7, "Number 7");
@@ -237,6 +247,9 @@ void RunSelfTest()
     DGL_Vec2 mousePos = DGL_Input_GetMousePosition();
     Check(Near(mousePos.x, (float)cursor.x, 1.0f) && Near(mousePos.y, (float)cursor.y, 1.0f),
         "Mouse position matches the cursor position relative to the window");
+#else
+    printf("       Skipping keyboard and mouse checks (simulated input is only set up on Windows)\n");
+#endif
 
     // Cursor visibility (can't be checked automatically, but must not cause errors)
     DGL_Input_ShowCursor(false);
@@ -254,23 +267,33 @@ void RunSelfTest()
 
     DGL_Window_SetSizeAndPosition(640, 480, 120, 140);
     Check(WaitForSize(640, 480), "SetSizeAndPosition changes the drawable size");
+#if defined(_WIN32)
     POINT origin{ 0, 0 };
     ClientToScreen(window, &origin);
     Check(origin.x == 120 && origin.y == 140, "SetSizeAndPosition moves the drawable area to the position");
+#endif
 
     // Resizable and decorated
     DGL_Window_SetResizable(false);
     RunFrame();
+#if defined(_WIN32)
     Check((GetWindowLongA(window, GWL_STYLE) & WS_THICKFRAME) == 0, "SetResizable(false) removes the resize border");
+#endif
     DGL_Window_SetResizable(true);
     RunFrame();
+#if defined(_WIN32)
     Check((GetWindowLongA(window, GWL_STYLE) & WS_THICKFRAME) != 0, "SetResizable(true) restores the resize border");
+#endif
     DGL_Window_SetDecorated(false);
     RunFrame();
+#if defined(_WIN32)
     Check((GetWindowLongA(window, GWL_STYLE) & WS_CAPTION) != WS_CAPTION, "SetDecorated(false) removes the title bar");
+#endif
     DGL_Window_SetDecorated(true);
     RunFrame();
+#if defined(_WIN32)
     Check((GetWindowLongA(window, GWL_STYLE) & WS_CAPTION) == WS_CAPTION, "SetDecorated(true) restores the title bar");
+#endif
     Check(WaitForSize(640, 480), "Drawable size is unchanged after changing decorations");
 
     // Fullscreen
@@ -284,6 +307,7 @@ void RunSelfTest()
     DGL_Window_SetFullscreen(false);
     Check(!DGL_Window_IsFullscreen(), "SetFullscreen(false) returns to a normal window");
     Check(WaitForSize(640, 480), "Returning from fullscreen restores the previous size");
+#if defined(_WIN32)
     origin = { 0, 0 };
     ClientToScreen(window, &origin);
     Check(origin.x == 120 && origin.y == 140, "Returning from fullscreen restores the previous position");
@@ -294,6 +318,7 @@ void RunSelfTest()
         RunFrame();
     ShowWindow(window, SW_RESTORE);
     Check(WaitForSize(640, 480), "Restoring from minimized restores the size");
+#endif
 
     // Back to the original size for the end of the test
     DGL_Window_SetSize(cWindowWidth, cWindowHeight);

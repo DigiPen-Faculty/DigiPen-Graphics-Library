@@ -154,6 +154,15 @@ GLFWmonitor* GetCurrentMonitor(GLFWwindow* window)
 //*************************************************************************************************
 void ErrorCallback(int errorCode, const char* description)
 {
+    // Some window features can't be used on every platform: macOS and Wayland don't support
+    // window icons, and Wayland doesn't let programs set or get the window position.
+    // These calls are ignored, so they aren't treated as errors.
+    if (errorCode == GLFW_FEATURE_UNAVAILABLE)
+    {
+        fprintf(stderr, "DGL: %s\n", description);
+        return;
+    }
+
     std::string msg = "GLFW error " + std::to_string(errorCode) + ": " + description;
     gError->SetError(msg);
 }
